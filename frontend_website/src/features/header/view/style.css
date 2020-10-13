@@ -1,0 +1,27 @@
+.header-containner {
+  width: 100%;
+  height: 100px;
+  padding: 0px 40px 0px 40px;
+
+  background-color: black;
+}
+.header-contents {
+  width: 95%;
+  height: 100%;
+  background-color: yellow;
+}
+.header-contents .menu {
+  width: 65%;
+  height: 100%;
+  float: right;
+  background-color: red;
+}
+.header-contents .logo {
+  width: 10%;
+  height: 100%;
+  background-color: blue;
+  float: left;
+}
+
+.header-contents .menu .items {
+}
