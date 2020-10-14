@@ -10,7 +10,7 @@ const LeftMenu = () => {
   return (
     <Menu mode={md ? "horizontal" : "inline"} className="rightmenu-containner">
       <Menu.Item key="mail">
-        <a href="" >Home</a>
+        <a href="">Home</a>
       </Menu.Item>
       <SubMenu key="sub1" title={<span>Blogs</span>}>
         <MenuItemGroup title="Item 1">
