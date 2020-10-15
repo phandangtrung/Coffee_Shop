@@ -1,0 +1,10 @@
+.banner {
+  height: 650px;
+  color: #ffffff;
+  line-height: 650px;
+  text-align: "center";
+}
+.reponsive-img {
+  width: auto;
+  height: auto;
+}
