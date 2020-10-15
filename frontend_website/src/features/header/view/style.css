@@ -8,21 +8,30 @@
 }
 
 .logo {
-  width: 150px;
+  width: 200px;
   float: left;
 }
 
 .logo a {
   display: inline-block;
-  font-size: 18px;
   padding: 15px 10px;
   font-weight: bold;
   color: rgb(164, 115, 67);
   text-transform: capitalize;
 }
-
+.fontmenu {
+  font-family: "Sansita Swashed", cursive;
+}
+.shopname {
+  font-size: 30px;
+}
+.menutitle {
+  font-family: "Sansita Swashed", cursive;
+  font-size: 20px;
+}
 .menuCon {
-  width: calc(100% - 150px);
+  width: calc(100% - 200px);
+  padding-top: 15px;
   float: left;
 }
 
@@ -91,7 +100,9 @@
 .barsMenu > span {
   display: block;
 }
-
+.ant-btn-primary {
+  border-color: rgb(164, 115, 67);
+}
 .ant-drawer-body .ant-menu-horizontal > .ant-menu-item,
 .ant-drawer-body .ant-menu-horizontal > .ant-menu-submenu {
   display: inline-block;
@@ -105,7 +116,33 @@
 .ant-drawer-body .ant-menu-horizontal > .ant-menu-item:hover {
   border-bottom-color: transparent;
 }
-
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected {
+  border-bottom: 2px solid rgb(164, 115, 67);
+}
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover a,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover a,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active a,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active a,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open a,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open a,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected a,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected a {
+  color: rgb(164, 115, 67);
+}
+.ant-menu-item:hover,
+.ant-menu-item-active,
+.ant-menu:not(.ant-menu-inline) .ant-menu-submenu-open,
+.ant-menu-submenu-active,
+.ant-menu-submenu-title:hover {
+  color: rgb(164, 115, 67);
+}
 @media (max-width: 767px) {
   .barsMenu {
     display: inline-block;
