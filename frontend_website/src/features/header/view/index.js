@@ -26,7 +26,7 @@ class Header extends Component {
     return (
       <nav className="menuBar">
       <div className="logo">
-        <a href="">COFFEE SHOP</a>
+        <a href=""  className="fontmenu shopname" >Coffee Shop</a>
       </div>
       <div className="menuCon" >
         <div className="leftMenu">
@@ -39,7 +39,7 @@ class Header extends Component {
           <span className="barsBtn"></span>
         </Button>
         <Drawer
-          title="Basic Drawer"
+          title="Menu bar"
           placement="right"
           closable={false}
           onClose={this.onClose}

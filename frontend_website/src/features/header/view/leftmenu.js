@@ -8,11 +8,17 @@ const { useBreakpoint } = Grid;
 const LeftMenu = () => {
   const { md } = useBreakpoint()
   return (
-    <Menu mode={md ? "horizontal" : "inline"} className="rightmenu-containner">
+    <Menu mode={md ? "horizontal" : "inline"} className="rightmenu-containner menutitle" >
       <Menu.Item key="mail">
-        <a href="">Home</a>
+        <a href="" clasname="titlemenu">Home</a>
       </Menu.Item>
-      <SubMenu key="sub1" title={<span>Blogs</span>}>
+      <SubMenu key="sub1" className="fontmenu" title={<span>Product</span>}>
+        <MenuItemGroup title="Product"  className="fontmenu">
+          <Menu.Item key="setting:1">Product list</Menu.Item>
+          <Menu.Item key="setting:2">Product single</Menu.Item>
+        </MenuItemGroup>         
+      </SubMenu>
+      <SubMenu key="sub2" className="fontmenu" title={<span>Shop</span>}>
         <MenuItemGroup title="Item 1">
           <Menu.Item key="setting:1">Option 1</Menu.Item>
           <Menu.Item key="setting:2">Option 2</Menu.Item>
