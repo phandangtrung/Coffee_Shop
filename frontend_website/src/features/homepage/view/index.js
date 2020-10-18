@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Header from "../../header/view"
+import Footer from "../../footer/view"
 import {Images} from "../../../config/image"
 
 import { Carousel } from 'antd';
@@ -21,7 +22,8 @@ export class Homepage extends Component {
                     <h3 className="banner"><img alt={"slide3"}  src={Images.SLIDE3} className="reponsive-img" /></h3>
                     </div>
                     
-                </Carousel>               
+                </Carousel>   
+                <Footer />            
             </div>
         )
     }
