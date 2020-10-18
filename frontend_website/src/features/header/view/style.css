@@ -161,8 +161,7 @@
   .menuCon .ant-menu-submenu-title {
     padding: 1px 20px;
   }
-
-  .logo a {
-    padding: 10px 20px;
+  .menuCon {
+    width: calc(100% - 210px);
   }
 }

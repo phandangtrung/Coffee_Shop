@@ -28,6 +28,9 @@ const LeftMenu = () => {
           <Menu.Item key="setting:4">Option 4</Menu.Item>
         </MenuItemGroup>
       </SubMenu>
+      <Menu.Item key="menu">
+        <a href="" clasname="titlemenu">Menu</a>
+      </Menu.Item>
       <Menu.Item key="alipay">
         <a href="">Contact Us</a>
       </Menu.Item>
