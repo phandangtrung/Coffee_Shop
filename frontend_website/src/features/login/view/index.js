@@ -6,6 +6,9 @@ import { Images } from "../../../config/image";
 import { Form, Input, Button, Space } from "antd";
 
 const LoginPage = () => {
+  const onFinish = (values) => {
+    console.log("Success:", values);
+  };
   return (
     <div
       className="login"
@@ -19,7 +22,7 @@ const LoginPage = () => {
         <div className="login-inputform">
           <div className="login-title-input">
             <div className="login-title">Log In</div>
-            <Form className="login-input-item">
+            <Form className="login-input-item" onFinish={onFinish}>
               <Form.Item
                 name="username"
                 rules={[
@@ -47,7 +50,9 @@ const LoginPage = () => {
               </Form.Item>
               <Form.Item style={{ width: "100%" }}>
                 <div className="login-button">
-                  <Button className="button">SIGN IN</Button>
+                  <Button className="button" htmlType="submit">
+                    SIGN IN
+                  </Button>
                 </div>
               </Form.Item>
             </Form>
