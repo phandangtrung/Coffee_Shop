@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import "./style.css";
 // import { SignupPage } from "../SignupPage";
 import { Images } from "../../../config/image";
-import { Form, Input, Button, Checkbox } from "antd";
+import { Form, Input, Button, Space } from "antd";
 
 const LoginPage = () => {
   return (
@@ -39,6 +39,11 @@ const LoginPage = () => {
                   autoComplete="off"
                   type="password"
                 />
+              </Form.Item>
+              <Form.Item>
+                <Space className="login-signup">
+                  <div className="text">Sign up</div>
+                </Space>
               </Form.Item>
               <Form.Item style={{ width: "100%" }}>
                 <div className="login-button">
