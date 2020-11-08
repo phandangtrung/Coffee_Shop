@@ -44,7 +44,7 @@
   color: white;
   letter-spacing: 3px;
   width: auto;
-  padding-top: 5%;
+  padding-top: 10%;
   height: 60px;
   /* -webkit-text-stroke-width: 2px;
   -webkit-text-stroke-color: black; */
@@ -54,7 +54,8 @@
   padding-top: 10px;
   width: 100%;
   height: 44%;
-  min-width: 100%;
+  /* min-width: 100%; */
+  max-width: 655px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
