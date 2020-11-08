@@ -6,44 +6,40 @@ import { Images } from "../../../config/image";
 import { Carousel } from "antd";
 
 import "./style.css";
-export class Homepage extends Component {
-  render() {
-    return (
-      <div className="Hompage">
-        <Header />
-        <Carousel autoplay autoplaySpeed={4000}>
-          <div>
-            <h3 className="banner">
-              <img
-                alt={"slide2"}
-                src={Images.SLIDE2}
-                className="reponsive-img"
-              />
-            </h3>
-          </div>
-          <div>
-            <h3 className="banner">
-              <img
-                alt={"slide3"}
-                src={Images.SLIDE3}
-                className="reponsive-img"
-              />
-            </h3>
-          </div>
-          <div>
-            <h3 className="banner">
-              <img
-                alt={"slide3"}
-                src={Images.SLIDE3}
-                className="reponsive-img"
-              />
-            </h3>
-          </div>
-        </Carousel>
-        {/* <Footer />             */}
-      </div>
-    );
-  }
-}
+const Homepage = () => {
+  const contentStyle = {
+    height: "92vh",
+    color: "#fff",
+    lineHeight: "160px",
+    textAlign: "center",
+    background: "#364d79",
+  };
+
+  return (
+    <div className="Hompage">
+      <Header />
+      <Carousel autoplay={4000}>
+        <div>
+          <img
+            style={contentStyle}
+            alt={"slide2"}
+            src={Images.SLIDE2}
+            // className="reponsive-img"
+          />
+        </div>
+        <div>
+          <img style={contentStyle} alt={"slide2"} src={Images.SLIDE2} />
+        </div>
+        <div>
+          <img style={contentStyle} alt={"slide3"} src={Images.SLIDE3} />
+        </div>
+        <div>
+          <img style={contentStyle} alt={"slide2"} src={Images.SLIDE2} />
+        </div>
+      </Carousel>
+      {/* <Footer />             */}
+    </div>
+  );
+};
 
 export default Homepage;

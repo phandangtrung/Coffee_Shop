@@ -6,6 +6,13 @@
   overflow: auto;
   box-shadow: 0 0 30px #f3f1f1;
 }
+.button-signup {
+  border: 0px;
+  font-size: 20px;
+}
+.button-signup :hover {
+  color: rgb(164, 115, 67);
+}
 
 .logo {
   width: 200px;

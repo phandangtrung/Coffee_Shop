@@ -3,11 +3,17 @@ import React, { Component } from "react";
 import "./style.css";
 // import { SignupPage } from "../SignupPage";
 import { Images } from "../../../config/image";
-import { Form, Input, Button, Space } from "antd";
+import { Form, Input, Button, Space, notification } from "antd";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
 
 const LoginPage = () => {
   const onFinish = (values) => {
     console.log("Success:", values);
+    notification.open({
+      message: "Đăng nhập thất bại",
+      description: "Sai mật khẩu hoặc tên đăng nhập",
+      icon: <ExclamationCircleOutlined style={{ color: "red" }} />,
+    });
   };
   return (
     <div
