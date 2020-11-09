@@ -1,0 +1,27 @@
+.container {
+  margin: 0px 10% 0px 15%;
+  height: auto;
+  width: 70%;
+  display: flex;
+}
+.category-title {
+  color: rgb(164, 115, 67);
+  font-size: 20px;
+  border: solid rgb(164, 115, 67);
+  border-top: 0px;
+  border-left: 0px;
+  border-right: 0px;
+}
+.menu-container {
+  width: 25%;
+  height: 100%;
+}
+@media only screen and (max-width: 1026px) {
+  .container {
+    margin: 0px 5px 0px 10px;
+    width: 95%;
+  }
+}
+.product-container {
+  width: 75%;
+}
