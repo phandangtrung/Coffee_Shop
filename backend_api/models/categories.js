@@ -8,4 +8,5 @@ const categoriesSchema = new mongoose.Schema({
     alias: {type: String, require: false}
 });
 
+
 module.exports = mongoose.model('Category',categoriesSchema);
