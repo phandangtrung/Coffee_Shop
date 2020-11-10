@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import Header from "../../header/view";
-import Footer from "../../footer/view";
 import { Images } from "../../../config/image";
 
 import { Carousel } from "antd";
@@ -17,7 +15,6 @@ const Homepage = () => {
 
   return (
     <div className="Hompage">
-      <Header />
       <Carousel autoplay={4000}>
         <div>
           <img
