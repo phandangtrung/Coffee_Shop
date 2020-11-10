@@ -107,27 +107,23 @@ const createCategory = async (req, res, next) => {
     
 };
 
-const getCategoryById = async (req, res, next) => {
-  const alias = req.params.alias;
+const getCategoryAlias = async (req, res, next) => {
+  const categoryAlias = req.params.alias;
   let categories;
   try{
-      categories = await Category.findById({
-          where: {
-              alias: alias
-          }
-      });
-  } catch (err) {
+        categories = await Category.findOne({alias: categoryAlias});
+    }catch (err) {
       const error = new HttpError('Something went wrong, coud not find any category', 500);
       return next(error);
-  }
+    }
 
   if(!categories)
-  {
+    {
       const error =  new HttpError('Could not find any category', 404);
       return next(error);
-  }
+    }
   res.status(200).json({categories});
 
 };
 
-module.exports = {getAllCategory, getCategoryById, createCategory, updateCategoryByAlias, deleteCategoryByAlias};
+module.exports = {getAllCategory, getCategoryAlias, createCategory, updateCategoryByAlias, deleteCategoryByAlias};

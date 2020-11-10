@@ -6,7 +6,7 @@ const categoriesController = require('../controller/categories-controllers');
 const router = express.Router();
 
 router.get('/',categoriesController.getAllCategory);
-router.get('/:alias',categoriesController.getCategoryById);
+router.get('/:alias',categoriesController.getCategoryAlias);
 
 router.post('/', 
 [
