@@ -6,6 +6,7 @@ require('dotenv/config');
 const HttpError = require('./error-handle/http-error');
 
 const categoriesRouters = require('./routes/categories-routes');
+const categoriesControllers = require('./controller/categories-controllers');
 
 const app = express();
 
@@ -25,11 +26,13 @@ app.use(bodyParser.json());
 
 app.use('/api/categories',categoriesRouters);
 
+
 app.use((req, res, next) => {
     const error = new HttpError('Could not find this route.', 404);
     throw error;
   });
 
+  
 app.use((error, req, res, next) => {
   if (res.headerSent) {
     return next(error);
@@ -41,8 +44,10 @@ app.use((error, req, res, next) => {
 
 mongoose
   .connect(process.env.DB_CONNECTION,
-    { useNewUrlParser: true},
-    { useUnifiedTopology: true}
+    {useNewUrlParser: true}, 
+    {useCreateIndex: true}, 
+    {useUnifiedTopology: true}, 
+    {useFindAndModify: false}
   )
   .then(() => {
     app.listen(3000);

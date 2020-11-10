@@ -14,4 +14,11 @@ router.post('/',
 ]
 ,categoriesController.createCategory);
 
+router.patch('/:alias',
+[
+    check('name').not().isEmpty()
+]
+,categoriesController.updateCategoryByAlias);
+
+router.delete('/:alias', categoriesController.deleteCategoryByAlias);
 module.exports = router;
