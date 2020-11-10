@@ -1,0 +1,55 @@
+.menu-item {
+  height: 415px;
+  width: 266px;
+  padding: 0px 20px 15px 0px;
+}
+.menu-image {
+  height: 65%;
+  width: 100%;
+}
+.menu-image img {
+  height: auto;
+  width: 100%;
+}
+.menu-detail {
+  font-family: "Concert One", cursive;
+  background-color: #f2f0eb;
+
+  height: 35%;
+  width: 100%;
+}
+.menu-detail .title-name {
+  color: #3b3838;
+  font-size: 25px;
+  text-shadow: 0.5px 1.5px #9ea19d;
+}
+.menu-detail .price {
+  color: rgb(164, 115, 67);
+  font-size: 18px;
+}
+.menu-detail .button-form {
+  margin-top: 15px;
+  width: 100%;
+  height: 40px;
+  margin-bottom: 0px;
+}
+.menu-detail .button-form button {
+  display: inline-block;
+  width: 80%;
+  /* background-color: rgb(164, 115, 67); */
+  background: linear-gradient(to left, #f2f0eb 50%, rgb(164, 115, 67) 50%) right;
+  border: 2px solid rgb(164, 115, 67);
+  color: rgb(164, 115, 67);
+
+  font-size: 20px;
+  cursor: pointer;
+  background-size: 200%;
+  transition: 0.5s ease-out;
+}
+.menu-detail .button-form button:hover {
+  /* background-color: white; */
+  border: 2px solid rgb(164, 115, 67);
+  color: white;
+
+  background-position: left;
+}

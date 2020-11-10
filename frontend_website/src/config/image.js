@@ -6,4 +6,5 @@ export const Images = {
   SLIDE3: IMAGE_URL + "/static/img/slider3.png",
   FTBG: IMAGE_URL + "/static/img/footer_bg.jpg",
   LGTEMP: IMAGE_URL + "/static/img/templogin.jpg",
+  COCF: IMAGE_URL + "/static/img/cup_of_coffee.jpg",
 };

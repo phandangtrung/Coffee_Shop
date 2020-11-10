@@ -29,13 +29,24 @@ function Product() {
 
       <div className="product-container">
         <Row>
-          <Col xs={{ span: 5, offset: 1 }} lg={{ span: 6, offset: 2 }}>
+          <Col span={8}>
             <ProductTag />
           </Col>
-          <Col xs={{ span: 11, offset: 1 }} lg={{ span: 6, offset: 2 }}>
+          <Col span={8}>
             <ProductTag />
           </Col>
-          <Col xs={{ span: 5, offset: 1 }} lg={{ span: 6, offset: 2 }}>
+          <Col span={8}>
+            <ProductTag />
+          </Col>
+        </Row>
+        <Row>
+          <Col span={8}>
+            <ProductTag />
+          </Col>
+          <Col span={8}>
+            <ProductTag />
+          </Col>
+          <Col span={8}>
             <ProductTag />
           </Col>
         </Row>
