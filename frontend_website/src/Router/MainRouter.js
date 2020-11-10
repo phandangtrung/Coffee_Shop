@@ -9,8 +9,7 @@ const MainRouter = () => {
   console.log(_path);
   return (
     <>
-      <Header />
-
+      {/* <Header /> */}
       <Switch>
         {map(Menu, (item, key) => {
           return (
