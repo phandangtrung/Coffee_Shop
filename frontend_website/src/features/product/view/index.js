@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Menu, Row, Col, Carousel } from "antd";
+import { Menu, Row, Col, Carousel, BackTop } from "antd";
+import { CaretUpOutlined } from "@ant-design/icons";
 import "./style.css";
 import ProductTag from "../../../components/ProductTag";
 import { Images } from "../../../config/image";
@@ -92,6 +93,11 @@ function Product() {
           </Row>
         </div>
       </div>
+      <BackTop>
+        <div className="backtotop">
+          <CaretUpOutlined />
+        </div>
+      </BackTop>
     </>
   );
 }
