@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { Menu, Row, Col } from "antd";
+import { Menu, Row, Col, Carousel } from "antd";
 import "./style.css";
 import ProductTag from "../../../components/ProductTag";
-import ShortBanner from "../../../components/ShortBanner";
-
+import { Images } from "../../../config/image";
 import data from "../dummy";
 
 const { SubMenu } = Menu;
@@ -13,7 +12,9 @@ function Product() {
   };
   return (
     <>
-      <ShortBanner />
+      <div className="hot-new">
+        <div className="item"></div>
+      </div>
       <div className="container">
         <div className="menu-container">
           <Menu
@@ -31,6 +32,9 @@ function Product() {
         </div>
 
         <div className="product-container">
+          <div className="product-banner">
+            <img alt="product_banner" src={Images.SBANNER} />
+          </div>
           <Row>
             <Col span={8}>
               <ProductTag />
