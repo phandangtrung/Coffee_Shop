@@ -1,0 +1,22 @@
+.sproduct-form {
+  width: 100%;
+  height: 100vh;
+}
+.sproduct-form img {
+  width: 80%;
+  height: auto;
+}
+.sproduct-form .title {
+  text-align: start;
+  width: 60%;
+  color: black;
+  font-size: 40px;
+  font-family: "Concert One", cursive;
+  border-bottom: 4px solid rgb(185, 115, 67);
+}
+.sproduct-form .price {
+  color: rgb(185, 115, 67);
+  text-align: start;
+  font-size: 25px;
+  font-family: "Concert One", cursive;
+}
