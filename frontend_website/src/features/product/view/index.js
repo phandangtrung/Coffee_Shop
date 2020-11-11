@@ -10,10 +10,43 @@ function Product() {
   const handleClick = (e) => {
     console.log("click ", e);
   };
+  function onChange(a, b, c) {
+    console.log(a, b, c);
+  }
+  const contentStyle = {
+    color: " rgb(164, 115, 67)",
+    textAlign: "center",
+  };
   return (
     <>
       <div className="hot-new">
-        <div className="item"></div>
+        <div className="item">
+          <Carousel autoplay={5000} dots={false}>
+            <div>
+              <h3 style={contentStyle}>
+                Coffee Shope đồng hành cùng bạn trên chặn đường thưởng thức cà
+                phê thật
+              </h3>
+            </div>
+            <div>
+              <h3 style={contentStyle}>
+                Thoải mái đổi mua hàng để nhận nhiều phần quà cực hấp dẫn!
+              </h3>
+            </div>
+            <div>
+              <h3 style={contentStyle}>
+                Tận hưởng các đặc quyền chỉ dành riêng cho thành viên Kim Cương
+                Tham gia ngay
+              </h3>
+            </div>
+            <div>
+              <h3 style={contentStyle}>
+                Chúng tôi lấy khách hàng, nhân viên và cộng đồng làm trọng tâm
+                cho mọi quyết định.
+              </h3>
+            </div>
+          </Carousel>
+        </div>
       </div>
       <div className="container">
         <div className="menu-container">
