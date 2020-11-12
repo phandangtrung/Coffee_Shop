@@ -6,7 +6,7 @@ require('dotenv/config');
 const HttpError = require('./error-handle/http-error');
 
 const categoriesRouters = require('./routes/categories-routes');
-const categoriesControllers = require('./controller/categories-controllers');
+const productsRouters = require('./routes/products-routes');
 
 const app = express();
 
@@ -25,6 +25,7 @@ app.use(bodyParser.json());
 
 
 app.use('/api/categories',categoriesRouters);
+app.use('/api/products',productsRouters);
 
 
 app.use((req, res, next) => {
@@ -46,7 +47,7 @@ mongoose
   .connect(process.env.DB_CONNECTION,
     {useNewUrlParser: true}, 
     {useCreateIndex: true}, 
-    {useUnifiedTopology: true}, 
+    {useUnifiedTopology: true},
     {useFindAndModify: false}
   )
   .then(() => {

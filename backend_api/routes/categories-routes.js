@@ -6,7 +6,8 @@ const categoriesController = require('../controller/categories-controllers');
 const router = express.Router();
 
 router.get('/',categoriesController.getAllCategory);
-router.get('/:alias',categoriesController.getCategoryAlias);
+router.get('/:cid',categoriesController.getCategoryById);
+
 
 router.post('/', 
 [
@@ -14,11 +15,11 @@ router.post('/',
 ]
 ,categoriesController.createCategory);
 
-router.patch('/:alias',
+router.patch('/:cid',
 [
     check('name').not().isEmpty()
 ]
-,categoriesController.updateCategoryByAlias);
+,categoriesController.updateCategoryById);
 
-router.delete('/:alias', categoriesController.deleteCategoryByAlias);
+router.delete('/:cid', categoriesController.deleteCategoryById);
 module.exports = router;
