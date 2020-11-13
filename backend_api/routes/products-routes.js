@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/',productsController.getAllProducts);
 router.get('/searchById/:pid',productsController.getProductById);
-router.get('/searchByAlias/:alias',productsController.getProductByAlias);
+
 
 
 router.post('/', 
@@ -16,12 +16,12 @@ router.post('/',
 ]
 ,productsController.createProduct);
 
-router.patch('/updateByAlias/:alias',
+router.patch('/:pid',
 [
     check('name').not().isEmpty()
 ]
-,productsController.updateProductbyAlias);
+,productsController.updateProductbyId);
 
-router.delete('/deletedByAlias/:alias', productsController.deleteProductByAlias);
+router.delete('/:pid', productsController.deleteProductById);
 
 module.exports = router;

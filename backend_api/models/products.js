@@ -1,14 +1,15 @@
 const { text } = require('body-parser');
-const mongoose = require('mongoose')
+const { checkSchema } = require('express-validator');
+const mongoose = require('mongoose');
+
 
 const productsSchema = new mongoose.Schema({
     name: {type: String, require: true, unique: true},
-    category: {type: String, require: false},
     size:{type:String, require:true},    
     prices: {type: Number, require: true},
     quantity: {type: Number, require: true},
-    description: {type: String, require: false},
-    alias: {type: String, require: false}
+    description: {type: String, require: false},   
+    categoryId: {type: String, required:true}
     //images: {type: String, require: false}
 });
 

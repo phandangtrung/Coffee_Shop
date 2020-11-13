@@ -15,7 +15,7 @@ const getAllCategory = async (req, res, next) => {
       return next(error);
   };
 
-  if(!categories)
+  if(!categories.name)
   {
       const error =  new HttpError('Could not find any category', 404);
       return next(error);
