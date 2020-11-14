@@ -15,8 +15,90 @@
   border-bottom: 4px solid rgb(185, 115, 67);
 }
 .sproduct-form .price {
+  padding-bottom: 46px;
   color: rgb(185, 115, 67);
   text-align: start;
   font-size: 25px;
   font-family: "Concert One", cursive;
+}
+/* .sproduct-form .button-form {
+  width: 100%;
+  height: auto;
+  padding-top: 20px;
+  display: flex;
+  justify-self: start;
+}
+.button-form.button {
+  align-items: flex-start;
+} */
+
+.sproduct-form .button-form,
+.sproduct-form .button-form .button,
+.sproduct-form .button-form .sun,
+.sproduct-form .button-form .button span {
+  position: absolute;
+}
+.button-form {
+  margin: auto;
+  height: 68px;
+}
+.button-form a:hover .sun {
+  bottom: 55px;
+  /* left: 160px; */
+  transition: all 1s ease-in-out;
+}
+.sproduct-form .button-form a:hover .button {
+  box-shadow: 0px 0px 30px rgb(185, 115, 67);
+  transition: all 1s ease-in-out;
+}
+.sproduct-form .button-form .sun {
+  width: 65px;
+  height: 65px;
+  left: 50px;
+  bottom: 2px;
+  /* background: linear-gradient(180deg, #ffdc2a 0%, #fb2182 41.54%); */
+  /* background: url("https://www.pngfind.com/pngs/b/333-3331514_cup-icon-png.png") */
+  /* no-repeat; */
+  background-color: transparent;
+  background-size: cover;
+  /* box-shadow: 0px 0px 2px rgb(185, 115, 67); */
+  z-index: 2;
+  /* border-radius: 65px; */
+  transition: all 1s ease-in-out;
+}
+.sproduct-form .button-form .button {
+  width: 171px;
+  height: 67px;
+  background: rgb(185, 115, 67);
+  box-shadow: 0px 0px 2px rgb(219, 163, 125);
+  border-radius: 2px;
+  z-index: 3;
+  /* border: 2px solid; */
+  transition: all 1s ease-in-out;
+  border-image: linear-gradient(rgb(125, 83, 54), rgb(222, 112, 33)) 30;
+}
+.sproduct-form .button-form .button span {
+  text-align: center;
+  font-family: "Concert One", cursive;
+  left: 30px;
+  font-size: 25px;
+  line-height: 65px;
+  margin: 0 auto;
+  transition: all 0.3s ease-in-out;
+  /* background: -webkit-linear-gradient(black, grey); */
+  background: white;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.sproduct-form .description-form {
+  padding-top: 100px;
+  text-align: start;
+  font-size: 25px;
+  font-family: "Concert One", cursive;
+}
+.sproduct-form .description-form .title {
+  font-size: 20px;
+  color: rgb(185, 115, 67);
+  border: none;
 }

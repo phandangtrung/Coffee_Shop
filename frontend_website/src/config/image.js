@@ -8,4 +8,5 @@ export const Images = {
   FTBG: IMAGE_URL + "/static/img/footer_bg.jpg",
   LGTEMP: IMAGE_URL + "/static/img/templogin.jpg",
   COCF: IMAGE_URL + "/static/img/cup_of_coffee.jpg",
+  BICON: IMAGE_URL + "/static/img/button_image.png",
 };
