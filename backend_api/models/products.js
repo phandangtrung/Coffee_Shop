@@ -1,5 +1,4 @@
-const { text } = require('body-parser');
-const { checkSchema } = require('express-validator');
+
 const mongoose = require('mongoose');
 
 
