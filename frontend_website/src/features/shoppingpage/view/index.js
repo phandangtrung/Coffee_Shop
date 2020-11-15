@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.css";
-import { Button, Form, Input, InputNumber, Table } from "antd";
+import { Button, Form, Input, InputNumber, Select, Table } from "antd";
 import { Images } from "../../../config/image";
 import { ShoppingCartOutlined } from "@ant-design/icons";
+import Modal from "antd/lib/modal/Modal";
 
 function ShoppingPage() {
   const dataSource = [
@@ -51,6 +52,13 @@ function ShoppingPage() {
       key: "total",
     },
   ];
+  const [visible, setVisible] = useState(false);
+  const showModal = () => {
+    setVisible(true);
+  };
+  const handleCancel = () => {
+    setVisible(false);
+  };
   return (
     <div className="shopping-container">
       <div className="shopping-card">
@@ -91,9 +99,29 @@ function ShoppingPage() {
             <div>TOTAL COST</div>
             <div>30000 VND</div>
           </div>
-          <Button className="button-checkout">CHECK OUT</Button>
+          <Button className="button-checkout" onClick={showModal}>
+            CHECK OUT
+          </Button>
         </div>
       </div>
+      <Modal
+        title="Order Modal"
+        visible={visible}
+        // onOk={handleOk}
+        onCancel={handleCancel}
+      >
+        <Form>
+          <Form.Item label="Address">
+            <Input />
+          </Form.Item>
+          <Form.Item label="Shipper">
+            <Select>
+              <Select.Option>Cuong</Select.Option>
+              <Select.Option>Duy</Select.Option>
+            </Select>
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }
