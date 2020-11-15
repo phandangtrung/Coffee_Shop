@@ -1,15 +1,22 @@
 import React from "react";
 import "./style.css";
-import { Button, Form, Input, Table } from "antd";
+import { Button, Form, Input, InputNumber, Table } from "antd";
+import { Images } from "../../../config/image";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 
 function ShoppingPage() {
   const dataSource = [
     {
-      key: "1",
-      product: "Mike",
-      quantity: 32,
-      price: "10 Downing Street",
-      total: "200",
+      product: { image: Images.COCF, name: "AMERICANO", size: "M" },
+      quantity: 1,
+      price: 39000,
+      total: 39000,
+    },
+    {
+      product: { image: Images.COCF, name: "AMERICANO", size: "M" },
+      quantity: 1,
+      price: 39000,
+      total: 39000,
     },
   ];
 
@@ -18,11 +25,20 @@ function ShoppingPage() {
       title: "PRODUCT",
       dataIndex: "product",
       key: "product",
+      render: (product) => (
+        <>
+          <img src={product.image} />
+          <span className="productname">
+            {product.name} - SIZE {product.size}
+          </span>
+        </>
+      ),
     },
     {
       title: "QUANTITY",
       dataIndex: "quantity",
       key: "quantity",
+      render: (amount) => <InputNumber value={amount} />,
     },
     {
       title: "PRICE",
@@ -45,6 +61,12 @@ function ShoppingPage() {
           </div>
           <hr />
           <Table pagination={false} dataSource={dataSource} columns={columns} />
+          <div className="back">
+            <a>
+              <ShoppingCartOutlined style={{ paddingRight: "20px" }} />
+              Continue Shopping
+            </a>
+          </div>
         </div>
       </div>
       <div className="order-form">

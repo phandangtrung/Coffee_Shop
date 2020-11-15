@@ -107,3 +107,19 @@
   color: white;
   background-color: cornflowerblue;
 }
+.shopping-card img {
+  width: 30%;
+  height: auto;
+}
+.shopping-card .productname {
+  font-family: "Fira Sans Condensed", sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  padding-left: 40px;
+}
+.shopping-card .back {
+  padding-top: 20px;
+  width: 100%;
+  height: auto;
+  text-align: start;
+}
