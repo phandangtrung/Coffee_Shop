@@ -15,23 +15,15 @@ const Homepage = () => {
 
   return (
     <div className="Hompage">
-      <Carousel autoplay={4000}>
+      <Carousel autoplay={10000}>
         <div>
-          <img
-            style={contentStyle}
-            alt={"slide2"}
-            src={Images.SLIDE2}
-            // className="reponsive-img"
-          />
+          <img style={contentStyle} alt={"slide4"} src={Images.SLIDE4} />
         </div>
         <div>
-          <img style={contentStyle} alt={"slide2"} src={Images.SLIDE2} />
+          <img style={contentStyle} alt={"slide2"} src={Images.SLIDE3} />
         </div>
         <div>
-          <img style={contentStyle} alt={"slide3"} src={Images.SLIDE3} />
-        </div>
-        <div>
-          <img style={contentStyle} alt={"slide2"} src={Images.SLIDE2} />
+          <img style={contentStyle} alt={"slide3"} src={Images.SLIDE2} />
         </div>
       </Carousel>
       {/* <Footer />             */}
