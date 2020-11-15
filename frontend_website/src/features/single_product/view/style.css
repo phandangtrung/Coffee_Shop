@@ -1,6 +1,6 @@
 .sproduct-form {
   width: 100%;
-  height: 100vh;
+  height: auto;
 }
 .sproduct-form img {
   width: 80%;
@@ -18,19 +18,10 @@
   padding-bottom: 30px;
   color: rgb(185, 115, 67);
   text-align: start;
-  font-size: 25px;
+  font-size: 30px;
   font-family: "Concert One", cursive;
 }
-/* .sproduct-form .button-form {
-  width: 100%;
-  height: auto;
-  padding-top: 20px;
-  display: flex;
-  justify-self: start;
-}
-.button-form.button {
-  align-items: flex-start;
-} */
+
 .amount {
   width: 100%;
   text-align: start;
@@ -62,13 +53,18 @@
   background-position: left;
 }
 .sproduct-form .description-form {
-  padding-top: 100px;
   text-align: start;
   font-size: 25px;
-  font-family: "Concert One", cursive;
+  font-family: "Lobster", cursive;
 }
 .sproduct-form .description-form .title {
-  font-size: 20px;
+  font-size: 25px;
   color: rgb(185, 115, 67);
   border: none;
+  font-family: "Lobster", cursive;
+}
+.sproduct-form .description-form .content {
+  font-size: 20px;
+  font-family: "Lobster", cursive;
+  color: #423f3f;
 }

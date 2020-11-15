@@ -20,13 +20,24 @@ function SingleProduct() {
           <Col span={12}>
             <div className="title">AMERICANO</div>
             <div className="price">39,000 VND</div>
-            <Form onFinish={handleSubmit} initialValues={{ amount: 1 }}>
+
+            <Form onFinish={handleSubmit} initialValue={{ amount: 1 }}>
+              <Form.Item>
+                <div className="description-form">
+                  {/* <div className="title">Mô tả</div> */}
+                  <div className="content">
+                    Một tách cà phê đen thơm ngào ngạt, phảng phất mùi cacao là
+                    món quà tự thưởng tuyệt vời nhất cho những ai mê đắm tinh
+                    chất nguyên bản nhất của cà phê. Một tách cà phê trầm lắng,
+                    thi vị giữa dòng đời vồn vã.
+                  </div>
+                </div>
+              </Form.Item>
               <Form.Item className="amount" name="amount">
                 <span style={{ marginRight: "20px" }}>Số lượng: </span>
                 <InputNumber
                   min={1}
                   max={10}
-                  defaultValue={1}
                   onChange={onChange}
                   size="large"
                   style={{ border: "1px solid rgb(185, 115, 67)" }}
@@ -38,10 +49,6 @@ function SingleProduct() {
                 </Button>
               </Form.Item>
             </Form>
-
-            {/* <div className="description-form">
-              <div className="title">Mô tả</div>
-            </div> */}
           </Col>
         </Row>
       </div>
