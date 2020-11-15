@@ -1,8 +1,40 @@
 import React from "react";
 import "./style.css";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Table } from "antd";
 
 function ShoppingPage() {
+  const dataSource = [
+    {
+      key: "1",
+      product: "Mike",
+      quantity: 32,
+      price: "10 Downing Street",
+      total: "200",
+    },
+  ];
+
+  const columns = [
+    {
+      title: "PRODUCT",
+      dataIndex: "product",
+      key: "product",
+    },
+    {
+      title: "QUANTITY",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    {
+      title: "PRICE",
+      dataIndex: "price",
+      key: "price",
+    },
+    {
+      title: "TOTAL",
+      dataIndex: "total",
+      key: "total",
+    },
+  ];
   return (
     <div className="shopping-container">
       <div className="shopping-card">
@@ -12,6 +44,7 @@ function ShoppingPage() {
             <div className="item-cart">3 Items</div>
           </div>
           <hr />
+          <Table pagination={false} dataSource={dataSource} columns={columns} />
         </div>
       </div>
       <div className="order-form">
