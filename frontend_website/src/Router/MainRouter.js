@@ -2,6 +2,7 @@ import { includes, map } from "lodash";
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 import Header from "../features/header/view/index";
+import Footer from "../features/footer/view/index";
 import { Menu, NOT_HEADER } from "../config/route";
 
 const MainRouter = () => {
@@ -21,6 +22,7 @@ const MainRouter = () => {
           );
         })}
       </Switch>
+      <Footer />
     </>
   );
 };
