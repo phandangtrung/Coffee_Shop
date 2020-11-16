@@ -4,7 +4,6 @@ import { Button, Form, Input, InputNumber, Select, Table } from "antd";
 import { Images } from "../../../config/image";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import Modal from "antd/lib/modal/Modal";
-
 function ShoppingPage() {
   const dataSource = [
     {
@@ -105,22 +104,20 @@ function ShoppingPage() {
         </div>
       </div>
       <Modal
-        title="Order Modal"
+        closable={false}
         visible={visible}
         // onOk={handleOk}
         onCancel={handleCancel}
       >
-        <Form>
-          <Form.Item label="Address">
-            <Input />
-          </Form.Item>
-          <Form.Item label="Shipper">
-            <Select>
-              <Select.Option>Cuong</Select.Option>
-              <Select.Option>Duy</Select.Option>
-            </Select>
-          </Form.Item>
-        </Form>
+        <div className="modal-order">
+          <Form>
+            <div className="title-modal">COMPLETE ORDER</div>
+            <Form.Item>
+              <Input className="input-modal" placeholder="Address" />
+            </Form.Item>
+            <Form.Item></Form.Item>
+          </Form>
+        </div>
       </Modal>
     </div>
   );

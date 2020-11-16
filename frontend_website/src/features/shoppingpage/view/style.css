@@ -123,3 +123,15 @@
   height: auto;
   text-align: start;
 }
+/* Modal custom */
+.modal-order .title-modal {
+  font-family: "Fira Sans Condensed", sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  padding-bottom: 30px;
+}
+.modal-order .input-modal {
+  width: 100%;
+  height: 50px;
+  background-color: #eaeef3;
+}
