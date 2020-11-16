@@ -68,3 +68,33 @@
   font-family: "Lobster", cursive;
   color: #423f3f;
 }
+.tabs-rating {
+  padding-top: 100px;
+  width: 100%;
+  height: auto;
+  min-height: 600px;
+}
+.tabs-rating .pagination-form {
+  padding-left: 20px;
+  text-align: start;
+}
+.tabs-rating .rate-container {
+  width: 100%;
+  height: auto;
+  padding-bottom: 50px;
+}
+.tabs-rating .rate-form {
+  padding: 20px 0px 0px 20px;
+  width: 100%;
+  height: auto;
+  text-align: start;
+}
+.rate-form .rate-username {
+  font-size: 15px;
+  font-weight: bold;
+}
+.rate-form .rate-start {
+}
+.rate-form .rate-comment {
+  padding-top: 5px;
+}
