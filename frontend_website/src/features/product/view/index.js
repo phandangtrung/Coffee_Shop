@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Menu, Row, Col, Carousel, BackTop } from "antd";
+import { Menu, Row, Col, Carousel, BackTop, Pagination } from "antd";
 import { CaretUpOutlined } from "@ant-design/icons";
 import "./style.css";
 import ProductTag from "../../../components/ProductTag";
@@ -91,6 +91,11 @@ function Product() {
               <ProductTag />
             </Col>
           </Row>
+          <Pagination
+            style={{ textAlign: "end" }}
+            defaultCurrent={1}
+            total={50}
+          />
         </div>
       </div>
       <BackTop>
