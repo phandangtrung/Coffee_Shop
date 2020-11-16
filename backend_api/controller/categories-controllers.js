@@ -67,11 +67,11 @@ const createCategory = async (req, res, next) => {
         const error =  new HttpError('Invalid Input! Pls check your data', 400);
         return next(error);
     }
-    const createdCategory = {
+    const createCategory = {
         name: req.body.name,               
     };
     try {
-        const newCategories = new Category(createdCategory);
+        const newCategories = new Category(createCategory);
         await newCategories.save();
         res.status(200).json({
         message: "Create success", newCategories
