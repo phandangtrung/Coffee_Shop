@@ -1,12 +1,20 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-require('dotenv/config');
-
 const HttpError = require('./error-handle/http-error');
+
+require('dotenv/config');
 
 const categoriesRouters = require('./routes/categories-routes');
 const productsRouters = require('./routes/products-routes');
+
+mongoose
+  .connect(process.env.DB_CONNECTION, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+  })
+  .catch((error) => console.log(error.reason));
 
 const app = express();
 
@@ -43,17 +51,6 @@ app.use((error, req, res, next) => {
 });
 
 
-mongoose
-  .connect(process.env.DB_CONNECTION,
-    {useNewUrlParser: true}, 
-    {useCreateIndex: true}, 
-    {useUnifiedTopology: true},
-    {useFindAndModify: false}
-  )
-  .then(() => {
-    app.listen(3000);
-  })
-  .catch(err => {
-    console.log(err);
-  });
+app.listen(3000);
+
 
