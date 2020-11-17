@@ -24,6 +24,11 @@ export const Menu = [
     exact: true,
     component: ShoppingPage,
   },
+  {
+    path: "/login",
+    exact: true,
+    component: LoginPage,
+  },
   // {
   //   path: "*",
   //   exact: false,
@@ -31,10 +36,4 @@ export const Menu = [
   // },
 ];
 
-export const NOT_HEADER = [
-  {
-    path: "/login",
-    exact: true,
-    component: LoginPage,
-  },
-];
+export const NOT_HEADER = [];
