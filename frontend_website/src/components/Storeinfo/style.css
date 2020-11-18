@@ -1,0 +1,41 @@
+.store__info-form {
+  width: 100%;
+  height: 100vh;
+}
+.store__info-form .info_form {
+  margin-top: 30px;
+  display: flex;
+  width: 100%;
+  height: 400px;
+}
+.info_form .info_content {
+  width: 50%;
+  height: 100%;
+  background-color: #ea8025;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.info_content .content_text {
+  width: 90%;
+  height: 50%;
+  text-align: start;
+}
+.content_text .title {
+  font-size: 24px;
+  line-height: 24px;
+  font-family: "Bebas Neue", cursive;
+  font-weight: 500;
+  color: white;
+}
+.content_text .discription {
+  font-size: 15px;
+  margin-bottom: 0;
+  line-height: 24px;
+  font-family: "Lato", sans-serif;
+  color: white;
+}
+.info_form .info_img {
+  width: 50%;
+  height: auto;
+}

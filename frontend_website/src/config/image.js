@@ -10,4 +10,5 @@ export const Images = {
   LGTEMP: IMAGE_URL + "/static/img/templogin.jpg",
   COCF: IMAGE_URL + "/static/img/cup_of_coffee.jpg",
   BICON: IMAGE_URL + "/static/img/button_image.png",
+  IFIM: IMAGE_URL + "/static/img/info_image.jpg",
 };

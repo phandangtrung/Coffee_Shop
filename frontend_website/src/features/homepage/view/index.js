@@ -3,6 +3,7 @@ import { Images } from "../../../config/image";
 
 import { Carousel } from "antd";
 import Bestseller from "../../../components/Bestseller";
+import Storeinfo from "../../../components/Storeinfo";
 import "./style.css";
 const Homepage = () => {
   const contentStyle = {
@@ -27,6 +28,7 @@ const Homepage = () => {
         </div>
       </Carousel>
       <Bestseller />
+      <Storeinfo />
     </div>
   );
 };
