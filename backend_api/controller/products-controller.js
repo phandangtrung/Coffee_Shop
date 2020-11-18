@@ -5,7 +5,7 @@ const Category = require('../models/categories');
 const { validationResult } = require('express-validator');
 
 const HttpError = require('../error-handle/http-error');
-const products = require('../models/products');
+
 
 
 const createProduct = async (req, res, next) => {
@@ -16,21 +16,9 @@ const createProduct = async (req, res, next) => {
         const error =  new HttpError('Invalid Input! Pls check your data', 400);
         return next(error);
     }
-    let categories;
-    try {
-      categories = await Category.findById(req.body.categoryId)
-    } catch (err) {
-      const error = new HttpError('Something went wrong, coud not find any category', 500);
-      return next(error);
-    }
-    if(!categories.name)
-    {
-        const error =  new HttpError('Could not find any category', 404);
-        return next(error);
-    }
     const createProduct = {
         name: req.body.name,
-        categoryId: req.body.categoryId,
+        //categoryId: req.body.categoryId,
         size: req.body.size,
         prices: req.body.prices,
         quantity: req.body.quantity,

@@ -56,7 +56,7 @@ const deleteCategoryById = async (req, res, next) => {
         const error =  new HttpError('Could not find any Category', 404);
         return next(error);
     }
-    res.status(200).json({message: 'Deleted Category:'});
+    res.status(200).json({message: 'Deleted Category successfull'});
 }
 
 const createCategory = async (req, res, next) => {

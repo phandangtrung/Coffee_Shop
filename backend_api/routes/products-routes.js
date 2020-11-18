@@ -6,8 +6,7 @@ const productsController = require('../controller/products-controller');
 const router = express.Router();
 
 router.get('/',productsController.getAllProducts);
-router.get('/searchById/:pid',productsController.getProductById);
-
+router.get('/:pid',productsController.getProductById);
 
 
 router.post('/', 
