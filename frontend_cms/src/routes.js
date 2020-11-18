@@ -46,6 +46,7 @@ const Charts = React.lazy(() => import("./views/charts/Charts"));
 const Dashboard = React.lazy(() => import("./views/dashboard/Dashboard"));
 const Category = React.lazy(() => import("./views/category/Category"));
 const Account = React.lazy(() => import("./views/account/Account"));
+const Product = React.lazy(() => import("./views/product/Product"));
 const CoreUIIcons = React.lazy(() =>
   import("./views/icons/coreui-icons/CoreUIIcons")
 );
@@ -66,6 +67,7 @@ const routes = [
   { path: "/", exact: true, name: "Home" },
   { path: "/category", name: "Category", component: Category },
   { path: "/account", name: "Account", component: Account },
+  { path: "/product", name: "Product", component: Product },
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/theme", name: "Theme", component: Colors, exact: true },
   { path: "/theme/colors", name: "Colors", component: Colors },
