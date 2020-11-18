@@ -47,6 +47,8 @@ const Dashboard = React.lazy(() => import("./views/dashboard/Dashboard"));
 const Category = React.lazy(() => import("./views/category/Category"));
 const Account = React.lazy(() => import("./views/account/Account"));
 const Product = React.lazy(() => import("./views/product/Product"));
+const Bill = React.lazy(() => import("./views/bill/Bill"));
+const Shipper = React.lazy(() => import("./views/shipper/Shipper"));
 const CoreUIIcons = React.lazy(() =>
   import("./views/icons/coreui-icons/CoreUIIcons")
 );
@@ -68,6 +70,8 @@ const routes = [
   { path: "/category", name: "Category", component: Category },
   { path: "/account", name: "Account", component: Account },
   { path: "/product", name: "Product", component: Product },
+  { path: "/bill", name: "Bill", component: Bill },
+  { path: "/shipper", name: "Shipper", component: Shipper },
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/theme", name: "Theme", component: Colors, exact: true },
   { path: "/theme/colors", name: "Colors", component: Colors },
