@@ -1,0 +1,17 @@
+.best__seller-title {
+  width: 18%;
+  height: auto;
+  text-align: start;
+  font-size: 40px;
+  font-family: "Sansita Swashed", cursive;
+  padding-bottom: 2px;
+  border-bottom: 5px solid rgb(185, 115, 67);
+}
+.best__seller-form {
+  padding-top: 50px;
+  width: 100%;
+  height: auto;
+}
+.best__seller-form .productsell {
+  height: auto;
+}

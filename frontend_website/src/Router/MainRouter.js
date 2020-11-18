@@ -10,7 +10,9 @@ const MainRouter = () => {
   console.log(_path);
   return (
     <>
-      <Header />
+      <div style={{ position: "sticky", top: "0", zIndex: "1" }}>
+        <Header />
+      </div>
       <Switch>
         {map(Menu, (item, key) => {
           return (

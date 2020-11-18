@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Images } from "../../../config/image";
 
 import { Carousel } from "antd";
-
+import Bestseller from "../../../components/Bestseller";
 import "./style.css";
 const Homepage = () => {
   const contentStyle = {
@@ -14,7 +14,7 @@ const Homepage = () => {
   };
 
   return (
-    <div className="Hompage">
+    <div>
       <Carousel autoplay={10000}>
         <div>
           <img style={contentStyle} alt={"slide4"} src={Images.SLIDE4} />
@@ -26,7 +26,7 @@ const Homepage = () => {
           <img style={contentStyle} alt={"slide3"} src={Images.SLIDE2} />
         </div>
       </Carousel>
-      {/* <Footer />             */}
+      <Bestseller />
     </div>
   );
 };
