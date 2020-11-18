@@ -1,5 +1,6 @@
 import React, { lazy } from "react";
 import {
+  CButton,
   CBadge,
   CCard,
   CCardBody,
@@ -38,6 +39,19 @@ function Category() {
     <>
       <CCard>
         <CCardHeader className="CCardHeader-title ">Category</CCardHeader>
+        <CButton
+          style={{
+            width: "200px",
+            height: "50px",
+            marginTop: "20px",
+            marginLeft: "20px",
+          }}
+          shape="pill"
+          color="info"
+        >
+          {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
+          Add Category
+        </CButton>
         <CCardBody>
           <CDataTable
             items={usersData}
