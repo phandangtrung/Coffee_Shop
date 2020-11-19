@@ -151,6 +151,7 @@
 .ant-menu-submenu-title:hover {
   color: rgb(164, 115, 67);
 }
+
 @media (max-width: 767px) {
   .barsMenu {
     display: inline-block;

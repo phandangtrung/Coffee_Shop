@@ -1,6 +1,7 @@
 import React from "react";
-import { Menu, Grid, Button } from "antd";
+import { Menu, Grid, Button, Badge } from "antd";
 import { Link } from "react-router-dom";
+import { ShoppingCartOutlined } from "@ant-design/icons";
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -16,9 +17,12 @@ const RightMenu = (props) => {
         </Link>
       </Menu.Item>
       <Menu.Item className="button-signup" key="app">
-        <Button className="button-signup" onClick={props.showSignup}>
+        {/* <Button className="button-signup" onClick={props.showSignup}>
           Signup
-        </Button>
+        </Button> */}
+        <Badge count={5}>
+          <ShoppingCartOutlined style={{ fontSize: "25px" }} />
+        </Badge>
       </Menu.Item>
     </Menu>
   );
