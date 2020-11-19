@@ -11,4 +11,5 @@ export const Images = {
   COCF: IMAGE_URL + "/static/img/cup_of_coffee.jpg",
   BICON: IMAGE_URL + "/static/img/button_image.png",
   IFIM: IMAGE_URL + "/static/img/info_image.jpg",
+  NFIM: IMAGE_URL + "/static/img/coffee-404.jpg",
 };

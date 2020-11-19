@@ -3,6 +3,7 @@ import LoginPage from "../features/login/view";
 import Product from "../features/product/view";
 import SingleProduct from "../features/single_product/view";
 import ShoppingPage from "../features/shoppingpage/view";
+import NotfoundPage from "../features/notfoundpage/NoFound";
 export const Menu = [
   {
     path: "/",
@@ -29,11 +30,11 @@ export const Menu = [
     exact: true,
     component: LoginPage,
   },
-  // {
-  //   path: "*",
-  //   exact: false,
-  //   component: NotfoundPage,
-  // },
+  {
+    path: "*",
+    exact: false,
+    component: NotfoundPage,
+  },
 ];
 
 export const NOT_HEADER = [];
