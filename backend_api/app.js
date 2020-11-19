@@ -9,6 +9,7 @@ require('dotenv/config');
 
 const categoriesRouters = require('./routes/categories-routes');
 const productsRouters = require('./routes/products-routes');
+const usersRouters = require('./routes/users-routes');
 
 const app = express();
 app.use(bodyParser.json());
@@ -30,7 +31,7 @@ app.use('/upload/images', express.static(path.join('upload', 'images')));
 
 app.use('/api/categories',categoriesRouters);
 app.use('/api/products',productsRouters);
-
+app.use('/api/users',usersRouters);
 
 app.use((req, res, next) => {
     const error = new HttpError('Could not find this route.', 404);
