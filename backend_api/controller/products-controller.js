@@ -23,10 +23,13 @@ const createProduct = async (req, res, next) => {
         prices: req.body.prices,
         quantity: req.body.quantity,
         description: req.body.description,
+        images: req.file.path
     };
+    console.log(createProduct)
     try {
         const newProducts = new Product(createProduct);
         await newProducts.save();
+        console.log(newProducts);
         res.status(200).json({
         message: "Create success", newProducts
     });
@@ -50,12 +53,12 @@ const updateProductbyId = async(req, res, next) => {
     }
     const updatedProduct = {
       name: req.body.name,
-      category: req.body.category,
       size: req.body.size,
       prices: req.body.prices,
       quantity: req.body.quantity,
       description: req.body.description,
-      alias: getAlias(req.body.name)
+      //alias: getAlias(req.body.name)
+      images: req.file.path
       };
     let products;
     products = await Product.findByIdAndUpdate(pid, updatedProduct);

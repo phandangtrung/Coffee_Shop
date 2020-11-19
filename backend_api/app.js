@@ -2,23 +2,19 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const HttpError = require('./error-handle/http-error');
-
+const fs = require('fs');
+const path = require('path');
+const cors = require('cors')
 require('dotenv/config');
 
 const categoriesRouters = require('./routes/categories-routes');
 const productsRouters = require('./routes/products-routes');
 
-mongoose
-  .connect(process.env.DB_CONNECTION, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true,
-  })
-  .catch((error) => console.log(error.reason));
-
 const app = express();
-
 app.use(bodyParser.json());
+app.use(cors());
+
+app.use('/upload/images', express.static(path.join('upload', 'images')));
 
  app.use((req, res, next) => {
      res.setHeader('Access-Control-Allow-Origin', '*');
@@ -50,7 +46,18 @@ app.use((error, req, res, next) => {
   res.json({ message: error.message || 'An unknown error occurred!' });
 });
 
+mongoose
+  .connect(process.env.DB_CONNECTION, 
+    {useNewUrlParser: true},
+    {useUnifiedTopology: true},
+    {useCreateIndex: true},
+    {useFindAndModify: false}
+  )
+  .then(() =>{
+    app.listen(3000);
+    console.log('Connect Success')
+  })
+  .catch((error) => {console.log(error)});
 
-app.listen(3000);
 
 

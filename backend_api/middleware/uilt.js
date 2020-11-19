@@ -1,44 +1,53 @@
-import jwt from 'jsonwebtoken';
-import config from './config';
+const jwt = require('jsonwebtoken');
+const {JWT_SECRET} = require('../config/index')
+const HttpError = require('../error-handle/http-error');
+
 const getToken = (user) => {
-  return jwt.sign(
-    {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      isAdmin: user.isAdmin,
-    },
-    config.JWT_SECRET,
-    {
-      expiresIn: '48h',
-    }
+  return jwt.sign (
+      {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isAdmin: user.isAdmin,
+      },
+      JWT_SECRET,
+      {
+          expiresIn: '1h',
+      }
   );
 };
 
 const isAuth = (req, res, next) => {
-  const token = req.headers.authorization;
-
-  if (token) {
-    const onlyToken = token.slice(7, token.length);
-    jwt.verify(onlyToken, config.JWT_SECRET, (err, decode) => {
-      if (err) {
-        return res.status(401).send({ message: 'Invalid Token' });
-      }
-      req.user = decode;
-      next();
-      return;
-    });
-  } else {
-    return res.status(401).send({ message: 'Token is not supplied.' });
-  }
-};
-
-const isAdmin = (req, res, next) => {
-  console.log(req.user);
-  if (req.user && req.user.isAdmin) {
+  if (req.method === 'OPTIONS') {
     return next();
   }
-  return res.status(401).send({ message: 'Admin Token is not valid.' });
+  try {
+    const token = req.headers.authorization.split(' ')[1]; // Authorization: 'Bearer TOKEN'
+    console.log(token);
+    if (!token) {
+      const error =  new HttpError('invalid token', 401);
+      return next(error);
+    }
+    const decodedToken = jwt.verify(token, JWT_SECRET);
+    console.log(decodedToken);
+    req.userData = {
+      name: decodedToken.name,
+      email: decodedToken.email,
+      isAdmin: decodedToken.isAdmin
+    };
+    next();
+  } catch (err) { 
+    const error = new HttpError('Token is failed to create', 403);
+    return next(error);
+  }
 };
 
-export { getToken, isAuth, isAdmin };
+const isAdmin = (req,res,next) => {
+  if(req.userData && req.userData.isAdmin)
+  {
+    return next();
+  }
+  const error =  new HttpError('Token is not admin', 401);
+  return next(error);
+}
+module.exports = {isAuth, isAdmin, getToken};

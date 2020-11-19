@@ -10,12 +10,13 @@ const getAllCategory = async (req, res, next) => {
   let categories;
   try{
       categories = await Category.find();
+      console.log(categories)
   } catch (err) {
       const error = new HttpError('Something went wrong, coud not find any category', 500);
       return next(error);
   };
 
-  if(!categories.name)
+  if(!categories)
   {
       const error =  new HttpError('Could not find any category', 404);
       return next(error);
