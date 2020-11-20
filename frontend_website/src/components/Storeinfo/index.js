@@ -1,5 +1,6 @@
 import React from "react";
 import "./style.css";
+import Mapstore from "../Maps/Maps";
 import { Images } from "../../config/image";
 
 function index() {
