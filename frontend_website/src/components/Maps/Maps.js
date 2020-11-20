@@ -13,6 +13,7 @@ function Mapstore(props) {
       style={mapStyles}
       //10.853406, 106.761516
       initialCenter={{ lat: props.lat, lng: props.lng }}
+      center={{ lat: props.lat, lng: props.lng }}
       // initialCenter={{ lat: positonn.lat, lng: positonn.lng }}
     >
       {/* 10.850899, 106.771948 */}
