@@ -132,6 +132,10 @@
 }
 .modal-order .input-modal {
   width: 100%;
-  height: 50px;
-  background-color: #eaeef3;
+  height: 40px;
+  /* background-color: #eaeef3; */
+}
+.modal-order .maps-form {
+  width: 100%;
+  height: 200px;
 }

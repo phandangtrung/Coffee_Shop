@@ -39,3 +39,11 @@
   width: 50%;
   height: auto;
 }
+.store__info-form .map-form {
+  width: auto;
+  height: 250px;
+}
+.map-form .maps {
+  width: auto;
+  height: 60%;
+}

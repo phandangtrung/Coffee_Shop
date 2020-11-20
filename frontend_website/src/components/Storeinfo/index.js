@@ -26,6 +26,11 @@ function index() {
           </div>
           <img className="info_img" src={Images.IFIM} />
         </div>
+        {/* <div className="map-form">
+          <div>
+            <Mapstore />
+          </div>
+        </div> */}
       </div>
     </div>
   );

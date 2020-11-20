@@ -1,10 +1,34 @@
 import React, { useState } from "react";
 import "./style.css";
-import { Button, Form, Input, InputNumber, Select, Table } from "antd";
+import {
+  Button,
+  Col,
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Select,
+  Table,
+} from "antd";
 import { Images } from "../../../config/image";
-import { ShoppingCartOutlined } from "@ant-design/icons";
+import {
+  ShoppingCartOutlined,
+  EnvironmentOutlined,
+  UserOutlined,
+  PhoneOutlined,
+  AudioOutlined,
+} from "@ant-design/icons";
+import Mapstore from "../../../components/Maps/Maps";
+import Geocode from "react-geocode";
+
 import Modal from "antd/lib/modal/Modal";
-function ShoppingPage() {
+function ShoppingPage(props) {
+  Geocode.setApiKey("AIzaSyB_eKxh8KTsPy6aPPJPROh2yP75dTvg92o");
+  const [form] = Form.useForm();
+  const [coordinates, setCoordinates] = useState({
+    lat: 10.850899,
+    lng: 106.771948,
+  });
   const dataSource = [
     {
       product: { image: Images.COCF, name: "AMERICANO", size: "M" },
@@ -51,6 +75,19 @@ function ShoppingPage() {
       key: "total",
     },
   ];
+
+  const handleSearch = (value) => {
+    Geocode.fromAddress(value).then(
+      (response) => {
+        const { lat, lng } = response.results[0].geometry.location;
+        console.log({ lat: lat, lng: lng });
+        setCoordinates({ lat: lat, lng: lng });
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  };
   const [visible, setVisible] = useState(false);
   const showModal = () => {
     setVisible(true);
@@ -108,14 +145,56 @@ function ShoppingPage() {
         visible={visible}
         // onOk={handleOk}
         onCancel={handleCancel}
+        width={1000}
       >
         <div className="modal-order">
-          <Form>
+          <Form form={form}>
             <div className="title-modal">COMPLETE ORDER</div>
             <Form.Item>
-              <Input className="input-modal" placeholder="Address" />
+              <div className="maps-form ">
+                <Mapstore lat={coordinates.lat} lng={coordinates.lng} />
+              </div>
             </Form.Item>
-            <Form.Item></Form.Item>
+            <Row>
+              <Col span={24}>
+                <Form.Item>
+                  <Input.Search
+                    enterButton="Find on Map"
+                    prefix={<EnvironmentOutlined />}
+                    placeholder="Address"
+                    size="large"
+                    onSearch={handleSearch}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={12} style={{ paddingRight: "5px" }}>
+                <Form.Item>
+                  <Input
+                    prefix={<UserOutlined />}
+                    className="input-modal"
+                    placeholder="Name of consignee"
+                  />
+                </Form.Item>
+              </Col>
+              <Col span={12} style={{ paddingLeft: "5px" }}>
+                <Form.Item>
+                  <Input
+                    prefix={<PhoneOutlined />}
+                    className="input-modal"
+                    placeholder="Phone"
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <Form.Item>
+                  <Input className="input-modal" placeholder="Note" />
+                </Form.Item>
+              </Col>
+            </Row>
           </Form>
         </div>
       </Modal>
