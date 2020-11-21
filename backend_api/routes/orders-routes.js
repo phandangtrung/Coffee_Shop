@@ -1,7 +1,7 @@
 const express = require('express');
 const { check } = require('express-validator');
 
-const ordersController = require('../controller/orders-controller');
+const ordersController = require('../controller/orders-controllers');
 
 router.get('/',ordersController.getAllOrder);
 router.get('/:oid',ordersController.getOrderById);

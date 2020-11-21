@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const {JWT_SECRET} = require('../config/index')
 const HttpError = require('../error-handle/http-error');
 
+
 const getToken = (user) => {
   return jwt.sign (
       {

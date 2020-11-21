@@ -1,7 +1,7 @@
 const express = require('express');
 const { check } = require('express-validator');
 
-const shippersController = require('../controller/shippers-controller');
+const shippersController = require('../controller/shippers-controllers');
 
 const router = express.Router();
 

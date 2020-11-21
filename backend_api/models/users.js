@@ -7,6 +7,8 @@ const usersSchema = new mongoose.Schema({
     email: {type: String, required: true, unique: true},
     password: { type: String, required: true },
     isAdmin: { type: Boolean, required: true, default: false },
+    isConfirm: {type: Boolean, require: true, default: false },
+    isLock: {type: Boolean, require: true, default: false }
 });
 
 
