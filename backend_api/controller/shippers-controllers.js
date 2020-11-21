@@ -18,6 +18,7 @@ const createShipper = async (req, res, next) => {
     const createShipper = {
         name: req.body.name,
         phone: req.body.phone,
+        images: req.file.path,
         point: req.body.point
     };
     try {
@@ -47,6 +48,7 @@ const updateShipperById = async (req, res, next) => {
     const updatedShipper = {
         name: req.body.name,
         phone: req.body.phone,
+        images: req.file.path,
         point: req.body.point
       };
     let shippers;

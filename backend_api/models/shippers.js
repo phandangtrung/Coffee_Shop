@@ -5,7 +5,6 @@ const shippersSchema = new mongoose.Schema({
     images: {type: String, required: false},
     phone: {type: Number, require: false},
     point: {type: Number, require: false},
-    //images: {type: String, require: false}
 });
 
 
