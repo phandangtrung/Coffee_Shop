@@ -29,6 +29,12 @@ function ShoppingPage(props) {
     lat: 10.850899,
     lng: 106.771948,
   });
+  const [address, setaddress] = useState("");
+  const [position, setPosition] = useState({
+    title: "The marker`s title will appear as a tooltip.",
+    name: "SOMA",
+    position: { lat: 37.778519, lng: -122.40564 },
+  });
   const dataSource = [
     {
       product: { image: Images.COCF, name: "AMERICANO", size: "M" },
@@ -82,6 +88,28 @@ function ShoppingPage(props) {
         const { lat, lng } = response.results[0].geometry.location;
         console.log({ lat: lat, lng: lng });
         setCoordinates({ lat: lat, lng: lng });
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  };
+  const oncheck = (t, map, coord) => {
+    const { latLng } = coord;
+    const lat = latLng.lat();
+    const lng = latLng.lng();
+
+    setPosition({
+      title: "",
+      name: "",
+      position: { lat, lng },
+    });
+    setCoordinates({ lat: lat, lng: lng });
+    Geocode.fromLatLng(lat, lng).then(
+      (response) => {
+        const address = response.results[0].formatted_address;
+        setaddress(address);
+        form.setFieldsValue({ addressinput: address });
       },
       (error) => {
         console.error(error);
@@ -152,12 +180,16 @@ function ShoppingPage(props) {
             <div className="title-modal">COMPLETE ORDER</div>
             <Form.Item>
               <div className="maps-form ">
-                <Mapstore lat={coordinates.lat} lng={coordinates.lng} />
+                <Mapstore
+                  lat={coordinates.lat}
+                  lng={coordinates.lng}
+                  oncheck={oncheck}
+                />
               </div>
             </Form.Item>
             <Row>
               <Col span={24}>
-                <Form.Item>
+                <Form.Item name="addressinput">
                   <Input.Search
                     enterButton="Find on Map"
                     prefix={<EnvironmentOutlined />}
