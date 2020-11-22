@@ -12,4 +12,9 @@ export const Images = {
   BICON: IMAGE_URL + "/static/img/button_image.png",
   IFIM: IMAGE_URL + "/static/img/info_image.jpg",
   NFIM: IMAGE_URL + "/static/img/coffee-404.jpg",
+  COCFTP: IMAGE_URL + "/static/img/coffeecup_tranpa.png",
+  CFFTP: IMAGE_URL + "/static/img/coffeefast_tranpa.png",
+  CBTP: IMAGE_URL + "/static/img/coffeebag_tranpa.png",
+  BCFF: IMAGE_URL + "/static/img/breadcoffee_tranpa.png",
+  BBG: IMAGE_URL + "/static/img/BANHMI-bg_2.jpg",
 };
