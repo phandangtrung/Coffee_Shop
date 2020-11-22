@@ -9,6 +9,16 @@ const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const {getToken} = require('../middleware/uilt');
 
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: process.env.GMAIL,
+      pass: process.env.PASS
+    },
+});
+
 const register = async(req, res, next) =>{
     const errors = validationResult(req);
     if(!errors.isEmpty())
@@ -17,7 +27,7 @@ const register = async(req, res, next) =>{
         const error =  new HttpError('Invalid Input! Pls check your data', 400);
         return next(error);
     }
-    const { fName, email, password } = req.body;
+    const { fName, email, password, gender } = req.body;
 
     let userEmail;
     try{
@@ -47,73 +57,63 @@ const register = async(req, res, next) =>{
     const createdUser = {
         fName,
         email,
+        gender,
         isAdmin: false,
         isConfirm: false,
         isLock: false,
         password: hashedPassword
     };
-    try {
-        const newUsers = new User(createdUser);
+    let newUsers;
+     try {
+        newUsers = new User(createdUser);
         await newUsers.save();
-        res.status(201).json({
-            newUsers
-        });
     } catch(err) {
         const error = new HttpError('Signing up failed, please try again later.',500);
-        return next(error)
+        return next(error);
     } 
-    
-};
-
-const login = async(req,res,next) => {
-    const {email, password} = req.body;
-    console.log(email, password);
-    let existingUser;
-
-    try{
-        existingUser = await User.findOne({"email":email});
-        console.log(existingUser);
-    } catch (err) {
-        const error = new HttpError('Login failed. Pls try again', 500);
-        return next(error);
-    }
-    
-    if(!existingUser) {
-        const error = new HttpError('Email or Password is invalid', 401);
-        return next(error);
-    }
-    if(existingUser.isConfirm === false || existingUser.isLock === true ) {
-        const error = new HttpError('Your account is not confirm or was locked', 401);
-        return next(error);
-    }
-
-    let isValidPassword;
-    try {
-        isValidPassword = await brcypt.compare(password, existingUser.password);
-    } catch (err) {
-        const error = new HttpError('Something is error. Pls try again', 401);
-        return next(error);
-    }
-
-    if(!isValidPassword){
-        const error = new HttpError('Email or Password is invalid', 401);
-        return next(error);
-    }
-
     let token;
     try {
-        token = getToken(existingUser);
+        token = getToken(createdUser); 
     } catch (err) {
-        const error = new HttpError('Login failed, please try again later.',500);
-        return next(error)
+        const error = new HttpError('Signing up failed, please try again later.',500);
+         return next(error)
     }
-
-    res.status(200).json({
-        email: existingUser.email,
-        isAdmin: existingUser.isAdmin,
-        token: token
-    })
-
+    res.status(201).json({
+        newUsers, token
+    });
+    const url = `http://localhost:3000/api/users/confirmation/${token}`;
+    transporter.sendMail({
+        to: createdUser.email,
+        subject: 'Confirm Email',
+        html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
+      });    
 };
 
-module.exports = {register, login};
+const getConfirmation = async(req, res, next) => {
+    const token = req.params.token;
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userData = {
+        email: decodedToken.email
+    };
+    console.log(userData.email)
+    const updatedUser = {
+        isConfirm: true
+    };
+    let users;
+    try{
+        users = await User.updateOne({email: userData.email},updatedUser);
+        console.log(users);
+    } catch (err) {
+        const error = new HttpError('Your confirmation is out of time', 500);
+        return next(error);
+    }
+
+    if(!users)
+    {
+        const error =  new HttpError('Could not find any users', 404);
+        return next(error);
+    }
+    res.status(200).json({message: 'Success'});
+}
+
+module.exports = {register, getConfirmation};

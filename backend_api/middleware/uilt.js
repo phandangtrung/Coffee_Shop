@@ -1,5 +1,4 @@
-const jwt = require('jsonwebtoken');
-const {JWT_SECRET} = require('../config/index')
+ const jwt = require('jsonwebtoken');
 const HttpError = require('../error-handle/http-error');
 
 
@@ -7,11 +6,11 @@ const getToken = (user) => {
   return jwt.sign (
       {
         _id: user._id,
-        name: user.name,
+        fName: user.fName,
         email: user.email,
         isAdmin: user.isAdmin,
       },
-      JWT_SECRET,
+      process.env.JWT_SECRET,
       {
           expiresIn: '1h',
       }
@@ -52,3 +51,4 @@ const isAdmin = (req,res,next) => {
   return next(error);
 }
 module.exports = {isAuth, isAdmin, getToken};
+ 
