@@ -50,7 +50,7 @@
 .bagcoffee-intro_form {
   padding-left: 150px;
   width: 100%;
-  padding-top: 60px;
+  /* padding-top: 60px; */
   height: 400px;
   background-color: dimgrey;
 }
@@ -59,6 +59,7 @@
   height: auto;
 }
 .bagcoffee-intro_form .text-form {
+  padding-top: 60px;
   height: 100%;
   text-align: start;
 }
