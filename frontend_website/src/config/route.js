@@ -5,6 +5,7 @@ import SingleProduct from "../features/single_product/view";
 import ShoppingPage from "../features/shoppingpage/view";
 import NotfoundPage from "../features/notfoundpage/NoFound";
 import IntroPage from "../features/IntroPage/view";
+import AddressPage from "../features/addresspage/view";
 export const Menu = [
   {
     path: "/",
@@ -35,6 +36,11 @@ export const Menu = [
     path: "/intro",
     exact: true,
     component: IntroPage,
+  },
+  {
+    path: "/address",
+    exact: true,
+    component: AddressPage,
   },
   {
     path: "*",
