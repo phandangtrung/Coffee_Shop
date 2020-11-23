@@ -4,11 +4,12 @@ import "./index.css";
 import App from "./App";
 import "antd/dist/antd.css"; // or 'antd/dist/antd.less'
 import * as serviceWorker from "./serviceWorker";
+import { BrowserRouter } from "react-router-dom";
 
 ReactDOM.render(
-  // <React.StrictMode>
-  <App />,
-  // </React.StrictMode>
+  <BrowserRouter>
+    <App />,
+  </BrowserRouter>,
   document.getElementById("root")
 );
 
