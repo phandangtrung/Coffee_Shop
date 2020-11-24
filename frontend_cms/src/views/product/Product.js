@@ -1,4 +1,4 @@
-import React, { lazy } from "react";
+import React, { useState, useEffect } from "react";
 import {
   CBadge,
   CCard,
@@ -10,8 +10,9 @@ import {
 } from "@coreui/react";
 import "./style.css";
 import CIcon from "@coreui/icons-react";
-
 import usersData from "../users/UsersData";
+import productApi from "../../api/productApi";
+
 const fields = [
   // { key: "id", label: "INDEX", _style: { width: "5%" } },
   { key: "fname", label: "NAME", _style: { width: "15%" } },
@@ -39,6 +40,23 @@ const getBadge = (status) => {
   }
 };
 function Product() {
+  const [productList, setProductList] = useState([]);
+  useEffect(() => {
+    const fetchProductList = async () => {
+      try {
+        // const params = { _page: 1, _limit: 10 };
+        const response = await productApi.getAll();
+        console.log("Fetch products succesfully: ", response);
+        setProductList(response.data);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+      }
+    };
+    fetchProductList();
+  }, []);
+  const handleClick = () => {
+    console.log(">>>> product: ", productList);
+  };
   return (
     <>
       <CCard>
@@ -52,6 +70,7 @@ function Product() {
           }}
           shape="pill"
           color="info"
+          onClick={handleClick}
         >
           {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
           Add Product
