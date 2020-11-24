@@ -15,11 +15,11 @@ import productApi from "../../api/productApi";
 
 const fields = [
   // { key: "id", label: "INDEX", _style: { width: "5%" } },
-  { key: "fname", label: "NAME", _style: { width: "15%" } },
-  { key: "username", label: "AMOUNTS", _style: { width: "15%" } },
-  { key: "address", label: "CATEGORY", _style: { width: "23%" } },
-  { key: "gmail", label: "PRICE", _style: { width: "20%" } },
-  { key: "phone", label: "CREATE AT", _style: { width: "17%" } },
+  { key: "name", label: "NAME", _style: { width: "15%" } },
+  { key: "quantity", label: "QUANTITY", _style: { width: "15%" } },
+  { key: "description", label: "DESCRIPTION", _style: { width: "23%" } },
+  { key: "prices", label: "PRICE", _style: { width: "20%" } },
+  { key: "create_at", label: "CREATE AT", _style: { width: "17%" } },
   { key: "action", label: "ACTION", _style: { width: "10%" } },
   // { key: "registered", _style: { width: "40%" } },
   // "role",
@@ -47,7 +47,8 @@ function Product() {
         // const params = { _page: 1, _limit: 10 };
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
-        setProductList(response.data);
+        // console.log(response.products);
+        setProductList(response.products);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
       }
@@ -77,7 +78,7 @@ function Product() {
         </CButton>
         <CCardBody>
           <CDataTable
-            items={usersData}
+            items={productList}
             fields={fields}
             striped
             itemsPerPage={8}
