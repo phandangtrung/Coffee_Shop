@@ -37,6 +37,7 @@ const createProduct = async (req, res, next) => {
         size: req.body.size,
         prices: req.body.prices,
         quantity: req.body.quantity,
+        createAt: req.body.createAt,
         description: req.body.description,
         alias: getAlias(req.body.name),
         images: req.file.path
@@ -73,6 +74,7 @@ const updateProductbyId = async(req, res, next) => {
       size: req.body.size,
       prices: req.body.prices,
       quantity: req.body.quantity,
+      createAt: req.body.createAt,
       description: req.body.description,
       alias: getAlias(req.body.name),
       images: req.file.path

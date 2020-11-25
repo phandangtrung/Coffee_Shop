@@ -7,7 +7,8 @@ const ordersSchema = new mongoose.Schema({
     status:{type:String, require: true},
     reviews:{type:String, require: false},
     ratings:{type:Number, require: false},
-    userAddress:{type:String, require: true}
+    userAddress:{type:String, require: true},
+    productId:{type:String, required: false}
 });
 
 
