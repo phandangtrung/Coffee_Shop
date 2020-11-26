@@ -116,4 +116,79 @@ const getConfirmation = async(req, res, next) => {
     res.status(200).json({message: 'Success'});
 }
 
-module.exports = {register, getConfirmation};
+const lockUser = async(req, res, next) => {
+    const Userid = req.params.uid;
+    console.log(id);
+    const userLock = {
+        isLock: true
+    } 
+
+    let users;
+    try{
+        users = await User.findByIdAndUpdate(Userid,userLock);
+        console.log(users);
+    }
+    catch (err) {
+        const error = new HttpError('Something went wrong, can not lock', 500);
+        return next(error);
+    }
+    if(!users)
+    {
+        const error =  new HttpError('Could not lock this user', 404);
+        return next(error);
+    }
+    res.status(200).json({message: 'Update success'});
+}
+
+/* const login = async(req,res,next) => {
+    const {email, password} = req.body;
+    console.log(email, password);
+    let existingUser;
+
+    try{
+        existingUser = await User.findOne({"email":email});
+        console.log(existingUser);
+    } catch (err) {
+        const error = new HttpError('Login failed. Pls try again', 500);
+        return next(error);
+    }
+    
+    if(!existingUser) {
+        const error = new HttpError('Email or Password is invalid', 401);
+        return next(error);
+    }
+    if(existingUser.isConfirm === false || existingUser.isLock === true ) {
+        const error = new HttpError('Your account is not confirm or was locked', 401);
+        return next(error);
+    }
+
+    let isValidPassword;
+    try {
+        isValidPassword = await brcypt.compare(password, existingUser.password);
+    } catch (err) {
+        const error = new HttpError('Something is error. Pls try again', 401);
+        return next(error);
+    }
+
+    if(!isValidPassword){
+        const error = new HttpError('Email or Password is invalid', 401);
+        return next(error);
+    }
+
+    let token;
+    try {
+        token = getToken(existingUser);
+    } catch (err) {
+        const error = new HttpError('Login failed, please try again later.',500);
+        return next(error)
+    }
+
+    res.status(200).json({
+        email: existingUser.email,
+        isAdmin: existingUser.isAdmin,
+        token: token
+    })
+
+} */
+
+module.exports = {register, getConfirmation, lockUser};

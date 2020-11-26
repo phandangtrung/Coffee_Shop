@@ -25,6 +25,7 @@ const getAlias = (str) => {
 };
 
 const createProduct = async (req, res, next) => {
+<<<<<<< HEAD
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
@@ -48,6 +49,33 @@ const createProduct = async (req, res, next) => {
     res.status(200).json({
       message: "Create success",
       newProducts,
+=======
+    const errors = validationResult(req);
+    if(!errors.isEmpty())
+    {
+        console.log(errors);
+        const error =  new HttpError('Invalid Input! Pls check your data', 400);
+        return next(error);
+    }
+    const createProduct = {
+        name: req.body.name,
+        size: req.body.size,
+        prices: req.body.prices,
+        quantity: req.body.quantity,
+        createAt: req.body.createAt,
+        description: req.body.description,
+        alias: getAlias(req.body.name),
+        images: req.file.path
+        
+    };
+    console.log(createProduct)
+    try {
+        const newProducts = new Product(createProduct);
+        await newProducts.save();
+        console.log(newProducts);
+        res.status(200).json({
+        message: "Create success", newProducts
+>>>>>>> Cuong
     });
   } catch (error) {
     if (error.name === "MongoError" && error.code === 11000) {
@@ -61,6 +89,7 @@ const createProduct = async (req, res, next) => {
 const updateProductbyId = async (req, res, next) => {
   const errors = validationResult(req);
   const ProId = req.params.pid;
+<<<<<<< HEAD
   if (!errors.isEmpty()) {
     console.log(errors);
     const error = new HttpError("Invalid Input! Pls check your data", 400);
@@ -79,15 +108,48 @@ const updateProductbyId = async (req, res, next) => {
   products = await Product.findByIdAndUpdate(pid, updatedProduct);
   res.status(200).json({ products: updatedProduct });
 };
+=======
+  if(!errors.isEmpty())
+    {
+        console.log(errors);
+        const error =  new HttpError('Invalid Input! Pls check your data', 400);
+        return next(error);
+    }
+    const updatedProduct = {
+      name: req.body.name,
+      size: req.body.size,
+      prices: req.body.prices,
+      quantity: req.body.quantity,
+      createAt: req.body.createAt,
+      description: req.body.description,
+      alias: getAlias(req.body.name),
+      images: req.file.path
+      
+      };
+    let products;
+    products = await Product.findByIdAndUpdate(ProId, updatedProduct);
+    res.status(200).json({products: updatedProduct});
+
+}
+>>>>>>> Cuong
 
 const deleteProductById = async (req, res, next) => {
   const ProId = req.params.pid;
   let products;
+<<<<<<< HEAD
   try {
     products = await Product.findOneAndDelete(ProId);
   } catch (err) {
     const error = new HttpError("Something went wrong, can not delete", 500);
     return next(error);
+=======
+  try{
+      products = await Product.findOneAndDelete(ProId);
+  }
+  catch (err) {
+      const error = new HttpError('Something went wrong, can not delete', 500);
+      return next(error);
+>>>>>>> Cuong
   }
   if (!products) {
     const error = new HttpError("Could not find any product", 404);
