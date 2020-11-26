@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import {
   CBadge,
   CCard,
@@ -40,27 +40,64 @@ const getBadge = (status) => {
       return "primary";
   }
 };
+
+const dataFetchReducer = (state, action) => {
+  switch (action.type) {
+    case "FETCH_INIT":
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
+      };
+    case "FETCH_SUCCESS":
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        data: action.payload,
+      };
+    case "FETCH_FAILURE":
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
+    default:
+      throw new Error();
+  }
+};
+
 function Product() {
+  const initialData = [];
   const [isLoading, setIsLoading] = useState(false);
-  const [productList, setProductList] = useState([]);
+  // const [productList, setProductList] = useState([]);
+  const [productList, dispatch] = useReducer(dataFetchReducer, {
+    isLoading: false,
+    isError: false,
+    data: initialData,
+  });
   useEffect(() => {
     const fetchProductList = async () => {
+      dispatch({ type: "FETCH_INIT" });
       try {
         setIsLoading(true);
         // const params = { _page: 1, _limit: 10 };
+
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
         // console.log(response.products);
-        setProductList(response.products);
+        // setProductList(response.products);
+        dispatch({ type: "FETCH_SUCCESS", payload: response.products });
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
+        dispatch({ type: "FETCH_FAILURE" });
       }
     };
     fetchProductList();
   }, []);
   const handleClick = () => {
-    console.log(">>>> product: ", productList);
+    console.log(">>>> product: ", productList.data);
   };
   return (
     <>
@@ -94,7 +131,7 @@ function Product() {
             </div>
           ) : (
             <CDataTable
-              items={productList}
+              items={productList.data}
               fields={fields}
               striped
               itemsPerPage={8}
