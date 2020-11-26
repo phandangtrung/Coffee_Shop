@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import {
   CBadge,
   CCard,
@@ -11,8 +11,9 @@ import {
 import "./style.css";
 import CIcon from "@coreui/icons-react";
 import usersData from "../users/UsersData";
-import productApi from "../../api/productApi";
 
+import productAdmin from "./reducer/index";
+import actionType from "./action/actionType";
 const fields = [
   // { key: "id", label: "INDEX", _style: { width: "5%" } },
   { key: "name", label: "NAME", _style: { width: "15%" } },
@@ -40,20 +41,11 @@ const getBadge = (status) => {
   }
 };
 function Product() {
-  const [productList, setProductList] = useState([]);
+  // const [productList, setProductList] = useState([]);
+  const [productList, dispatchGetproduct] = useReducer(productAdmin, []);
   useEffect(() => {
-    const fetchProductList = async () => {
-      try {
-        // const params = { _page: 1, _limit: 10 };
-        const response = await productApi.getAll();
-        console.log("Fetch products succesfully: ", response);
-        // console.log(response.products);
-        setProductList(response.products);
-      } catch (error) {
-        console.log("failed to fetch product list: ", error);
-      }
-    };
-    fetchProductList();
+    dispatchGetproduct({ type: actionType.GETALL_PRODUCT });
+    console.log(productList);
   }, []);
   const handleClick = () => {
     console.log(">>>> product: ", productList);
