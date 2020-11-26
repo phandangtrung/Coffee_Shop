@@ -89,62 +89,10 @@ const register = async(req, res, next) =>{
       });    
 };
 
-const getConfirmation = async(req, res, next) => {
-    const token = req.params.token;
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    const userData = {
-        email: decodedToken.email
-    };
-    console.log(userData.email)
-    const updatedUser = {
-        isConfirm: true
-    };
-    let users;
-    try{
-        users = await User.updateOne({email: userData.email},updatedUser);
-        console.log(users);
-    } catch (err) {
-        const error = new HttpError('Your confirmation is out of time', 500);
-        return next(error);
-    }
-
-    if(!users)
-    {
-        const error =  new HttpError('Could not find any users', 404);
-        return next(error);
-    }
-    res.status(200).json({message: 'Success'});
-}
-
-const lockUser = async(req, res, next) => {
-    const Userid = req.params.uid;
-    console.log(id);
-    const userLock = {
-        isLock: true
-    } 
-
-    let users;
-    try{
-        users = await User.findByIdAndUpdate(Userid,userLock);
-        console.log(users);
-    }
-    catch (err) {
-        const error = new HttpError('Something went wrong, can not lock', 500);
-        return next(error);
-    }
-    if(!users)
-    {
-        const error =  new HttpError('Could not lock this user', 404);
-        return next(error);
-    }
-    res.status(200).json({message: 'Update success'});
-}
-
-/* const login = async(req,res,next) => {
+const login = async(req,res,next) => {
     const {email, password} = req.body;
     console.log(email, password);
     let existingUser;
-
     try{
         existingUser = await User.findOne({"email":email});
         console.log(existingUser);
@@ -152,7 +100,7 @@ const lockUser = async(req, res, next) => {
         const error = new HttpError('Login failed. Pls try again', 500);
         return next(error);
     }
-    
+
     if(!existingUser) {
         const error = new HttpError('Email or Password is invalid', 401);
         return next(error);
@@ -189,6 +137,121 @@ const lockUser = async(req, res, next) => {
         token: token
     })
 
-} */
+};
 
-module.exports = {register, getConfirmation, lockUser};
+const getConfirmation = async(req, res, next) => {
+    const token = req.params.token;
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userData = {
+        email: decodedToken.email
+    };
+    console.log(userData.email)
+    const updatedUser = {
+        isConfirm: true
+    };
+    let users;
+    try{
+        users = await User.updateOne({email: userData.email},updatedUser);
+        console.log(users);
+    } catch (err) {
+        const error = new HttpError('Your confirmation is out of time', 500);
+        return next(error);
+    }
+
+    if(!users)
+    {
+        const error =  new HttpError('Could not find any users', 404);
+        return next(error);
+    }
+    res.status(200).json({message: 'Success'});
+};
+
+const getMyUser = async (req, res, next) => {
+    let users;
+    try{
+        users = await User.findOne({"email": req.userData.email});
+        console.log(users)
+        console.log("Con cho")
+    } catch (err) {
+        const error = new HttpError('You are not log in. Pls login', 500);
+        return next(error);
+    }
+
+    if(!users)
+    {
+        const error =  new HttpError('Could not find any users', 404);
+        return next(error);
+    }
+    res.status(200).json({users});
+};
+
+const updateMyUser = async(req, res, next) => {
+    let users;
+    const userCurrent = req.userData.email;
+    try{
+        users = await User.findOne({"email":userCurrent });
+    } catch (err) {
+        const error = new HttpError('You are not log in. Pls login', 500);
+        return next(error);
+    }
+    console.log(users)
+    console.log("Con cho")
+    if(!users)
+    {
+        const error =  new HttpError('Could not find any users', 404);
+        return next(error);
+    }
+
+    const userInfo = {
+        fName: req.body.fName,
+        address: req.body.address,
+        gender: req.body.gender,
+        birthday: req.body.birthday,
+        phone: req.body.phone,
+        avatar: req.body.avatar,
+    }
+
+    let userUpdate;
+    try{
+        userUpdate = await User.updateOne({email: userCurrent}, userInfo);
+    } catch (err)
+    {
+        console.log(err);
+        const error = new HttpError('Update Fail', 500);
+        return next(error);
+    }
+
+    if(!userUpdate)
+    {
+        const error =  new HttpError('Could not find any users', 404);
+        return next(error);
+    }
+    res.status(200).json({userUpdate});
+};
+
+const lockUser = async(req, res, next) => {
+    const Userid = req.params.uid;
+    console.log(id);
+    const userLock = {
+        isLock: true
+    } 
+
+    let users;
+    try{
+        users = await User.findByIdAndUpdate(Userid, userLock);
+        console.log(users);
+    }
+    catch (err) {
+        const error = new HttpError('Something went wrong, can not lock', 500);
+        return next(error);
+    }
+    if(!users)
+    {
+        const error =  new HttpError('Could not lock this user', 404);
+        return next(error);
+    }
+    res.status(200).json({message: 'Update success'});
+}
+
+
+module.exports = {register, login, getConfirmation, lockUser, getMyUser, updateMyUser};
