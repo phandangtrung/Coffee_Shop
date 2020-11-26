@@ -7,6 +7,7 @@ import {
   CDataTable,
   CLink,
   CButton,
+  CSpinner,
 } from "@coreui/react";
 import "./style.css";
 import CIcon from "@coreui/icons-react";
@@ -40,15 +41,18 @@ const getBadge = (status) => {
   }
 };
 function Product() {
+  const [isLoading, setIsLoading] = useState(false);
   const [productList, setProductList] = useState([]);
   useEffect(() => {
     const fetchProductList = async () => {
       try {
+        setIsLoading(true);
         // const params = { _page: 1, _limit: 10 };
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
         // console.log(response.products);
         setProductList(response.products);
+        setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
       }
@@ -77,45 +81,58 @@ function Product() {
           Add Product
         </CButton>
         <CCardBody>
-          <CDataTable
-            items={productList}
-            fields={fields}
-            striped
-            itemsPerPage={8}
-            pagination
-            scopedSlots={{
-              index: (item) => <td>{item.id}</td>,
-              status: (item) => (
-                <td>
-                  <CBadge color={getBadge(item.status)}>{item.status}</CBadge>
-                </td>
-              ),
-              action: () => (
-                <td style={{ display: "flex", justifyContent: "start" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      width: "80%",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <CLink className="c-subheader-nav-link" href="#">
-                      <CIcon name="cil-pencil" alt="Edit" />
-                      {/* &nbsp;Edit */}
-                    </CLink>
-                    <CLink className="c-subheader-nav-link" href="#">
-                      <CIcon
-                        style={{ color: "red" }}
-                        name="cil-trash"
-                        alt="Delete"
-                      />
-                      {/* &nbsp;Edit */}
-                    </CLink>
-                  </div>
-                </td>
-              ),
-            }}
-          />
+          {isLoading ? (
+            <div
+              style={{
+                width: "100%",
+                height: "100%",
+                padding: "10%",
+                textAlign: "center",
+              }}
+            >
+              <CSpinner color="info" />
+            </div>
+          ) : (
+            <CDataTable
+              items={productList}
+              fields={fields}
+              striped
+              itemsPerPage={8}
+              pagination
+              scopedSlots={{
+                index: (item) => <td>{item.id}</td>,
+                status: (item) => (
+                  <td>
+                    <CBadge color={getBadge(item.status)}>{item.status}</CBadge>
+                  </td>
+                ),
+                action: () => (
+                  <td style={{ display: "flex", justifyContent: "start" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        width: "80%",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <CLink className="c-subheader-nav-link" href="#">
+                        <CIcon name="cil-pencil" alt="Edit" />
+                        {/* &nbsp;Edit */}
+                      </CLink>
+                      <CLink className="c-subheader-nav-link" href="#">
+                        <CIcon
+                          style={{ color: "red" }}
+                          name="cil-trash"
+                          alt="Delete"
+                        />
+                        {/* &nbsp;Edit */}
+                      </CLink>
+                    </div>
+                  </td>
+                ),
+              }}
+            />
+          )}
         </CCardBody>
       </CCard>
     </>
