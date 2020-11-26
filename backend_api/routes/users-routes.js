@@ -10,7 +10,9 @@ const router = express.Router();
 
 router.post('/',
 [
-    check('fName').not().isEmpty()
+    check('fName').not().isEmpty(),
+    check('email').normalizeEmail().isEmail(),
+    check('password').isLength({min:6})
 ]
 ,usersController.register);
 

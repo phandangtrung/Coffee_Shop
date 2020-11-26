@@ -81,7 +81,7 @@ const updateProductbyId = async(req, res, next) => {
       
       };
     let products;
-    products = await Product.findByIdAndUpdate(pid, updatedProduct);
+    products = await Product.findByIdAndUpdate(ProId, updatedProduct);
     res.status(200).json({products: updatedProduct});
 
 }
@@ -90,7 +90,7 @@ const deleteProductById = async (req, res, next) => {
   const ProId = req.params.pid;
   let products;
   try{
-      products = await Product.findOneAndDelete(pid);
+      products = await Product.findOneAndDelete(ProId);
   }
   catch (err) {
       const error = new HttpError('Something went wrong, can not delete', 500);
