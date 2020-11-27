@@ -19,7 +19,8 @@ const createShipper = async (req, res, next) => {
         name: req.body.name,
         phone: req.body.phone,
         images: req.file.path,
-        point: req.body.point
+        point: req.body.point,
+        createAt: req.body.createAt
     };
     try {
         const newShippers = new Shipper(createShipper);
@@ -49,7 +50,8 @@ const updateShipperById = async (req, res, next) => {
         name: req.body.name,
         phone: req.body.phone,
         images: req.file.path,
-        point: req.body.point
+        point: req.body.point,
+        createAt: req.body.createAt
       };
     let shippers;
     shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
