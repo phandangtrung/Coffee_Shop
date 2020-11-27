@@ -1,26 +1,27 @@
+import * as actionTypes from "../action/actionType";
 const dataFetchReducer = (state, action) => {
   switch (action.type) {
-    case "FETCH_INIT":
+    case actionTypes.getlist:
       return {
         ...state,
         isLoading: true,
         isError: false,
       };
-    case "FETCH_SUCCESS":
+    case actionTypes.getlist_success:
       return {
         ...state,
         isLoading: false,
         isError: false,
         data: action.payload,
       };
-    case "FETCH_FAILURE":
+    case actionTypes:
       return {
         ...state,
         isLoading: false,
         isError: true,
       };
     default:
-      throw new Error();
+      return state;
   }
 };
 export default dataFetchReducer;

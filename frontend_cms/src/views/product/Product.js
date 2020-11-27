@@ -14,6 +14,11 @@ import CIcon from "@coreui/icons-react";
 import usersData from "../users/UsersData";
 import productApi from "../../api/productApi";
 import dataFetchReducer from "./reducer/index";
+import {
+  doGetList,
+  doGetList_error,
+  doGetList_success,
+} from "./action/actionCreater";
 const fields = [
   // { key: "id", label: "INDEX", _style: { width: "5%" } },
   { key: "name", label: "NAME", _style: { width: "15%" } },
@@ -52,7 +57,8 @@ function Product() {
   });
   useEffect(() => {
     const fetchProductList = async () => {
-      dispatch({ type: "FETCH_INIT" });
+      // dispatch({ type: "FETCH_INIT" });
+      dispatch(doGetList);
       try {
         setIsLoading(true);
         // const params = { _page: 1, _limit: 10 };
@@ -61,11 +67,12 @@ function Product() {
         console.log("Fetch products succesfully: ", response);
         // console.log(response.products);
         // setProductList(response.products);
-        dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+        // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+        dispatch(doGetList_success(response.products));
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
-        dispatch({ type: "FETCH_FAILURE" });
+        dispatch(doGetList_error);
       }
     };
     fetchProductList();
