@@ -13,7 +13,7 @@ import "./style.css";
 import CIcon from "@coreui/icons-react";
 import usersData from "../users/UsersData";
 import productApi from "../../api/productApi";
-
+import dataFetchReducer from "./reducer/index";
 const fields = [
   // { key: "id", label: "INDEX", _style: { width: "5%" } },
   { key: "name", label: "NAME", _style: { width: "15%" } },
@@ -38,32 +38,6 @@ const getBadge = (status) => {
       return "danger";
     default:
       return "primary";
-  }
-};
-
-const dataFetchReducer = (state, action) => {
-  switch (action.type) {
-    case "FETCH_INIT":
-      return {
-        ...state,
-        isLoading: true,
-        isError: false,
-      };
-    case "FETCH_SUCCESS":
-      return {
-        ...state,
-        isLoading: false,
-        isError: false,
-        data: action.payload,
-      };
-    case "FETCH_FAILURE":
-      return {
-        ...state,
-        isLoading: false,
-        isError: true,
-      };
-    default:
-      throw new Error();
   }
 };
 
