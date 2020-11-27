@@ -23,18 +23,20 @@ const isAuth = (req, res, next) => {
   }
   try {
     const token = req.headers.authorization.split(' ')[1]; // Authorization: 'Bearer TOKEN'
-    console.log(token);
+   // console.log(token);
     if (!token) {
       const error =  new HttpError('invalid token', 401);
       return next(error);
     }
-    const decodedToken = jwt.verify(token, JWT_SECRET);
+    console.log(token)
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
     console.log(decodedToken);
     req.userData = {
-      name: decodedToken.name,
+      fName: decodedToken.fName,
       email: decodedToken.email,
       isAdmin: decodedToken.isAdmin
     };
+    console.log(req.userData)
     next();
   } catch (err) { 
     const error = new HttpError('Token is failed to create', 403);
@@ -50,5 +52,6 @@ const isAdmin = (req,res,next) => {
   const error =  new HttpError('Token is not admin', 401);
   return next(error);
 }
+
 module.exports = {isAuth, isAdmin, getToken};
  
