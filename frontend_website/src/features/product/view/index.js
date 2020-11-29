@@ -1,13 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useReducer } from "react";
 import { Menu, Row, Col, Carousel, BackTop, Pagination } from "antd";
 import { CaretUpOutlined } from "@ant-design/icons";
 import "./style.css";
 import ProductTag from "../../../components/ProductTag";
 import { Images } from "../../../config/image";
 import data from "../dummy";
-
+import productApi from "../../../api/productApi";
+import dataFetchReducer from "../reducer/index";
+import {
+  doGetList,
+  doGetList_error,
+  doGetList_success,
+} from "../action/actionCreater";
 const { SubMenu } = Menu;
 function Product() {
+  const initialData = [];
+  const [isLoading, setIsLoading] = useState(false);
+  const [productList, dispatch] = useReducer(dataFetchReducer, {
+    isLoading: false,
+    isError: false,
+    data: initialData,
+  });
+  useEffect(() => {
+    const fetchProductList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      dispatch(doGetList);
+      try {
+        setIsLoading(true);
+        // const params = { _page: 1, _limit: 10 };
+
+        const response = await productApi.getAll();
+        console.log("Fetch products succesfully: ", response);
+        // console.log(response.products);
+        // setProductList(response.products);
+        // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+        dispatch(doGetList_success(response.products));
+        console.log(">>>> productlist: ", productList);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+        dispatch(doGetList_error);
+      }
+    };
+    fetchProductList();
+  }, []);
   const handleClick = (e) => {
     console.log("click ", e);
   };
@@ -20,6 +56,7 @@ function Product() {
   };
   return (
     <>
+      {console.log(productList)}
       <div className="hot-new">
         <div className="item">
           <Carousel autoplay={5000} dots={false}>

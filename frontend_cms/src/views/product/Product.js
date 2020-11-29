@@ -12,7 +12,9 @@ import {
   Checkbox,
   Upload,
   Select,
+  Button,
 } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
 // import ImgCrop from "antd-img-crop";
 import "./style.css";
 import CIcon from "@coreui/icons-react";
@@ -64,6 +66,7 @@ const columns = [
     ),
   },
 ];
+
 function getBase64(file) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -74,29 +77,60 @@ function getBase64(file) {
 }
 function Product() {
   // upload image
-  const [state_img, setstate_img] = useState({
-    previewImage: "",
-    previewTitle: "",
-    fileList: [],
-  });
-
-  const { fileList } = state_img;
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </div>
-  );
-  const handleChange = ({ fileList }) => setstate_img({ fileList });
+  const [form] = Form.useForm();
+  const [fileList, setfileList] = useState([]);
   //uploadimage
   const options = [
     { label: "M", value: "m" },
     { label: "L", value: "l" },
   ];
-
+  const [sizecheck, setSizecheck] = useState({ m: false, l: false });
   const toggle = () => {
     SetVisible(!isvisible);
   };
+
+  const uploadimg = (info) => {
+    console.log(">>>>info: ", info);
+    // let fileList = [...info.fileList];
+
+    // // 1. Limit the number of uploaded files
+    // // Only to show two recent uploaded files, and old ones will be replaced by the new
+    // fileList = fileList.slice(-2);
+
+    // // 2. Read from response and show file link
+    // fileList = fileList.map((file) => {
+    //   if (file.response) {
+    //     // Component will show file.url as link
+    //     file.url = file.response.url;
+    //   }
+    //   return file;
+    // });
+
+    // setfileList({ fileList });
+    // console.log(">>>>filelist: ", fileList);
+  };
+  const props = {
+    onChange: uploadimg,
+  };
+  const handleOk = (values) => {
+    form
+      .validateFields()
+      .then((values) => {
+        form.resetFields();
+        // onCreate(values);
+        console.log(">>>value", values);
+      })
+      .catch((info) => {
+        console.log("Validate Failed:", info);
+      });
+  };
+  function onChangemcb(e) {
+    setSizecheck({ ...sizecheck, m: e.target.checked });
+    console.log(sizecheck);
+  }
+  function onChangelcb(e) {
+    setSizecheck({ ...sizecheck, l: e.target.checked });
+  }
   const initialData = [];
   const [isLoading, setIsLoading] = useState(false);
   const [isvisible, SetVisible] = useState(false);
@@ -160,7 +194,7 @@ function Product() {
       <Modal
         title="Add Product"
         visible={isvisible}
-        // onOk={handleOk}
+        onOk={handleOk}
         onCancel={toggle}
         style={{ marginTop: "5%" }}
         width={1000}
@@ -168,6 +202,7 @@ function Product() {
         <Form
           // initialValues={{ size: componentSize }}
           // onValuesChange={onFormLayoutChange}
+          form={form}
           size={"large"}
         >
           <Row style={{ display: "flex", justifyContent: "space-between" }}>
@@ -189,39 +224,38 @@ function Product() {
           </Row>
           <Row style={{ display: "flex", justifyContent: "space-between" }}>
             <Col span={12} style={{ paddingTop: "15px" }}>
-              <Form.Item name="price">
-                <Input placeholder="Price" />
+              <Form.Item name="alias">
+                <Input placeholder="Alias" />
               </Form.Item>
             </Col>
             <Col span={6} style={{ paddingTop: "15px" }}>
-              <Select
-                showSearch
-                style={{ width: "100%" }}
-                placeholder="Select Category"
-                optionFilterProp="children"
-                // onChange={onChange}
-                // onFocus={onFocus}
-                // onBlur={onBlur}
-                // onSearch={onSearch}
-                filterOption={(input, option) =>
-                  option.children.toLowerCase().indexOf(input.toLowerCase()) >=
-                  0
-                }
-              >
-                <Select.Option value="jack">Jack</Select.Option>
-                <Select.Option value="lucy">Lucy</Select.Option>
-                <Select.Option value="tom">Tom</Select.Option>
-              </Select>
+              <Form.Item name="category">
+                <Select
+                  showSearch
+                  style={{ width: "100%" }}
+                  placeholder="Select Category"
+                  optionFilterProp="children"
+                  // onChange={onChange}
+                  // onFocus={onFocus}
+                  // onBlur={onBlur}
+                  // onSearch={onSearch}
+                  filterOption={(input, option) =>
+                    option.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  <Select.Option value="jack">Jack</Select.Option>
+                  <Select.Option value="lucy">Lucy</Select.Option>
+                  <Select.Option value="tom">Tom</Select.Option>
+                </Select>
+              </Form.Item>
             </Col>
             <Col span={5}>
-              <Form.Item name="size">
+              <Form.Item>
                 <p>Size</p>
-                <Checkbox.Group
-                  options={options}
-                  defaultValue={["m"]}
-                  size="large"
-                  // onChange={onChange}
-                />
+                <Checkbox onChange={onChangemcb}>M</Checkbox>
+                <Checkbox onChange={onChangelcb}>L</Checkbox>
               </Form.Item>
             </Col>
           </Row>
@@ -234,14 +268,23 @@ function Product() {
           </Row>
           <Row>
             <Col span={11}>
-              <Form.Item name="image">
+              <Form.Item>
                 <Upload
+                  {...props}
                   action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  listType="picture-card"
-                  fileList={fileList}
-                  onChange={handleChange}
+                  listType="picture"
+                  defaultFileList={[...fileList]}
+                  className="upload-list-inline"
+                  // fileList={fileList}
                 >
-                  {fileList.length >= 1 ? null : uploadButton}
+                  <p style={{ paddingBottom: "10px", fontSize: "15px" }}>
+                    Product Image (png only)
+                  </p>
+                  {fileList.length < 2 && (
+                    <Button onClick={uploadimg} icon={<UploadOutlined />}>
+                      Upload
+                    </Button>
+                  )}
                 </Upload>
               </Form.Item>
             </Col>

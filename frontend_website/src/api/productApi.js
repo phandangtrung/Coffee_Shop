@@ -1,10 +1,9 @@
 import axiosClient from "./axiosClient";
-
 // api/productApi.js
 class ProductApi {
-  getAll = (params) => {
-    const url = "/products";
-    return axiosClient.get(url, { params });
+  getAll = () => {
+    const url = "/api/products";
+    return axiosClient.get(url);
   };
 }
 const productApi = new ProductApi();
