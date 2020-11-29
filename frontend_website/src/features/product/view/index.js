@@ -107,27 +107,13 @@ function Product() {
             <img alt="product_banner" src={Images.SBANNER} />
           </div>
           <Row>
-            <Col span={8}>
-              <ProductTag />
-            </Col>
-            <Col span={8}>
-              <ProductTag />
-            </Col>
-            <Col span={8}>
-              <ProductTag />
-            </Col>
+            {productList.data.map((product) => (
+              <Col span={8}>
+                <ProductTag name={product.name} price={product.prices} />
+              </Col>
+            ))}
           </Row>
-          <Row>
-            <Col span={8}>
-              <ProductTag />
-            </Col>
-            <Col span={8}>
-              <ProductTag />
-            </Col>
-            <Col span={8}>
-              <ProductTag />
-            </Col>
-          </Row>
+
           <Pagination
             style={{ textAlign: "end" }}
             defaultCurrent={1}
