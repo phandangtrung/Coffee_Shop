@@ -2,7 +2,8 @@ import React from "react";
 import "./style.css";
 import { Images } from "../../config/image";
 
-function ProductTag() {
+function ProductTag(props) {
+  console.log(props);
   return (
     <div>
       <div className="menu-item">
@@ -10,8 +11,8 @@ function ProductTag() {
           <img alt="picture" src={Images.COCF} />
         </div>
         <div className="menu-detail">
-          <div className="title-name">AMERICANO</div>
-          <div className="price">39,000 VND</div>
+          <div className="title-name">{props.name}</div>
+          <div className="price">{props.price} VND</div>
           <div className="button-form">
             <button>MUA NGAY</button>
           </div>
