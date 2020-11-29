@@ -53,7 +53,8 @@ const updateCategoryById = async (req, res, next) => {
     }
     const updatedCategory = {
         name: req.body.name,
-        alias: getAlias(req.body.name)
+        alias: getAlias(req.body.name),
+        createAt: req.body.createAt
       };
     let categories;
     categories = await Category.findByIdAndUpdate(CateId, updatedCategory);
@@ -88,7 +89,8 @@ const createCategory = async (req, res, next) => {
     }
     const createCategory = {
         name: req.body.name,
-        alias: getAlias(req.body.name)               
+        alias: getAlias(req.body.name),
+        createAt: req.body.createAt               
     };
     try {
         const newCategories = new Category(createCategory);

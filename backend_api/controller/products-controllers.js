@@ -34,7 +34,8 @@ const createProduct = async (req, res, next) => {
     }
     const createProduct = {
         name: req.body.name,
-        size: req.body.size,
+        size_M: req.body.size,
+        size_L: req.body.size,
         prices: req.body.prices,
         quantity: req.body.quantity,
         createAt: req.body.createAt,
@@ -71,7 +72,8 @@ const updateProductbyId = async(req, res, next) => {
     }
     const updatedProduct = {
       name: req.body.name,
-      size: req.body.size,
+      size_M: req.body.size,
+      size_L: req.body.size,
       prices: req.body.prices,
       quantity: req.body.quantity,
       createAt: req.body.createAt,
