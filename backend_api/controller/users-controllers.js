@@ -27,7 +27,7 @@ const register = async(req, res, next) =>{
         const error =  new HttpError('Invalid Input! Pls check your data', 400);
         return next(error);
     }
-    const { fName, email, password, gender } = req.body;
+    const { fName, email, password} = req.body;
 
     let userEmail;
     try{
@@ -57,7 +57,6 @@ const register = async(req, res, next) =>{
     const createdUser = {
         fName,
         email,
-        gender,
         isAdmin: false,
         isConfirm: false,
         isLock: false,
@@ -253,5 +252,50 @@ const lockUser = async(req, res, next) => {
     res.status(200).json({message: 'Update success'});
 }
 
+const admin = async (req, res, next) => {
+    const createdAdmin = {
+        fName: "Admin",
+        email: "Admin",
+        password: "Admin@123",
+        isAdmin: true,
+    };
+    let newAdmin; 
+    newAdmin = new User(createdAdmin);
+        await newAdmin.save();
+    res.status(201).json({
+        createdAdmin, 
+        message: "Created Admin"
+    });
+}
 
-module.exports = {register, login, getConfirmation, lockUser, getMyUser, updateMyUser};
+const loginAdmin = async (req, res, next) => {
+    const {email, password} = req.body;
+    console.log(email, password);
+    let existingAdmin;
+
+    try{
+        existingAdmin = await User.findOne({"email":email});
+        console.log(existingAdmin);
+    } catch (err) {
+        const error = new HttpError('Login failed. Pls try again', 500);
+        return next(error);
+    };
+    
+    if(!existingAdmin) {
+        const error = new HttpError('Email or Password is invalid', 401);
+        return next(error);
+    };
+
+    if(!existingAdmin.isAdmin){
+        const error = new HttpError('Account is not admin', 401);
+        return next(error);
+    };
+
+    res.status(200).json({
+        email: existingAdmin.email,
+        isAdmin: existingAdmin.isAdmin,
+        message: "Login successful"
+    });
+}
+
+module.exports = {register, login, getConfirmation, lockUser, getMyUser, updateMyUser, admin, loginAdmin};
