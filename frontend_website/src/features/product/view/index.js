@@ -6,25 +6,37 @@ import ProductTag from "../../../components/ProductTag";
 import { Images } from "../../../config/image";
 import data from "../dummy";
 import productApi from "../../../api/productApi";
+import categoryApi from "../../../api/categoryApi";
 import dataFetchReducer from "../reducer/index";
+import dataFetchCategory from "../reducer/index";
 import {
   doGetList,
   doGetList_error,
   doGetList_success,
+  doGetListCate,
+  doGetListCate_success,
+  doGetListCate_error,
 } from "../action/actionCreater";
+
 const { SubMenu } = Menu;
 function Product() {
   const initialData = [];
   const [isLoading, setIsLoading] = useState(false);
-  const [productList, dispatch] = useReducer(dataFetchReducer, {
+  const [productList, dispatchProduct] = useReducer(dataFetchReducer, {
     isLoading: false,
     isError: false,
-    data: initialData,
+    data: [],
+  });
+  const [categoryList, dispatchCategory] = useReducer(dataFetchCategory, {
+    isLoading: false,
+    isError: false,
+    data: [],
   });
   useEffect(() => {
+    // productapi
     const fetchProductList = async () => {
       // dispatch({ type: "FETCH_INIT" });
-      dispatch(doGetList);
+      dispatchProduct(doGetList);
       try {
         setIsLoading(true);
         // const params = { _page: 1, _limit: 10 };
@@ -34,15 +46,38 @@ function Product() {
         // console.log(response.products);
         // setProductList(response.products);
         // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
-        dispatch(doGetList_success(response.products));
+        dispatchProduct(doGetList_success(response.products));
         console.log(">>>> productlist: ", productList);
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
-        dispatch(doGetList_error);
+        dispatchProduct(doGetList_error);
       }
     };
     fetchProductList();
+
+    // categoryapi
+    const fetchCategoryList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      dispatchCategory(doGetList);
+      try {
+        setIsLoading(true);
+        // const params = { _page: 1, _limit: 10 };
+
+        const response = await categoryApi.getAll();
+        console.log("Fetch products succesfully: ", response);
+        // console.log(response.products);
+        // setProductList(response.products);
+        // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+        dispatchCategory(doGetList_success(response.categories));
+        console.log(">>>>categorylist: ", categoryList);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+        dispatchCategory(doGetList_error);
+      }
+    };
+    fetchCategoryList();
   }, []);
   const handleClick = (e) => {
     console.log("click ", e);
@@ -56,7 +91,6 @@ function Product() {
   };
   return (
     <>
-      {console.log(productList)}
       <div className="hot-new">
         <div className="item">
           <Carousel autoplay={5000} dots={false}>
@@ -96,8 +130,8 @@ function Product() {
             mode="inline"
           >
             <Menu.Item className="category-title">DANH MỤC</Menu.Item>
-            {data.map((category) => {
-              return <Menu.Item key={category.id}>{category.name}</Menu.Item>;
+            {categoryList.data.map((category) => {
+              return <Menu.Item key={category._id}>{category.name}</Menu.Item>;
             })}
           </Menu>
         </div>

@@ -1,13 +1,13 @@
 import * as actionTypes from "../action/actionType";
-const dataFetchReducer = (state, action) => {
+const dataFetchCategory = (state, action) => {
   switch (action.type) {
-    case actionTypes.getlist:
+    case actionTypes.getlistcategory:
       return {
         ...state,
         isLoading: true,
         isError: false,
       };
-    case actionTypes.getlist_success:
+    case actionTypes.getlistcategory_success:
       return {
         ...state,
         isLoading: false,
@@ -24,4 +24,4 @@ const dataFetchReducer = (state, action) => {
       return state;
   }
 };
-export default dataFetchReducer;
+export default dataFetchCategory;
