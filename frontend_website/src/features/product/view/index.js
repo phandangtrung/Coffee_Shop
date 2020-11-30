@@ -108,7 +108,7 @@ function Product() {
           </div>
           <Row>
             {productList.data.map((product) => (
-              <Col span={8}>
+              <Col span={8} key={product._id}>
                 <ProductTag name={product.name} price={product.prices} />
               </Col>
             ))}

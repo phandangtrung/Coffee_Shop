@@ -26,6 +26,7 @@ const MainRouter = () => {
               path={item.path}
               component={item.component}
               exact={item.exact}
+              key={item.path}
             />
           );
         })}
