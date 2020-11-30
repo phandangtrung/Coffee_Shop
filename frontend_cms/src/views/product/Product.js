@@ -20,13 +20,19 @@ import "./style.css";
 import CIcon from "@coreui/icons-react";
 import usersData from "../users/UsersData";
 import productApi from "../../api/productApi";
+import category from "../../api/categoryApi";
 import dataFetchReducer from "./reducer/index";
+import { dataFetchReducer as dataFetchReducerCategory } from ".././category/reducer/index";
 import {
   doGetList,
   doGetList_error,
   doGetList_success,
 } from "./action/actionCreater";
+import { doGetList as doGetListCategory } from "../category/action/actionCreater.js";
+import { doGetList_error as doGetList_errorCategory } from "../category/action/actionCreater.js";
+import { doGetList_success as doGetList_successCategory } from "../category/action/actionCreater.js";
 import { PlusOutlined } from "@ant-design/icons";
+import categoryApi from "../../api/categoryApi";
 
 const columns = [
   {
@@ -140,9 +146,18 @@ function Product() {
     isError: false,
     data: initialData,
   });
+  const [categoryList, dispatchCategory] = useReducer(
+    dataFetchReducerCategory,
+    {
+      isLoading: false,
+      isError: false,
+      data: initialData,
+    }
+  );
   useEffect(() => {
     const fetchProductList = async () => {
       // dispatch({ type: "FETCH_INIT" });
+
       dispatch(doGetList);
       try {
         setIsLoading(true);
@@ -154,7 +169,7 @@ function Product() {
         // setProductList(response.products);
         // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
         dispatch(doGetList_success(response.products));
-        console.log(">>>> productlist: ", productList);
+        // console.log(">>>> productlist: ", productList);
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
@@ -162,6 +177,27 @@ function Product() {
       }
     };
     fetchProductList();
+    const fetchCategoryList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      dispatchCategory(doGetListCategory);
+      try {
+        setIsLoading(true);
+        // const params = { _page: 1, _limit: 10 };
+
+        const response = await categoryApi.getAll();
+        console.log("Fetch products succesfully: ", response);
+        // console.log(response.products);
+        // setProductList(response.products);
+        // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+        dispatchCategory(doGetList_successCategory(response.categories));
+        // console.log(">>>> productlist: ", productList);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+        dispatchCategory(doGetList_errorCategory);
+      }
+    };
+    fetchCategoryList();
   }, []);
   const handleClick = () => {
     SetVisible(!isvisible);
@@ -245,9 +281,11 @@ function Product() {
                       .indexOf(input.toLowerCase()) >= 0
                   }
                 >
-                  <Select.Option value="jack">Jack</Select.Option>
-                  <Select.Option value="lucy">Lucy</Select.Option>
-                  <Select.Option value="tom">Tom</Select.Option>
+                  {categoryList.data.map((category) => (
+                    <Select.Option key={category._id} value={category._id}>
+                      {category.name}
+                    </Select.Option>
+                  ))}
                 </Select>
               </Form.Item>
             </Col>
