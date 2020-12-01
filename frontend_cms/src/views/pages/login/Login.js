@@ -1,4 +1,12 @@
-import React from "react";
+import React, { useState, useEffect, useReducer } from "react";
+import dataFetchReducer from "./reducer/index";
+import userApi from "../../../api/userApi";
+import axios from "axios";
+import {
+  doGetList,
+  doGetList_error,
+  doGetList_success,
+} from "./action/actionCreater.js";
 import { Link } from "react-router-dom";
 import {
   CButton,
@@ -15,9 +23,48 @@ import {
   CRow,
   CImg,
 } from "@coreui/react";
+import { Input, Form, Checkbox, Button } from "antd";
+import { UserOutlined, LockOutlined } from "@ant-design/icons";
 import CIcon from "@coreui/icons-react";
+const setUserSession = (token, user) => {
+  sessionStorage.setItem("token", token);
+  sessionStorage.setItem("user", JSON.stringify(user));
+};
+const Login = (props) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [state, setstate] = useState({ email: " ", password: "" });
+  const onLogin = (values) => {
+    console.log(values);
+    setstate({ email: values.email, password: values.password });
+    // props.history.push("/dashboard");
+    setError(null);
+    setLoading(true);
+    axios
+      .post("http://localhost:3000/api/users/login/admin", {
+        email: state.email,
+        password: state.password,
+      })
+      .then((response) => {
+        console.log(">>>>reponse: ", response);
+        setLoading(false);
+        setUserSession(response.data.token, response.data.user);
+        props.history.push("/dashboard");
+      })
+      .catch((error) => {
+        setLoading(false);
+        if (error.response.status === 401)
+          setError(error.response.data.message);
+        else setError("Something went wrong. Please try again later.");
+      });
+  };
+  const [isLoading, setIsLoading] = useState(false);
+  const [productList, dispatch] = useReducer(dataFetchReducer, {
+    isLoading: false,
+    isError: false,
+    data: [],
+  });
 
-const Login = () => {
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
@@ -32,38 +79,39 @@ const Login = () => {
                     justifyContent: "center",
                   }}
                 >
-                  <CForm>
+                  <Form onFinish={onLogin}>
                     <h1>ADMIN LOGIN</h1>
                     <p className="text-muted">Sign In to admin account</p>
-                    <CInputGroup className="mb-3">
-                      <CInputGroupPrepend>
-                        <CInputGroupText>
-                          <CIcon name="cil-user" />
-                        </CInputGroupText>
-                      </CInputGroupPrepend>
-                      <CInput
+                    <Form.Item name="email" className="mb-3">
+                      <Input
+                        prefix={<UserOutlined />}
                         type="text"
                         placeholder="Username"
                         autoComplete="username"
                       />
-                    </CInputGroup>
-                    <CInputGroup className="mb-4">
-                      <CInputGroupPrepend>
-                        <CInputGroupText>
-                          <CIcon name="cil-lock-locked" />
-                        </CInputGroupText>
-                      </CInputGroupPrepend>
-                      <CInput
+                    </Form.Item>
+                    <Form.Item name="password" className="mb-3">
+                      <Input
+                        prefix={<LockOutlined />}
                         type="password"
                         placeholder="Password"
                         autoComplete="current-password"
                       />
-                    </CInputGroup>
+                    </Form.Item>
+
                     <CRow>
                       <CCol xs="12">
-                        <CButton color="primary" style={{ width: "100%" }}>
+                        <Button
+                          color="primary"
+                          style={{
+                            width: "100%",
+                            backgroundColor: "blue",
+                            color: "white",
+                          }}
+                          htmlType="submit"
+                        >
                           Login
-                        </CButton>
+                        </Button>
                       </CCol>
                       {/* <CCol xs="6" className="text-right">
                         <CButton color="link" className="px-0">
@@ -71,7 +119,7 @@ const Login = () => {
                         </CButton>
                       </CCol> */}
                     </CRow>
-                  </CForm>
+                  </Form>
                 </CCardBody>
               </CCard>
               <CCard className="text-white d-md-down-none">

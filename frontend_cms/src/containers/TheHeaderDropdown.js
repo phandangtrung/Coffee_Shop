@@ -59,14 +59,14 @@ const TheHeaderDropdown = () => {
         {/* <CDropdownItem header tag="div" color="light" className="text-center">
           <strong>Settings</strong>
         </CDropdownItem> */}
-        <CDropdownItem>
+        {/* <CDropdownItem>
           <CIcon name="cil-user" className="mfe-2" />
           Profile
         </CDropdownItem>
         <CDropdownItem>
           <CIcon name="cil-settings" className="mfe-2" />
           Settings
-        </CDropdownItem>
+        </CDropdownItem> */}
         {/* <CDropdownItem>
           <CIcon name="cil-credit-card" className="mfe-2" />
           Payments
