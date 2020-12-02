@@ -87,8 +87,8 @@ const updateProductbyId = async(req, res, next) => {
     res.status(200).json({products: updatedProduct}); */
     try {
       let products;
-    products = await Product.findByIdAndUpdate(ProId, updatedProduct);
-    res.status(200).json({products: updatedProduct});
+      products = await Product.findByIdAndUpdate(ProId, updatedProduct);
+      res.status(200).json({products: updatedProduct});
     } catch (error) {
     if (error.name === 'MongoError' && error.code === 11000) {
       // Duplicate username

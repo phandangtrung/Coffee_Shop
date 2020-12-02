@@ -19,16 +19,19 @@ router.post('/signup',
 
 router.post('/createAdmin',usersController.admin);
 
-
 router.post('/login', usersController.login);
 router.get('/confirmation/:token',usersController.getConfirmation);
 
 router.use(isAuth);
+
 router.get('/myUser',usersController.getMyUser);
 router.patch('/myUser',usersController.updateMyUser);
 
 router.use(isAdmin);
+
+router.get('/',usersController.getAllUsers);
+router.get('/:uid', usersController.getUserById)
+router.post('/login/admin',usersController.loginAdmin);
 router.patch('/lock/:uid',usersController.lockUser);
 
-router.post('/login/admin',usersController.loginAdmin);
 module.exports = router;
