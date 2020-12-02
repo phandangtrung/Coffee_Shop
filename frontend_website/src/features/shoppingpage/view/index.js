@@ -89,9 +89,17 @@ function ShoppingPage(props) {
       dataIndex: "size",
       key: "size",
       render: (size) => (
-        <Select defaultValue="m" style={{ width: 80, textAlign: "center" }}>
-          <Select.Option value="m">M</Select.Option>
-          <Select.Option value="l">L</Select.Option>
+        <Select
+          className="productname"
+          defaultValue="m"
+          style={{ width: 80, textAlign: "center" }}
+        >
+          <Select.Option className="productname" value="m">
+            M
+          </Select.Option>
+          <Select.Option className="productname" value="l">
+            L
+          </Select.Option>
         </Select>
       ),
     },
@@ -99,17 +107,21 @@ function ShoppingPage(props) {
       title: "AMOUNT",
       dataIndex: "amount",
       key: "amount",
-      render: (amount) => <InputNumber value={amount} />,
+      render: (amount) => (
+        <InputNumber className="productname" value={amount} />
+      ),
     },
     {
       title: "PRICE",
       dataIndex: "price",
       key: "price",
+      render: (price) => <span className="productname">{price} VND</span>,
     },
     {
       title: "TOTAL",
       dataIndex: "total",
       key: "total",
+      render: (total) => <span className="productname">{total} VND</span>,
     },
   ];
 
@@ -160,7 +172,7 @@ function ShoppingPage(props) {
         <div className="cart-container">
           <div className="title-form">
             <div className="title">Shopping Cart</div>
-            <div className="item-cart">3 Items</div>
+            <div className="item-cart">{cart.length} Items</div>
           </div>
           <hr />
           <Table
