@@ -1,5 +1,6 @@
 import React from "react";
 import { setState } from "react";
+import { Link } from "react-router-dom";
 import { Menu, Grid, Modal } from "antd";
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -35,17 +36,17 @@ const LeftMenu = () => {
         mode={md ? "horizontal" : "inline"}
         className="rightmenu-containner menutitle"
       >
-        <Menu.Item key="mail">
+        <Menu.Item key="home">
           <a href="" clasname="titlemenu">
             Home
           </a>
         </Menu.Item>
-        <SubMenu key="sub1" className="fontmenu" title={<span>Product</span>}>
-          <MenuItemGroup title="Product" className="fontmenu">
-            <Menu.Item key="setting:1">Product list</Menu.Item>
-            <Menu.Item key="setting:2">Product single</Menu.Item>
-          </MenuItemGroup>
-        </SubMenu>
+        <Menu.Item key="product">
+          <div clasname="titlemenu">
+            <Link to="/product">Product</Link>
+          </div>
+        </Menu.Item>
+
         <SubMenu key="sub2" className="fontmenu" title={<span>Shop</span>}>
           <MenuItemGroup title="Item 1">
             <Menu.Item key="setting:1">Option 1</Menu.Item>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./style.css";
 import {
+  AutoComplete,
   Button,
   Col,
   Form,
@@ -23,6 +24,10 @@ import Geocode from "react-geocode";
 
 import Modal from "antd/lib/modal/Modal";
 function ShoppingPage(props) {
+  let cart = JSON.parse(localStorage.getItem("cart"));
+  if (cart === null) {
+    cart = [];
+  }
   Geocode.setApiKey("AIzaSyB_eKxh8KTsPy6aPPJPROh2yP75dTvg92o");
   const [form] = Form.useForm();
   const [coordinates, setCoordinates] = useState({
@@ -37,13 +42,17 @@ function ShoppingPage(props) {
   });
   const dataSource = [
     {
-      product: { image: Images.COCF, name: "AMERICANO", size: "M" },
+      key: "1",
+      name: "AMERICANO",
+      image: Images.COCF,
       quantity: 1,
       price: 39000,
       total: 39000,
     },
     {
-      product: { image: Images.COCF, name: "AMERICANO", size: "M" },
+      key: "2",
+      name: "AMERICANO",
+      image: Images.COCF,
       quantity: 1,
       price: 39000,
       total: 39000,
@@ -53,21 +62,43 @@ function ShoppingPage(props) {
   const columns = [
     {
       title: "PRODUCT",
-      dataIndex: "product",
-      key: "product",
-      render: (product) => (
+      dataIndex: "image",
+      key: "image",
+      render: (image) => (
         <>
-          <img src={product.image} />
-          <span className="productname">
-            {product.name} - SIZE {product.size}
+          <img style={{ width: "80%", height: "auto" }} src={Images.COCF} />
+        </>
+      ),
+      width: "200px",
+      height: "auto",
+    },
+    {
+      title: "NAME",
+      dataIndex: "name",
+      key: "name",
+      render: (name) => (
+        <>
+          <span style={{ textAlign: "start" }} className="productname">
+            {name}
           </span>
         </>
       ),
     },
     {
-      title: "QUANTITY",
-      dataIndex: "quantity",
-      key: "quantity",
+      title: "SIZE",
+      dataIndex: "size",
+      key: "size",
+      render: (size) => (
+        <Select defaultValue="m" style={{ width: 80, textAlign: "center" }}>
+          <Select.Option value="m">M</Select.Option>
+          <Select.Option value="l">L</Select.Option>
+        </Select>
+      ),
+    },
+    {
+      title: "AMOUNT",
+      dataIndex: "amount",
+      key: "amount",
       render: (amount) => <InputNumber value={amount} />,
     },
     {
@@ -132,7 +163,12 @@ function ShoppingPage(props) {
             <div className="item-cart">3 Items</div>
           </div>
           <hr />
-          <Table pagination={false} dataSource={dataSource} columns={columns} />
+          <Table
+            className="mytable"
+            pagination={false}
+            dataSource={cart}
+            columns={columns}
+          />
           <div className="back">
             <a>
               <ShoppingCartOutlined style={{ paddingRight: "20px" }} />

@@ -1,44 +1,65 @@
 import React, { useState } from "react";
 import "./style.css";
 import { Images } from "../../config/image";
-import { Empty } from "antd";
+import { Empty, notification } from "antd";
+import {
+  ShoppingCartOutlined,
+  ExclamationCircleFilled,
+} from "@ant-design/icons";
 
 function ProductTag(props) {
-  const [cart, setCart] = useState({});
-
   console.log(props);
   const addtoCart = () => {
     // console.log(">>>product : ", props.name, " ", props._id, " ", props.price);
     // localStorage.clear();
-    let cart = JSON.parse(localStorage.getItem("cart"));
-    if (cart === null) {
-      cart = [];
-      cart.push({
-        _id: props._id,
-        name: props.name,
-        amount: 1,
-        price: props.price,
-      });
-    } else {
-      let check_available = false;
-      for (let i = 0; i < cart.length; i++) {
-        if (cart[i]._id === props._id) {
-          cart[i].amount = cart[i].amount + 1;
-          cart[i].price = cart[i].amount * props.price;
-          check_available = true;
-        }
-      }
-      if (check_available !== true) {
+    try {
+      let cart = JSON.parse(localStorage.getItem("cart"));
+      if (cart === null) {
+        cart = [];
         cart.push({
           _id: props._id,
           name: props.name,
+          image: Images.COCF,
+          size: "M",
           amount: 1,
           price: props.price,
+          total: props.price,
         });
+      } else {
+        let check_available = false;
+        for (let i = 0; i < cart.length; i++) {
+          if (cart[i]._id === props._id) {
+            cart[i].amount = cart[i].amount + 1;
+            cart[i].total = cart[i].amount * props.price;
+            check_available = true;
+          }
+        }
+        if (check_available !== true) {
+          cart.push({
+            _id: props._id,
+            name: props.name,
+            image: Images.COCF,
+            size: "M",
+            amount: 1,
+            price: props.price,
+            total: props.price,
+          });
+        }
       }
+      localStorage.setItem("cart", JSON.stringify(cart));
+      console.log("Cart>>", localStorage.cart);
+      notification.open({
+        message: `${props.name}`,
+        description: `${props.name} has been added to your cart`,
+        icon: <ShoppingCartOutlined style={{ color: "# rgb(164, 115, 67)" }} />,
+      });
+    } catch {
+      notification.open({
+        message: "Add is Error",
+        description: "Something went wrong",
+        icon: <ExclamationCircleFilled style={{ color: "#red" }} />,
+      });
     }
-    localStorage.setItem("cart", JSON.stringify(cart));
-    console.log("Cart>>", localStorage.cart);
   };
   return (
     <div>

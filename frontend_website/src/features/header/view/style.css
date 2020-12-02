@@ -134,14 +134,14 @@
 .ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected {
   border-bottom: 2px solid rgb(164, 115, 67);
 }
-.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover a,
-.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover a,
-.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active a,
-.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active a,
-.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open a,
-.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open a,
-.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected a,
-.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected a {
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item:hover a div,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu:hover a div,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-active a div,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-active a div,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-open a div,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-open a div,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-item-selected a div,
+.ant-menu-horizontal:not(.ant-menu-dark) > .ant-menu-submenu-selected a div {
   color: rgb(164, 115, 67);
 }
 .ant-menu-item:hover,
