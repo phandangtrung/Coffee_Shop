@@ -18,7 +18,7 @@ router.post('/signup',
 ,usersController.register);
 
 router.post('/createAdmin',usersController.admin);
-router.post('/login/admin',usersController.loginAdmin);
+
 
 router.post('/login', usersController.login);
 router.get('/confirmation/:token',usersController.getConfirmation);
@@ -30,4 +30,5 @@ router.patch('/myUser',usersController.updateMyUser);
 router.use(isAdmin);
 router.patch('/lock/:uid',usersController.lockUser);
 
+router.post('/login/admin',usersController.loginAdmin);
 module.exports = router;
