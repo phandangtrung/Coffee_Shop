@@ -32,6 +32,7 @@ function Product() {
     isError: false,
     data: [],
   });
+
   useEffect(() => {
     // productapi
     const fetchProductList = async () => {
@@ -143,7 +144,11 @@ function Product() {
           <Row>
             {productList.data.map((product) => (
               <Col span={8} key={product._id}>
-                <ProductTag name={product.name} price={product.prices} />
+                <ProductTag
+                  _id={product._id}
+                  name={product.name}
+                  price={product.prices}
+                />
               </Col>
             ))}
           </Row>
