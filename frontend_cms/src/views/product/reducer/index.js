@@ -14,11 +14,17 @@ const dataFetchReducer = (state, action) => {
         isError: false,
         data: action.payload,
       };
-    case actionTypes:
+    case actionTypes.getlist_error:
       return {
         ...state,
         isLoading: false,
         isError: true,
+      };
+    case actionTypes.create:
+      return {
+        ...state,
+        isLoading: true,
+        isError: false,
       };
     default:
       return state;

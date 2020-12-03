@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { CBadge, CCard, CCardHeader, CButton } from "@coreui/react";
+import { CCard, CCardHeader, CButton } from "@coreui/react";
 import {
   Table,
   Space,
@@ -18,21 +18,20 @@ import moment from "moment";
 import { UploadOutlined } from "@ant-design/icons";
 // import ImgCrop from "antd-img-crop";
 import "./style.css";
-import CIcon from "@coreui/icons-react";
-import usersData from "../users/UsersData";
 import productApi from "../../api/productApi";
-import category from "../../api/categoryApi";
 import dataFetchReducer from "./reducer/index";
 import { dataFetchReducer as dataFetchReducerCategory } from ".././category/reducer/index";
 import {
   doGetList,
   doGetList_error,
   doGetList_success,
+  doCreate,
+  doCreate_success,
+  doCreate_error,
 } from "./action/actionCreater";
 import { doGetList as doGetListCategory } from "../category/action/actionCreater.js";
 import { doGetList_error as doGetList_errorCategory } from "../category/action/actionCreater.js";
 import { doGetList_success as doGetList_successCategory } from "../category/action/actionCreater.js";
-import { PlusOutlined } from "@ant-design/icons";
 import categoryApi from "../../api/categoryApi";
 
 const columns = [
@@ -98,7 +97,6 @@ function Product() {
     // }],
   });
   const [imgfile, setimgfile] = useState({});
-  const [data, setdata] = useState({});
   //uploadimage
   const [sizecheck, setSizecheck] = useState({ size_M: true, size_L: false });
   const toggle = () => {
@@ -120,23 +118,6 @@ function Product() {
   };
   const uploadimg = (info) => {
     console.log(">>>>info: ", info);
-    // let fileList = [...info.fileList];
-
-    // // 1. Limit the number of uploaded files
-    // // Only to show two recent uploaded files, and old ones will be replaced by the new
-    // fileList = fileList.slice(-2);
-
-    // // 2. Read from response and show file link
-    // fileList = fileList.map((file) => {
-    //   if (file.response) {
-    //     // Component will show file.url as link
-    //     file.url = file.response.url;
-    //   }
-    //   return file;
-    // });
-
-    // setfileList({ fileList });
-    // console.log(">>>>filelist: ", fileList);
     console.log(fileList);
   };
   const props = {
@@ -151,13 +132,34 @@ function Product() {
         console.log(">>>value", values);
         var CurrentDate = moment().toISOString();
 
-        setdata({
+        const data = {
           ...values,
           image: imgfile,
           createAt: CurrentDate,
           ...sizecheck,
-        });
+        };
         console.log("data >>>", data);
+
+        const fetchCreateProduct = async () => {
+          // dispatch({ type: "FETCH_INIT" });
+
+          dispatch(doCreate(data));
+          try {
+            // const params = { _page: 1, _limit: 10 };
+            console.log("Vao duoc");
+            const response = await productApi.createproduct(data);
+            console.log("Fetch products succesfully: ", response);
+            // console.log(response.products);
+            // setProductList(response.products);
+            // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+            dispatch(doCreate_success(response));
+            // console.log(">>>> productlist: ", productList);
+          } catch (error) {
+            console.log("failed to fetch product list: ", error);
+            dispatch(doCreate_error);
+          }
+        };
+        fetchCreateProduct();
       })
       .catch((info) => {
         console.log("Validate Failed:", info);
