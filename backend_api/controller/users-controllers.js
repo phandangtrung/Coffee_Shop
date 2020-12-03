@@ -165,12 +165,46 @@ const getConfirmation = async(req, res, next) => {
     res.status(200).json({message: 'Success'});
 };
 
+const getAllUsers = async(req, res, next) => {
+    let users;
+    try {
+        users = await User.find();
+    } catch (err) {
+        const error = new HttpError('Something went wrong, coud not find any user', 500);
+        return next(error);
+    }
+    console.log((users));
+    if(!users)
+    {
+      const error =  new HttpError('Could not find any user', 404);
+      return next(error);
+    }
+  res.status(200).json({users});
+}
+
+const getUserById = async (req, res, next) => {
+    let users;
+    const UserId = req.params.uid;
+    try {
+        users = await User.findById(UserId);
+    } catch (err) {
+      const error = new HttpError(
+        'Something went wrong, could not find any user.',500);
+      return next(error);
+    }
+    if (!users) {
+      const error = new HttpError(
+        'Could not find aany unserfor the provided id.',404);
+      return next(error);
+    }
+    res.json({ users: users.toObject({ getters: true }) }); 
+};
+
 const getMyUser = async (req, res, next) => {
     let users;
     try{
         users = await User.findOne({"email": req.userData.email});
         console.log(users)
-        console.log("Con cho")
     } catch (err) {
         const error = new HttpError('You are not log in. Pls login', 500);
         return next(error);
@@ -298,4 +332,4 @@ const loginAdmin = async (req, res, next) => {
     });
 }
 
-module.exports = {register, login, getConfirmation, lockUser, getMyUser, updateMyUser, admin, loginAdmin};
+module.exports = {register, login, getConfirmation, lockUser, getMyUser, updateMyUser, getAllUsers, getUserById,admin, loginAdmin};
