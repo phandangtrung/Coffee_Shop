@@ -14,6 +14,7 @@ import {
   Select,
   Button,
 } from "antd";
+import moment from "moment";
 import { UploadOutlined } from "@ant-design/icons";
 // import ImgCrop from "antd-img-crop";
 import "./style.css";
@@ -58,8 +59,8 @@ const columns = [
   },
   {
     title: "Create at",
-    dataIndex: "create_at",
-    key: "create_at",
+    dataIndex: "createAt",
+    key: "createAt",
   },
   {
     title: "Action",
@@ -96,19 +97,19 @@ function Product() {
     //   url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
     // }],
   });
+  const [imgfile, setimgfile] = useState({});
   const [data, setdata] = useState({});
   //uploadimage
-  const options = [
-    { label: "M", value: "m" },
-    { label: "L", value: "l" },
-  ];
-  const [sizecheck, setSizecheck] = useState({ m: false, l: false });
+  const [sizecheck, setSizecheck] = useState({ size_M: true, size_L: false });
   const toggle = () => {
     SetVisible(!isvisible);
   };
   const handleChange = (fileList) => {
     setstate(fileList);
-    console.log(">>file", fileList.file);
+    setimgfile(fileList.file.originFileObj);
+    console.log(">>state", state);
+    console.log(">>fileList", fileList);
+    console.log(">>originFileObj", imgfile);
   };
   const handlePreview = (file) => {
     setstate({
@@ -148,7 +149,14 @@ function Product() {
         form.resetFields();
         // onCreate(values);
         console.log(">>>value", values);
-        setdata({ ...values, image: state.fileList.file });
+        var CurrentDate = moment().toISOString();
+
+        setdata({
+          ...values,
+          image: imgfile,
+          createAt: CurrentDate,
+          ...sizecheck,
+        });
         console.log("data >>>", data);
       })
       .catch((info) => {
@@ -156,11 +164,11 @@ function Product() {
       });
   };
   function onChangemcb(e) {
-    setSizecheck({ ...sizecheck, m: e.target.checked });
+    setSizecheck({ ...sizecheck, size_M: e.target.checked });
     console.log(sizecheck);
   }
   function onChangelcb(e) {
-    setSizecheck({ ...sizecheck, l: e.target.checked });
+    setSizecheck({ ...sizecheck, size_L: e.target.checked });
   }
   const initialData = [];
   const [isLoading, setIsLoading] = useState(false);
@@ -268,17 +276,28 @@ function Product() {
         >
           <Row style={{ display: "flex", justifyContent: "space-between" }}>
             <Col span={12}>
-              <Form.Item name="name">
+              <Form.Item
+                name="name"
+                rules={[
+                  { required: true, message: "Please input Product name!" },
+                ]}
+              >
                 <Input placeholder="Product name" />
               </Form.Item>
             </Col>
             <Col span={6}>
-              <Form.Item name="price">
+              <Form.Item
+                name="prices"
+                rules={[{ required: true, message: "Please input Price!" }]}
+              >
                 <Input placeholder="Price" />
               </Form.Item>
             </Col>
             <Col span={5}>
-              <Form.Item name="quantity">
+              <Form.Item
+                name="quantity"
+                rules={[{ required: true, message: "Please input Quantity!" }]}
+              >
                 <Input type="number" placeholder="Quantity" />
               </Form.Item>
             </Col>
@@ -290,7 +309,10 @@ function Product() {
               </Form.Item>
             </Col>
             <Col span={6} style={{ paddingTop: "15px" }}>
-              <Form.Item name="category">
+              <Form.Item
+                name="categoryId"
+                rules={[{ required: true, message: "Please Select Category!" }]}
+              >
                 <Select
                   showSearch
                   style={{ width: "100%" }}
@@ -315,11 +337,23 @@ function Product() {
               </Form.Item>
             </Col>
             <Col span={5}>
-              <Form.Item>
-                <p>Size</p>
-                <Checkbox onChange={onChangemcb}>M</Checkbox>
-                <Checkbox onChange={onChangelcb}>L</Checkbox>
-              </Form.Item>
+              Size
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  width: "50%",
+                }}
+              >
+                <Form.Item>
+                  <Checkbox defaultChecked onChange={onChangemcb}>
+                    M
+                  </Checkbox>
+                </Form.Item>
+                <Form.Item>
+                  <Checkbox onChange={onChangelcb}>L</Checkbox>
+                </Form.Item>
+              </div>
             </Col>
           </Row>
           <Row style={{ display: "flex", justifyContent: "space-between" }}>
