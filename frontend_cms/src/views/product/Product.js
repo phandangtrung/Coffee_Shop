@@ -85,6 +85,18 @@ function Product() {
   // upload image
   const [form] = Form.useForm();
   const [fileList, setfileList] = useState([]);
+  const [state, setstate] = useState({
+    previewVisible: false,
+    previewImage: "",
+    fileList: [],
+    // [{
+    //   uid: -1,
+    //   name: 'xxx.png',
+    //   status: 'done',
+    //   url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+    // }],
+  });
+  const [data, setdata] = useState({});
   //uploadimage
   const options = [
     { label: "M", value: "m" },
@@ -94,7 +106,17 @@ function Product() {
   const toggle = () => {
     SetVisible(!isvisible);
   };
-
+  const handleChange = (fileList) => {
+    setstate(fileList);
+    console.log(">>file", fileList.file);
+  };
+  const handlePreview = (file) => {
+    setstate({
+      ...state,
+      previewImage: file.url || file.thumbUrl,
+      previewVisible: true,
+    });
+  };
   const uploadimg = (info) => {
     console.log(">>>>info: ", info);
     // let fileList = [...info.fileList];
@@ -114,6 +136,7 @@ function Product() {
 
     // setfileList({ fileList });
     // console.log(">>>>filelist: ", fileList);
+    console.log(fileList);
   };
   const props = {
     onChange: uploadimg,
@@ -125,6 +148,8 @@ function Product() {
         form.resetFields();
         // onCreate(values);
         console.log(">>>value", values);
+        setdata({ ...values, image: state.fileList.file });
+        console.log("data >>>", data);
       })
       .catch((info) => {
         console.log("Validate Failed:", info);
@@ -313,12 +338,14 @@ function Product() {
                   listType="picture"
                   defaultFileList={[...fileList]}
                   className="upload-list-inline"
-                  // fileList={fileList}
+                  onPreview={handlePreview}
+                  onChange={handleChange}
+                  fileList={state.fileList}
                 >
                   <p style={{ paddingBottom: "10px", fontSize: "15px" }}>
                     Product Image (png only)
                   </p>
-                  {fileList.length < 2 && (
+                  {state?.fileList.length < 1 && (
                     <Button onClick={uploadimg} icon={<UploadOutlined />}>
                       Upload
                     </Button>
