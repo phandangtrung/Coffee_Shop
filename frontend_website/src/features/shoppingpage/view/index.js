@@ -108,7 +108,7 @@ function ShoppingPage(props) {
       dataIndex: "amount",
       key: "amount",
       render: (amount) => (
-        <InputNumber className="productname" value={amount} />
+        <InputNumber className="productname" defaultValue={amount} />
       ),
     },
     {
@@ -181,12 +181,6 @@ function ShoppingPage(props) {
             dataSource={cart}
             columns={columns}
           />
-          <div className="back">
-            <a>
-              <ShoppingCartOutlined style={{ paddingRight: "20px" }} />
-              Continue Shopping
-            </a>
-          </div>
         </div>
       </div>
       <div className="order-form">

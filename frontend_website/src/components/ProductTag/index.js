@@ -17,6 +17,7 @@ function ProductTag(props) {
       if (cart === null) {
         cart = [];
         cart.push({
+          key: props._id,
           _id: props._id,
           name: props.name,
           image: Images.COCF,
@@ -36,6 +37,7 @@ function ProductTag(props) {
         }
         if (check_available !== true) {
           cart.push({
+            key: props._id,
             _id: props._id,
             name: props.name,
             image: Images.COCF,
