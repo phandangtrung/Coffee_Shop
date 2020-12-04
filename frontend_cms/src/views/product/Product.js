@@ -13,6 +13,7 @@ import {
   Upload,
   Select,
   Button,
+  notification,
 } from "antd";
 import moment from "moment";
 import { UploadOutlined } from "@ant-design/icons";
@@ -161,6 +162,10 @@ function Product() {
             // dispatch(doCreate_success(response));
             setstate({ ...state, fileList: [] });
             setloadingmodal(false);
+            notification.info({
+              message: `Created Successfully`,
+              description: "",
+            });
 
             // console.log(">>>> productlist: ", productList);
           } catch (error) {
