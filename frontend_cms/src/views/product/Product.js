@@ -140,7 +140,11 @@ function Product() {
           ...sizecheck,
         };
         console.log("data >>>", data);
+        var form_data = new FormData();
 
+        for (var key in data) {
+          form_data.append(key, data[key]);
+        }
         const fetchCreateProduct = async () => {
           // dispatch({ type: "FETCH_INIT" });
 
@@ -149,18 +153,19 @@ function Product() {
             setloadingmodal(true);
 
             // const params = { _page: 1, _limit: 10 };
-            const response = await productApi.createproduct(data);
+            const response = await productApi.createproduct(form_data);
             console.log("Fetch products succesfully: ", response);
             // console.log(response.products);
             // setProductList(response.products);
             // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
-            dispatch(doCreate_success(response));
+            // dispatch(doCreate_success(response));
+            setstate({ ...state, fileList: [] });
             setloadingmodal(false);
 
             // console.log(">>>> productlist: ", productList);
           } catch (error) {
             console.log("failed to fetch product list: ", error);
-            dispatch(doCreate_error);
+            // dispatch(doCreate_error);
           }
         };
         fetchCreateProduct();

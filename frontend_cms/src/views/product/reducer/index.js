@@ -26,6 +26,19 @@ const dataFetchReducer = (state, action) => {
         isLoading: true,
         isError: false,
       };
+    case actionTypes.create_success:
+      return {
+        ...state,
+        isLoading: false,
+        isError: false,
+        data: action.payload,
+      };
+    case actionTypes.create_error:
+      return {
+        ...state,
+        isLoading: false,
+        isError: true,
+      };
     default:
       return state;
   }
