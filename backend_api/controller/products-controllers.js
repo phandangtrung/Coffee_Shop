@@ -38,6 +38,8 @@ const createProduct = async (req, res, next) => {
         size_L: req.body.size,
         prices: req.body.prices,
         quantity: req.body.quantity,
+        status: req.body.status,
+        reviews: req.body.reviews,
         createAt: req.body.createAt,
         description: req.body.description,
         alias: getAlias(req.body.name),
@@ -76,6 +78,8 @@ const updateProductbyId = async(req, res, next) => {
       size_L: req.body.size,
       prices: req.body.prices,
       quantity: req.body.quantity,
+      status: req.body.status,
+      reviews: req.body.reviews,
       createAt: req.body.createAt,
       description: req.body.description,
       alias: getAlias(req.body.name),
@@ -132,7 +136,6 @@ const getAllProducts = async(req, res, next) => {
     }
   res.status(200).json({products});
 }
-
 
 const getProductById = async (req, res, next) => {
   const ProId = req.params.pid;
