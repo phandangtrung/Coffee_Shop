@@ -99,6 +99,7 @@ function Product() {
   const [imgfile, setimgfile] = useState({});
   //uploadimage
   const [sizecheck, setSizecheck] = useState({ size_M: true, size_L: false });
+  const [loadingmodal, setloadingmodal] = useState(false);
   const toggle = () => {
     SetVisible(!isvisible);
   };
@@ -134,7 +135,7 @@ function Product() {
 
         const data = {
           ...values,
-          image: imgfile,
+          images: imgfile,
           createAt: CurrentDate,
           ...sizecheck,
         };
@@ -145,14 +146,17 @@ function Product() {
 
           dispatch(doCreate(data));
           try {
+            setloadingmodal(true);
+
             // const params = { _page: 1, _limit: 10 };
-            console.log("Vao duoc");
             const response = await productApi.createproduct(data);
             console.log("Fetch products succesfully: ", response);
             // console.log(response.products);
             // setProductList(response.products);
             // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
             dispatch(doCreate_success(response));
+            setloadingmodal(false);
+
             // console.log(">>>> productlist: ", productList);
           } catch (error) {
             console.log("failed to fetch product list: ", error);
@@ -262,6 +266,7 @@ function Product() {
       ) : (
         <Table columns={columns} dataSource={productList.data} rowKey="_id" />
       )}
+
       <Modal
         title="Add Product"
         visible={isvisible}
@@ -270,127 +275,133 @@ function Product() {
         style={{ marginTop: "5%" }}
         width={1000}
       >
-        <Form
-          // initialValues={{ size: componentSize }}
-          // onValuesChange={onFormLayoutChange}
-          form={form}
-          size={"large"}
-        >
-          <Row style={{ display: "flex", justifyContent: "space-between" }}>
-            <Col span={12}>
-              <Form.Item
-                name="name"
-                rules={[
-                  { required: true, message: "Please input Product name!" },
-                ]}
-              >
-                <Input placeholder="Product name" />
-              </Form.Item>
-            </Col>
-            <Col span={6}>
-              <Form.Item
-                name="prices"
-                rules={[{ required: true, message: "Please input Price!" }]}
-              >
-                <Input placeholder="Price" />
-              </Form.Item>
-            </Col>
-            <Col span={5}>
-              <Form.Item
-                name="quantity"
-                rules={[{ required: true, message: "Please input Quantity!" }]}
-              >
-                <Input type="number" placeholder="Quantity" />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row style={{ display: "flex", justifyContent: "space-between" }}>
-            <Col span={12} style={{ paddingTop: "15px" }}>
-              <Form.Item name="alias">
-                <Input placeholder="Alias" />
-              </Form.Item>
-            </Col>
-            <Col span={6} style={{ paddingTop: "15px" }}>
-              <Form.Item
-                name="categoryId"
-                rules={[{ required: true, message: "Please Select Category!" }]}
-              >
-                <Select
-                  showSearch
-                  style={{ width: "100%" }}
-                  placeholder="Select Category"
-                  optionFilterProp="children"
-                  // onChange={onChange}
-                  // onFocus={onFocus}
-                  // onBlur={onBlur}
-                  // onSearch={onSearch}
-                  filterOption={(input, option) =>
-                    option.children
-                      .toLowerCase()
-                      .indexOf(input.toLowerCase()) >= 0
-                  }
+        <Spin spinning={loadingmodal} size="large">
+          <Form
+            // initialValues={{ size: componentSize }}
+            // onValuesChange={onFormLayoutChange}
+            form={form}
+            size={"large"}
+          >
+            <Row style={{ display: "flex", justifyContent: "space-between" }}>
+              <Col span={12}>
+                <Form.Item
+                  name="name"
+                  rules={[
+                    { required: true, message: "Please input Product name!" },
+                  ]}
                 >
-                  {categoryList.data.map((category) => (
-                    <Select.Option key={category._id} value={category._id}>
-                      {category.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-            <Col span={5}>
-              Size
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  width: "50%",
-                }}
-              >
-                <Form.Item>
-                  <Checkbox defaultChecked onChange={onChangemcb}>
-                    M
-                  </Checkbox>
+                  <Input placeholder="Product name" />
                 </Form.Item>
-                <Form.Item>
-                  <Checkbox onChange={onChangelcb}>L</Checkbox>
-                </Form.Item>
-              </div>
-            </Col>
-          </Row>
-          <Row style={{ display: "flex", justifyContent: "space-between" }}>
-            <Col span={24} style={{ paddingTop: "15px" }}>
-              <Form.Item name="description">
-                <Input.TextArea placeholder="Description" />
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={11}>
-              <Form.Item>
-                <Upload
-                  {...props}
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  listType="picture"
-                  defaultFileList={[...fileList]}
-                  className="upload-list-inline"
-                  onPreview={handlePreview}
-                  onChange={handleChange}
-                  fileList={state.fileList}
+              </Col>
+              <Col span={6}>
+                <Form.Item
+                  name="prices"
+                  rules={[{ required: true, message: "Please input Price!" }]}
                 >
-                  <p style={{ paddingBottom: "10px", fontSize: "15px" }}>
-                    Product Image (png only)
-                  </p>
-                  {state?.fileList.length < 1 && (
-                    <Button onClick={uploadimg} icon={<UploadOutlined />}>
-                      Upload
-                    </Button>
-                  )}
-                </Upload>
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+                  <Input placeholder="Price" />
+                </Form.Item>
+              </Col>
+              <Col span={5}>
+                <Form.Item
+                  name="quantity"
+                  rules={[
+                    { required: true, message: "Please input Quantity!" },
+                  ]}
+                >
+                  <Input type="number" placeholder="Quantity" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row style={{ display: "flex", justifyContent: "space-between" }}>
+              <Col span={12} style={{ paddingTop: "15px" }}>
+                <Form.Item name="alias">
+                  <Input placeholder="Alias" />
+                </Form.Item>
+              </Col>
+              <Col span={6} style={{ paddingTop: "15px" }}>
+                <Form.Item
+                  name="categoryId"
+                  rules={[
+                    { required: true, message: "Please Select Category!" },
+                  ]}
+                >
+                  <Select
+                    showSearch
+                    style={{ width: "100%" }}
+                    placeholder="Select Category"
+                    optionFilterProp="children"
+                    // onChange={onChange}
+                    // onFocus={onFocus}
+                    // onBlur={onBlur}
+                    // onSearch={onSearch}
+                    filterOption={(input, option) =>
+                      option.children
+                        .toLowerCase()
+                        .indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {categoryList.data.map((category) => (
+                      <Select.Option key={category._id} value={category._id}>
+                        {category.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+              <Col span={5}>
+                Size
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "50%",
+                  }}
+                >
+                  <Form.Item>
+                    <Checkbox defaultChecked onChange={onChangemcb}>
+                      M
+                    </Checkbox>
+                  </Form.Item>
+                  <Form.Item>
+                    <Checkbox onChange={onChangelcb}>L</Checkbox>
+                  </Form.Item>
+                </div>
+              </Col>
+            </Row>
+            <Row style={{ display: "flex", justifyContent: "space-between" }}>
+              <Col span={24} style={{ paddingTop: "15px" }}>
+                <Form.Item name="description">
+                  <Input.TextArea placeholder="Description" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={11}>
+                <Form.Item>
+                  <Upload
+                    {...props}
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    listType="picture"
+                    defaultFileList={[...fileList]}
+                    className="upload-list-inline"
+                    onPreview={handlePreview}
+                    onChange={handleChange}
+                    fileList={state.fileList}
+                  >
+                    <p style={{ paddingBottom: "10px", fontSize: "15px" }}>
+                      Product Image (png only)
+                    </p>
+                    {state?.fileList.length < 1 && (
+                      <Button onClick={uploadimg} icon={<UploadOutlined />}>
+                        Upload
+                      </Button>
+                    )}
+                  </Upload>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Spin>
       </Modal>
     </>
   );
