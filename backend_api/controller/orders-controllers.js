@@ -18,7 +18,6 @@ const createOrder = async (req, res, next) => {
         quantity: req.body.quantity,
         prices: req.body.prices,
         status: req.body.status,
-        reviews: req.body.reviews,
         ratings: req.body.ratings,
         userAddress: req.body.userAddress               
     };
@@ -51,7 +50,6 @@ const updateOrderById = async (req, res, next) => {
         quantity: req.body.quantity,
         prices: req.body.prices,
         status: req.body.status,
-        reviews: req.body.reviews,
         ratings: req.body.ratings,
         userAddress: req.body.userAddress
       };

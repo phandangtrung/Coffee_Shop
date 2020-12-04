@@ -10,7 +10,9 @@ const productsSchema = new mongoose.Schema({
     description: {type: String, require: false},
     alias: {type: String, require: false},   
     images: {type: String, require: false},
-    categoryId: {type: String, required: false},     
+    reviews:{type:String, require: false},
+    ratings:{type:Number, require: false},
+    categoryId: {type: String, required: false}     
 });
 
 
