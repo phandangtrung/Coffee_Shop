@@ -22,6 +22,18 @@ const doCreate_success = (payload) => ({
 const doCreate_error = () => ({
   type: actionTypes.create_error,
 });
+
+const doDelete = (payload) => ({
+  type: actionTypes.deleteproduct,
+  payload,
+});
+const doDelete_success = (payload) => ({
+  type: actionTypes.deleteproduct_success,
+  payload,
+});
+const doDelete_error = () => ({
+  type: actionTypes.deleteproduct_error,
+});
 export {
   doGetList,
   doGetList_success,
@@ -29,4 +41,7 @@ export {
   doCreate,
   doCreate_success,
   doCreate_error,
+  doDelete,
+  doDelete_success,
+  doDelete_error,
 };
