@@ -18,7 +18,11 @@ import {
 } from "antd";
 import moment from "moment";
 import Moment from "react-moment";
-import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  UploadOutlined,
+  CheckCircleOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 // import ImgCrop from "antd-img-crop";
 import "./style.css";
 import productApi from "../../api/productApi";
@@ -31,6 +35,7 @@ import {
   doCreate,
   doCreate_success,
   doCreate_error,
+  doDelete,
 } from "./action/actionCreater";
 import { doGetList as doGetListCategory } from "../category/action/actionCreater.js";
 import { doGetList_error as doGetList_errorCategory } from "../category/action/actionCreater.js";
@@ -116,6 +121,7 @@ function Product() {
     // }],
   });
   const [imgfile, setimgfile] = useState({});
+  const [tabledata, settabledata] = useState([]);
   //uploadimage
   const [sizecheck, setSizecheck] = useState({ size_M: true, size_L: false });
   const [loadingmodal, setloadingmodal] = useState(false);
@@ -138,6 +144,27 @@ function Product() {
   };
   const deleteProduct = (record) => {
     console.log("Delete: ", record._id);
+    const fetchDeleteProduct = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+
+      // dispatch(doDelete(data));
+      try {
+        setIsLoading(true);
+        const response = await productApi.deleteproduct(record._id);
+        console.log("Fetch products succesfully: ", response);
+        notification.info({
+          message: `Deleted Successfully`,
+          icon: <DeleteOutlined style={{ color: "#FF0000" }} />,
+          description: `You have deleted ${record.name}`,
+          placement: "bottomRight",
+        });
+        settabledata(tabledata.filter((item) => item._id !== record._id));
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+      }
+    };
+    fetchDeleteProduct();
   };
   const uploadimg = (info) => {
     console.log(">>>>info: ", info);
@@ -182,10 +209,13 @@ function Product() {
             // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
             // dispatch(doCreate_success(response));
             setstate({ ...state, fileList: [] });
+            settabledata(...tabledata, response.newProducts);
             setloadingmodal(false);
+
             notification.info({
               message: `Created Successfully`,
-              description: "",
+              icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+              placement: "bottomRight",
             });
 
             // console.log(">>>> productlist: ", productList);
@@ -226,20 +256,13 @@ function Product() {
   );
   useEffect(() => {
     const fetchProductList = async () => {
-      // dispatch({ type: "FETCH_INIT" });
-
       dispatch(doGetList);
       try {
         setIsLoading(true);
-        // const params = { _page: 1, _limit: 10 };
-
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
-        // console.log(response.products);
-        // setProductList(response.products);
-        // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
         dispatch(doGetList_success(response.products));
-        // console.log(">>>> productlist: ", productList);
+        settabledata(response.products);
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
@@ -252,15 +275,9 @@ function Product() {
       dispatchCategory(doGetListCategory);
       try {
         setIsLoading(true);
-        // const params = { _page: 1, _limit: 10 };
-
         const response = await categoryApi.getAll();
         console.log("Fetch products succesfully: ", response);
-        // console.log(response.products);
-        // setProductList(response.products);
-        // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
         dispatchCategory(doGetList_successCategory(response.categories));
-        // console.log(">>>> productlist: ", productList);
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
@@ -295,7 +312,7 @@ function Product() {
           <Spin size="large" />
         </div>
       ) : (
-        <Table columns={columns} dataSource={productList.data} rowKey="_id" />
+        <Table columns={columns} dataSource={tabledata} rowKey="_id" />
       )}
 
       <Modal
