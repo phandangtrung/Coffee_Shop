@@ -14,9 +14,11 @@ import {
   Select,
   Button,
   notification,
+  Popconfirm,
 } from "antd";
 import moment from "moment";
-import { UploadOutlined } from "@ant-design/icons";
+import Moment from "react-moment";
+import { UploadOutlined, DeleteOutlined } from "@ant-design/icons";
 // import ImgCrop from "antd-img-crop";
 import "./style.css";
 import productApi from "../../api/productApi";
@@ -35,57 +37,70 @@ import { doGetList_error as doGetList_errorCategory } from "../category/action/a
 import { doGetList_success as doGetList_successCategory } from "../category/action/actionCreater.js";
 import categoryApi from "../../api/categoryApi";
 
-const columns = [
-  {
-    title: "Name",
-    dataIndex: "name",
-    key: "name",
-    // render: (text) => <a>{text}</a>,
-  },
-  {
-    title: "Quantity",
-    dataIndex: "quantity",
-    key: "quantity",
-  },
-  {
-    title: "Description",
-    width: 250,
-    dataIndex: "description",
-    key: "description",
-  },
-  {
-    title: "Price",
-    dataIndex: "prices",
-    key: "prices",
-    width: 150,
-    render: (text) => <p>{text} VND</p>,
-  },
-  {
-    title: "Create at",
-    dataIndex: "createAt",
-    key: "createAt",
-  },
-  {
-    title: "Action",
-    key: "action",
-    render: (text, record) => (
-      <Space size="middle">
-        <a>Edit</a>
-        <a>Delete</a>
-      </Space>
-    ),
-  },
-];
-
-function getBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-}
 function Product() {
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Image",
+      dataIndex: "images",
+      key: "images",
+      render: (images) => <img src={images} />,
+    },
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    {
+      title: "Description",
+      width: 250,
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "Price",
+      dataIndex: "prices",
+      key: "prices",
+      width: 150,
+      render: (text) => <p>{text} VND</p>,
+    },
+    {
+      title: "Create at",
+      dataIndex: "createAt",
+      key: "createAt",
+      render: (time) => (
+        <p>
+          <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
+        </p>
+      ),
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (text, record) => (
+        <Space size="middle">
+          <Button onClick={() => deleteProduct(record)} type="primary">
+            Edit
+          </Button>
+          <Popconfirm
+            title="Are you sure？"
+            icon={<DeleteOutlined style={{ color: "red" }} />}
+            onConfirm={() => deleteProduct(record)}
+          >
+            <Button type="primary" danger>
+              Delete
+            </Button>
+          </Popconfirm>
+          ,
+        </Space>
+      ),
+    },
+  ];
   // upload image
   const [form] = Form.useForm();
   const [fileList, setfileList] = useState([]);
@@ -120,6 +135,9 @@ function Product() {
       previewImage: file.url || file.thumbUrl,
       previewVisible: true,
     });
+  };
+  const deleteProduct = (record) => {
+    console.log("Delete: ", record._id);
   };
   const uploadimg = (info) => {
     console.log(">>>>info: ", info);
