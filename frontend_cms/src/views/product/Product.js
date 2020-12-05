@@ -49,6 +49,7 @@ const columns = [
   },
   {
     title: "Description",
+    width: 250,
     dataIndex: "description",
     key: "description",
   },
@@ -56,6 +57,8 @@ const columns = [
     title: "Price",
     dataIndex: "prices",
     key: "prices",
+    width: 150,
+    render: (text) => <p>{text} VND</p>,
   },
   {
     title: "Create at",
