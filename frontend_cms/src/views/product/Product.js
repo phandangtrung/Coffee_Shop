@@ -43,18 +43,22 @@ import { doGetList_success as doGetList_successCategory } from "../category/acti
 import categoryApi from "../../api/categoryApi";
 
 function Product() {
+  const locallink = "http://localhost:3000";
   const columns = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      // render: (text) => <a>{text}</a>,
+      width: 200,
     },
     {
       title: "Image",
       dataIndex: "images",
       key: "images",
-      render: (images) => <img src={images} />,
+      width: 200,
+      render: (images) => (
+        <img style={{ width: "100%" }} src={`${locallink}/${images}`} />
+      ),
     },
     {
       title: "Quantity",
