@@ -27,7 +27,7 @@ const layout = {
 };
 const Header = () => {
   const [state, setState] = useState({
-    current: "mail",
+    current: "home",
     visible: false,
     Signupvisible: false,
   });

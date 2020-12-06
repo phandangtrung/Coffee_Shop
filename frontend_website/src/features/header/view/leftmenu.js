@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { setState } from "react";
 import { Link } from "react-router-dom";
 import { Menu, Grid, Modal } from "antd";
@@ -29,17 +29,25 @@ const LeftMenu = () => {
       visible: false,
     });
   };
+  const [current, setcurrent] = useState({ current: "" });
   //--Modal
+  const handleClickMenu = (e) => {
+    console.log("click ", e);
+    setcurrent({ current: e.key });
+    localStorage.setItem("current", e.key);
+  };
   return (
     <div>
       <Menu
         mode={md ? "horizontal" : "inline"}
         className="rightmenu-containner menutitle"
+        onClick={handleClickMenu}
+        selectedKeys={[current.current]}
       >
-        <Menu.Item key="home">
-          <a href="" clasname="titlemenu">
-            Home
-          </a>
+        <Menu.Item name="home" key="home">
+          <div clasname="titlemenu">
+            <Link to="/"> Home</Link>
+          </div>
         </Menu.Item>
         <Menu.Item key="product">
           <div clasname="titlemenu">
@@ -47,16 +55,6 @@ const LeftMenu = () => {
           </div>
         </Menu.Item>
 
-        <SubMenu key="sub2" className="fontmenu" title={<span>Shop</span>}>
-          <MenuItemGroup title="Item 1">
-            <Menu.Item key="setting:1">Option 1</Menu.Item>
-            <Menu.Item key="setting:2">Option 2</Menu.Item>
-          </MenuItemGroup>
-          <MenuItemGroup title="Item 2">
-            <Menu.Item key="setting:3">Option 3</Menu.Item>
-            <Menu.Item key="setting:4">Option 4</Menu.Item>
-          </MenuItemGroup>
-        </SubMenu>
         <Menu.Item key="menu">
           <a href="" clasname="titlemenu">
             Menu
