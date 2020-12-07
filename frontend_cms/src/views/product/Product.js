@@ -226,7 +226,7 @@ function Product() {
             // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
             // dispatch(doCreate_success(response));
             setstate({ ...state, fileList: [] });
-            settabledata(...tabledata, response.newProducts);
+            settabledata([...tabledata, response.newProducts]);
             setloadingmodal(false);
 
             notification.info({

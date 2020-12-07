@@ -22,10 +22,11 @@ import {
   Upload,
   Select,
   Button,
+  Popconfirm,
 } from "antd";
 import "./style.css";
 import CIcon from "@coreui/icons-react";
-import { CheckCircleOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 import { dataFetchReducer } from "./reducer/index";
 import {
   doGetList,
@@ -39,6 +40,8 @@ function Category() {
   const [form] = Form.useForm();
   const [isvisible, SetVisible] = useState(false);
   const [loadingmodal, setloadingmodal] = useState(false);
+  const deleteProduct = () => {};
+  const updateProduct = () => {};
   const columns = [
     {
       title: "Name",
@@ -46,14 +49,41 @@ function Category() {
       key: "name",
       // render: (text) => <a>{text}</a>,
     },
+    {
+      title: "Alias",
+      dataIndex: "alias",
+      key: "alias",
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Create at",
+      dataIndex: "createAt",
+      key: "createAt",
+      render: (time) => (
+        <p>
+          <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
+        </p>
+      ),
+    },
 
     {
       title: "Action",
       key: "action",
       render: (text, record) => (
         <Space size="middle">
-          <a>Edit</a>
-          <a>Delete</a>
+          <Button onClick={() => updateProduct(record)} type="primary">
+            Edit
+          </Button>
+          <Popconfirm
+            title="Are you sure？"
+            icon={<DeleteOutlined style={{ color: "red" }} />}
+            onConfirm={() => deleteProduct(record)}
+          >
+            <Button type="primary" danger>
+              Delete
+            </Button>
+          </Popconfirm>
+          ,
         </Space>
       ),
     },
@@ -71,7 +101,6 @@ function Category() {
     form
       .validateFields()
       .then((values) => {
-        console.log("category value >> ", values);
         form.resetFields();
         // onCreate(values);
         console.log(">>>value", values);
@@ -82,14 +111,16 @@ function Category() {
           try {
             setloadingmodal(true);
 
+            const data = {
+              ...values,
+              createAt: CurrentDate,
+            };
             // const params = { _page: 1, _limit: 10 };
-            const response = await categoryApi.createcategory(values);
-            console.log("Fetch products succesfully: ", response);
-            // console.log(response.products);
-            // setProductList(response.products);
-            // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
-            // dispatch(doCreate_success(response));
-            settabledata(...tabledata, response.newCategories);
+            const response = await categoryApi.createcategory(data);
+            console.log("Fetch category succesfully: ", response);
+            console.log(">>>response.newCategories", response.newCategories);
+            settabledata([...tabledata, response.newCategories]);
+            console.log("tabledata: ", tabledata);
             setloadingmodal(false);
 
             notification.info({
