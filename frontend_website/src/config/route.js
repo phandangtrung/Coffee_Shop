@@ -18,8 +18,8 @@ export const Menu = [
     component: Product,
   },
   {
-    path: "/singleproduct",
-    exact: true,
+    path: "/singleproduct/:product",
+    // exact: true,
     component: SingleProduct,
   },
   {

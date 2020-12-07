@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "./style.css";
 import { Images } from "../../config/image";
 import { Empty, notification } from "antd";
+import { Link } from "react-router-dom";
 import {
   ShoppingCartOutlined,
   ExclamationCircleFilled,
@@ -70,7 +71,21 @@ function ProductTag(props) {
           <img alt="picture" src={Images.COCF} />
         </div>
         <div className="menu-detail">
-          <div className="title-name">{props.name}</div>
+          <Link
+            // to={`singleproduct/${props._id}`}
+            // idpro={props._id}
+            // namepro={props.name}
+            to={{
+              pathname: `singleproduct/${props._id}`,
+              state: {
+                idpro: props._id,
+                namepro: props.name,
+              },
+            }}
+          >
+            <div className="title-name">{props.name}</div>
+          </Link>
+
           <div className="price">{props.price} VND</div>
           <div className="button-form">
             <button onClick={addtoCart}>MUA NGAY</button>

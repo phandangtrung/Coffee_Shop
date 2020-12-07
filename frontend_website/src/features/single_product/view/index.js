@@ -10,11 +10,14 @@ import {
   Rate,
   Pagination,
 } from "antd";
+import { useLocation } from "react-router-dom";
 import { Images } from "../../../config/image";
 const { TabPane } = Tabs;
-function SingleProduct() {
+function SingleProduct({ props }) {
+  let location = useLocation();
   const handleSubmit = (values) => {
     console.log("Value: ", values);
+    console.log(">>productname: ", location.state.namepro);
   };
   const onChange = () => {
     console.log("Change!");
@@ -27,22 +30,19 @@ function SingleProduct() {
             <img alt="single-product" src={Images.COCF} />
           </Col>
           <Col span={12}>
-            <div className="title">AMERICANO</div>
+            <div className="title">{location.state.namepro}</div>
             <div className="price">39,000 VND</div>
 
-            <Form onFinish={handleSubmit} initialValue={{ amount: 1 }}>
-              <Form.Item>
-                <div className="description-form">
-                  {/* <div className="title">Mô tả</div> */}
-                  <div className="content">
-                    Một tách cà phê đen thơm ngào ngạt, phảng phất mùi cacao là
-                    món quà tự thưởng tuyệt vời nhất cho những ai mê đắm tinh
-                    chất nguyên bản nhất của cà phê. Một tách cà phê trầm lắng,
-                    thi vị giữa dòng đời vồn vã.
-                  </div>
+            <Form onFinish={handleSubmit}>
+              <div className="description-form">
+                <div className="content">
+                  Một tách cà phê đen thơm ngào ngạt, phảng phất mùi cacao là
+                  món quà tự thưởng tuyệt vời nhất cho những ai mê đắm tinh chất
+                  nguyên bản nhất của cà phê. Một tách cà phê trầm lắng, thi vị
+                  giữa dòng đời vồn vã.
                 </div>
-              </Form.Item>
-              <Form.Item className="amount" name="amount">
+              </div>
+              <Form.Item className="amount" key="amount">
                 <span style={{ marginRight: "20px" }}>Số lượng: </span>
                 <InputNumber
                   min={1}
@@ -50,13 +50,14 @@ function SingleProduct() {
                   onChange={onChange}
                   size="large"
                   style={{ border: "1px solid rgb(185, 115, 67)" }}
+                  defaultValue={1}
                 />
               </Form.Item>
-              <Form.Item className="button-form">
+              <div className="button-form">
                 <Button className="button-buy" htmlType="submit">
                   MUA NGAY
                 </Button>
-              </Form.Item>
+              </div>
             </Form>
           </Col>
         </Row>
