@@ -33,8 +33,8 @@ const createProduct = async (req, res, next) => {
   }
   const createProduct = {
     name: req.body.name,
-    size_M: req.body.sizeM,
-    size_L: req.body.sizeL,
+    size_M: req.body.size_M,
+    size_L: req.body.size_L,
     prices: req.body.prices,
     quantity: req.body.quantity,
     status: req.body.status,
@@ -73,8 +73,8 @@ const updateProductbyId = async (req, res, next) => {
   }
   const updatedProduct = {
     name: req.body.name,
-    size_M: req.body.size,
-    size_L: req.body.size,
+    size_M: req.body.size_M,
+    size_L: req.body.size_L,
     prices: req.body.prices,
     quantity: req.body.quantity,
     status: req.body.status,
