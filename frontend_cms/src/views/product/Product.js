@@ -43,23 +43,33 @@ import { doGetList_success as doGetList_successCategory } from "../category/acti
 import categoryApi from "../../api/categoryApi";
 
 function Product() {
+  const locallink = "http://localhost:3000";
   const columns = [
     {
       title: "Name",
       dataIndex: "name",
       key: "name",
-      // render: (text) => <a>{text}</a>,
+      width: 200,
     },
     {
       title: "Image",
       dataIndex: "images",
       key: "images",
-      render: (images) => <img src={images} />,
+      width: 200,
+      render: (images) => (
+        <img style={{ width: "100%" }} src={`${locallink}/${images}`} />
+      ),
     },
     {
       title: "Quantity",
       dataIndex: "quantity",
       key: "quantity",
+    },
+    {
+      title: "Category",
+      dataIndex: "categoryId",
+      key: "categoryId",
+      render: (category) => <p>{category}</p>,
     },
     {
       title: "Description",
@@ -89,7 +99,7 @@ function Product() {
       key: "action",
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={() => deleteProduct(record)} type="primary">
+          <Button onClick={() => updateProduct(record)} type="primary">
             Edit
           </Button>
           <Popconfirm
@@ -120,6 +130,7 @@ function Product() {
     //   url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
     // }],
   });
+  const [detail, setdetail] = useState(null);
   const [imgfile, setimgfile] = useState({});
   const [tabledata, settabledata] = useState([]);
   //uploadimage
@@ -166,6 +177,12 @@ function Product() {
     };
     fetchDeleteProduct();
   };
+  const updateProduct = (record) => {
+    setdetail(record);
+    form.setFieldsValue(record);
+    SetVisible(!isvisible);
+    console.log(">>>record ", record);
+  };
   const uploadimg = (info) => {
     console.log(">>>>info: ", info);
     console.log(fileList);
@@ -209,7 +226,7 @@ function Product() {
             // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
             // dispatch(doCreate_success(response));
             setstate({ ...state, fileList: [] });
-            settabledata(...tabledata, response.newProducts);
+            settabledata([...tabledata, response.newProducts]);
             setloadingmodal(false);
 
             notification.info({
@@ -287,6 +304,7 @@ function Product() {
     fetchCategoryList();
   }, []);
   const handleClick = () => {
+    setdetail(null);
     SetVisible(!isvisible);
   };
   return (
@@ -316,11 +334,11 @@ function Product() {
       )}
 
       <Modal
-        title="Add Product"
+        title={detail ? "UPDATE PRODUCT" : "ADD PRODUCT"}
         visible={isvisible}
         onOk={handleOk}
         onCancel={toggle}
-        style={{ marginTop: "5%" }}
+        style={{ margin: "5% 0px 0px 25%" }}
         width={1000}
       >
         <Spin spinning={loadingmodal} size="large">

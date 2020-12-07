@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useReducer } from "react";
-import { Menu, Row, Col, Carousel, BackTop, Pagination } from "antd";
+import {
+  Menu,
+  Row,
+  Col,
+  Carousel,
+  BackTop,
+  Pagination,
+  Spin,
+  Skeleton,
+} from "antd";
 import { CaretUpOutlined } from "@ant-design/icons";
 import "./style.css";
 import ProductTag from "../../../components/ProductTag";
@@ -17,11 +26,13 @@ import {
   doGetListCate_success,
   doGetListCate_error,
 } from "../action/actionCreater";
-
+{
+}
 const { SubMenu } = Menu;
 function Product() {
   const initialData = [];
   const [isLoading, setIsLoading] = useState(false);
+  const [isloadProduct, setloadProduct] = useState(false);
   const [productList, dispatchProduct] = useReducer(dataFetchReducer, {
     isLoading: false,
     isError: false,
@@ -39,7 +50,7 @@ function Product() {
       // dispatch({ type: "FETCH_INIT" });
       dispatchProduct(doGetList);
       try {
-        setIsLoading(true);
+        setloadProduct(true);
         // const params = { _page: 1, _limit: 10 };
 
         const response = await productApi.getAll();
@@ -49,7 +60,7 @@ function Product() {
         // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
         dispatchProduct(doGetList_success(response.products));
         console.log(">>>> productlist: ", productList);
-        setIsLoading(false);
+        setloadProduct(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
         dispatchProduct(doGetList_error);
@@ -131,9 +142,15 @@ function Product() {
             mode="inline"
           >
             <Menu.Item className="category-title">DANH MỤC</Menu.Item>
-            {categoryList.data.map((category) => {
-              return <Menu.Item key={category._id}>{category.name}</Menu.Item>;
-            })}
+            {isLoading ? (
+              <Skeleton active />
+            ) : (
+              categoryList.data.map((category) => {
+                return (
+                  <Menu.Item key={category._id}>{category.name}</Menu.Item>
+                );
+              })
+            )}
           </Menu>
         </div>
 
@@ -142,15 +159,21 @@ function Product() {
             <img alt="product_banner" src={Images.SBANNER} />
           </div>
           <Row>
-            {productList.data.map((product) => (
-              <Col span={8} key={product._id}>
-                <ProductTag
-                  _id={product._id}
-                  name={product.name}
-                  price={product.prices}
-                />
-              </Col>
-            ))}
+            {isloadProduct ? (
+              <div style={{ width: "100%", textAlign: "center" }}>
+                <Spin size="large" />
+              </div>
+            ) : (
+              productList.data.map((product) => (
+                <Col span={8} key={product._id}>
+                  <ProductTag
+                    _id={product._id}
+                    name={product.name}
+                    price={product.prices}
+                  />
+                </Col>
+              ))
+            )}
           </Row>
 
           <Pagination

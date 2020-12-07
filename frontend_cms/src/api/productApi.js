@@ -14,6 +14,10 @@ class ProductApi {
     const url = `/api/products/${product_id}`;
     return axiosClient.delete(url);
   };
+  updateproduct = (product_id) => {
+    const url = `/api/products/${product_id}`;
+    return axiosClient.put(url);
+  };
 }
 const productApi = new ProductApi();
 export default productApi;
