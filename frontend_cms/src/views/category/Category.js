@@ -69,6 +69,7 @@ function Category() {
     {
       title: "Action",
       key: "action",
+      width: 200,
       render: (text, record) => (
         <Space size="middle">
           <Button onClick={() => updateProduct(record)} type="primary">
@@ -83,7 +84,6 @@ function Category() {
               Delete
             </Button>
           </Popconfirm>
-          ,
         </Space>
       ),
     },
@@ -192,6 +192,7 @@ function Category() {
           )}
         </CCardBody>
       </CCard>
+
       <Modal
         title="Add Category"
         visible={isvisible}
@@ -199,20 +200,22 @@ function Category() {
         onCancel={toggle}
         style={{ marginTop: "5%" }}
       >
-        <Form
-          // initialValues={{ size: componentSize }}
-          // onValuesChange={onFormLayoutChange}
-          form={form}
-          size={"large"}
-        >
-          <Row style={{ display: "flex", justifyContent: "space-between" }}>
-            <Col span={24}>
-              <Form.Item name="name">
-                <Input placeholder="Category name" />
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+        <Spin spinning={loadingmodal} size="large">
+          <Form
+            // initialValues={{ size: componentSize }}
+            // onValuesChange={onFormLayoutChange}
+            form={form}
+            size={"large"}
+          >
+            <Row style={{ display: "flex", justifyContent: "space-between" }}>
+              <Col span={24}>
+                <Form.Item name="name">
+                  <Input placeholder="Category name" />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Spin>
       </Modal>
     </>
   );
