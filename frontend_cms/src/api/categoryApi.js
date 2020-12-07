@@ -5,9 +5,9 @@ class CategoryApi {
     const url = "/api/categories";
     return axiosClient.get(url);
   };
-  createcategory = (product) => {
-    const url = "/api/products";
-    return axiosClient.post(url, product);
+  createcategory = (category) => {
+    const url = "/api/categories";
+    return axiosClient.post(url, category);
   };
 }
 const categoryApi = new CategoryApi();

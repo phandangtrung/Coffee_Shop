@@ -17,6 +17,7 @@ import {
   Col,
   Input,
   Form,
+  notification,
   Checkbox,
   Upload,
   Select,
@@ -24,6 +25,7 @@ import {
 } from "antd";
 import "./style.css";
 import CIcon from "@coreui/icons-react";
+import { CheckCircleOutlined } from "@ant-design/icons";
 import { dataFetchReducer } from "./reducer/index";
 import {
   doGetList,
@@ -31,11 +33,12 @@ import {
   doGetList_success,
 } from "./action/actionCreater";
 import categoryApi from "../../api/categoryApi";
-import usersData from "../users/UsersData";
-
+import moment from "moment";
+import Moment from "react-moment";
 function Category() {
   const [form] = Form.useForm();
   const [isvisible, SetVisible] = useState(false);
+  const [loadingmodal, setloadingmodal] = useState(false);
   const columns = [
     {
       title: "Name",
@@ -63,6 +66,48 @@ function Category() {
     isError: false,
     data: [],
   });
+  const [tabledata, settabledata] = useState([]);
+  const handleOk = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        console.log("category value >> ", values);
+        form.resetFields();
+        // onCreate(values);
+        console.log(">>>value", values);
+        var CurrentDate = moment().toISOString();
+
+        const fetchCreateProduct = async () => {
+          // dispatch({ type: "FETCH_INIT" });
+          try {
+            setloadingmodal(true);
+
+            // const params = { _page: 1, _limit: 10 };
+            const response = await categoryApi.createcategory(values);
+            console.log("Fetch products succesfully: ", response);
+            // console.log(response.products);
+            // setProductList(response.products);
+            // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+            // dispatch(doCreate_success(response));
+            settabledata(...tabledata, response.newCategories);
+            setloadingmodal(false);
+
+            notification.info({
+              message: `Created Successfully`,
+              icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+              placement: "bottomRight",
+            });
+          } catch (error) {
+            console.log("failed to fetch product list: ", error);
+            // dispatch(doCreate_error);
+          }
+        };
+        fetchCreateProduct();
+      })
+      .catch((info) => {
+        console.log("Validate Failed:", info);
+      });
+  };
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     const fetchCategoryList = async () => {
@@ -78,6 +123,7 @@ function Category() {
         // setProductList(response.products);
         // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
         dispatchCategory(doGetList_success(response.categories));
+        settabledata(response.categories);
         // console.log(">>>> productlist: ", productList);
         setIsLoading(false);
       } catch (error) {
@@ -111,18 +157,14 @@ function Category() {
               <Spin size="large" />
             </div>
           ) : (
-            <Table
-              columns={columns}
-              dataSource={categoryList.data}
-              rowKey="_id"
-            />
+            <Table columns={columns} dataSource={tabledata} rowKey="_id" />
           )}
         </CCardBody>
       </CCard>
       <Modal
         title="Add Category"
         visible={isvisible}
-        // onOk={handleOk}
+        onOk={handleOk}
         onCancel={toggle}
         style={{ marginTop: "5%" }}
       >
