@@ -19,7 +19,8 @@ const createOrder = async (req, res, next) => {
         prices: req.body.prices,
         status: req.body.status,
         ratings: req.body.ratings,
-        userAddress: req.body.userAddress               
+        userAddress: req.body.userAddress,
+        userId : req.body.userId               
     };
     try {
         const newOrder = new Order(createOrder);
@@ -73,7 +74,7 @@ const deleteOrderById = async (req, res, next) => {
         const error =  new HttpError('Could not find any Order', 404);
         return next(error);
     }
-    res.status(200).json({message: 'Deleted Order:'});
+    res.status(200).json({message: 'Deleted Order success'});
 }
 
 const getOrderById = async (req, res, next) => {
@@ -113,4 +114,24 @@ const getOrderById = async (req, res, next) => {
   
   };
 
-module.exports = {createOrder, updateOrderById, deleteOrderById, getOrderById, getAllOrder};
+  const getOrderByUserId = async (req, res, next) => {
+    let orders;
+    const UserId = req.params.userId;
+    try {
+      orders = await Order.findOne({"userId": UserId});
+    } catch (err) {
+      const error = new HttpError(
+        'Something went wrong, could not find any user.',500);
+      return next(error);
+    }
+  
+    if (!orders) {
+      const error = new HttpError(
+        'Could not find a order for the provided id.',404);
+      return next(error);
+    }
+    res.json({ orders: orders.toObject({ getters: true }) }); 
+  };
+
+
+module.exports = {createOrder, updateOrderById, deleteOrderById, getOrderById, getAllOrder, getOrderByUserId};
