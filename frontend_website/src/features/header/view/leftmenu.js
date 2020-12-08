@@ -7,7 +7,7 @@ const MenuItemGroup = Menu.ItemGroup;
 
 const { useBreakpoint } = Grid;
 const state = { visible: false };
-const LeftMenu = () => {
+const LeftMenu = (props) => {
   const { md } = useBreakpoint();
   //Modal
   const showModal = () => {
@@ -29,20 +29,14 @@ const LeftMenu = () => {
       visible: false,
     });
   };
-  const [current, setcurrent] = useState({ current: "" });
-  //--Modal
-  const handleClickMenu = (e) => {
-    console.log("click ", e);
-    setcurrent({ current: e.key });
-    localStorage.setItem("current", e.key);
-  };
+
   return (
     <div>
       <Menu
         mode={md ? "horizontal" : "inline"}
         className="rightmenu-containner menutitle"
-        onClick={handleClickMenu}
-        selectedKeys={[current.current]}
+        onClick={props.handleClickMenu}
+        selectedKeys={[props.current.current]}
       >
         <Menu.Item name="home" key="home">
           <div clasname="titlemenu">

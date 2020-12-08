@@ -11,7 +11,12 @@ const RightMenu = (props) => {
   const { md } = useBreakpoint();
 
   return (
-    <Menu mode={md ? "horizontal" : "inline"} className="menutitle">
+    <Menu
+      mode={md ? "horizontal" : "inline"}
+      onClick={props.handleClickMenu}
+      selectedKeys={[props.current.current]}
+      className="menutitle"
+    >
       <Menu.Item className="button-signup" key="mail">
         <Link to={"/login"}>
           <Button className="button-signup">Signin</Button>

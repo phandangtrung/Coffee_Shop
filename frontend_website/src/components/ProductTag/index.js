@@ -80,6 +80,8 @@ function ProductTag(props) {
               state: {
                 idpro: props._id,
                 namepro: props.name,
+                pricepro: props.price,
+                despro: props.description,
               },
             }}
           >

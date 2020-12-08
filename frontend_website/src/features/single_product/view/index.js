@@ -31,18 +31,17 @@ function SingleProduct({ props }) {
           </Col>
           <Col span={12}>
             <div className="title">{location.state.namepro}</div>
-            <div className="price">39,000 VND</div>
+            <div className="price">{location.state.pricepro} VND</div>
 
             <Form onFinish={handleSubmit}>
               <div className="description-form">
-                <div className="content">
-                  Một tách cà phê đen thơm ngào ngạt, phảng phất mùi cacao là
-                  món quà tự thưởng tuyệt vời nhất cho những ai mê đắm tinh chất
-                  nguyên bản nhất của cà phê. Một tách cà phê trầm lắng, thi vị
-                  giữa dòng đời vồn vã.
-                </div>
+                <div className="content">{location.state.despro}</div>
               </div>
-              <Form.Item className="amount" key="amount">
+              <Form.Item
+                style={{ paddingTop: "40px" }}
+                className="amount"
+                key="amount"
+              >
                 <span style={{ marginRight: "20px" }}>Số lượng: </span>
                 <InputNumber
                   min={1}

@@ -170,6 +170,7 @@ function Product() {
                     _id={product._id}
                     name={product.name}
                     price={product.prices}
+                    description={product.description}
                   />
                 </Col>
               ))

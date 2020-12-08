@@ -31,7 +31,12 @@ const Header = () => {
     visible: false,
     Signupvisible: false,
   });
-
+  const [current, setcurrent] = useState({ current: "" });
+  //--Modal
+  const handleClickMenu = (e) => {
+    console.log("click ", e);
+    setcurrent({ current: e.key });
+  };
   const showDrawer = () => {
     setState({
       ...state,
@@ -73,10 +78,14 @@ const Header = () => {
         </div>
         <div className="menuCon">
           <div className="leftMenu">
-            <LeftMenu />
+            <LeftMenu handleClickMenu={handleClickMenu} current={current} />
           </div>
           <div className="rightMenu">
-            <RightMenu showSignup={showSignup} />
+            <RightMenu
+              showSignup={showSignup}
+              handleClickMenu={handleClickMenu}
+              current={current}
+            />
           </div>
           <Button className="barsMenu" type="primary" onClick={showDrawer}>
             <span className="barsBtn"></span>
