@@ -17,9 +17,9 @@ const Homepage = () => {
   return (
     <div>
       <Carousel autoplay={10000}>
-        <div>
+        {/* <div>
           <img style={contentStyle} alt={"slide4"} src={Images.SLIDE4} />
-        </div>
+        </div> */}
         <div>
           <img style={contentStyle} alt={"slide2"} src={Images.SLIDE3} />
         </div>
