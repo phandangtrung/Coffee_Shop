@@ -197,7 +197,9 @@ function ShoppingPage(props) {
               <Form.Item name="code">
                 <Input />
               </Form.Item>
-              <Button className="button-apply">APPLY</Button>
+              <Button className="button-apply" type="dashed" danger>
+                APPLY
+              </Button>
             </Form>
           </div>
           <hr />
