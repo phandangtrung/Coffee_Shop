@@ -13,13 +13,16 @@ import {
   Col,
   Radio,
   Checkbox,
+  notification,
 } from "antd";
 import { Link } from "react-router-dom";
 import {
   ShoppingCartOutlined,
   EyeInvisibleOutlined,
   EyeTwoTone,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
+import userApi from "../../../api/userApi";
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -39,6 +42,45 @@ const RightMenu = (props) => {
 
   const handleCancel = () => {
     setIsModalVisible(false);
+  };
+  const [loadingmodal, setloadingmodal] = useState(false);
+  const onSignup = (values) => {
+    // console.log("value sign up", values.birthday._d);
+    const data = {
+      ...values,
+      birthday: values.birthday._d,
+      email: `${values.email}@gmail.com`,
+    };
+    console.log("data", data);
+
+    const fetchCreateProduct = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+
+      try {
+        setloadingmodal(true);
+
+        // const params = { _page: 1, _limit: 10 };
+        const response = await userApi.createproduct(data);
+        console.log("Fetch products succesfully: ", response);
+        // console.log(response.products);
+        // setProductList(response.products);
+        // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+        // dispatch(doCreate_success(response));
+        setloadingmodal(false);
+
+        notification.info({
+          message: `Signup Successfully`,
+          description: "Please check email to conform your account",
+          icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+          placement: "bottomRight",
+        });
+
+        // console.log(">>>> productlist: ", productList);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+        // dispatch(doCreate_error);
+      }
+    };
   };
   return (
     <>
@@ -158,6 +200,7 @@ const RightMenu = (props) => {
                 layout="horizontal"
                 // initialValues={{ size: componentSize }}
                 // onValuesChange={onFormLayoutChange}
+                onFinish={onSignup}
                 size="large"
               >
                 <Row>
@@ -203,7 +246,7 @@ const RightMenu = (props) => {
                     </Form.Item>
                   </Col>
                   <Col span={12}>
-                    <Form.Item name="gender">
+                    <Form.Item name="password">
                       <Input.Password
                         style={{
                           width: "100%",
@@ -222,19 +265,17 @@ const RightMenu = (props) => {
                       justifyContent: "center",
                     }}
                   >
-                    <Form.Item name="fName">
-                      <Button
-                        style={{
-                          width: "300px",
-                          border: "0px",
-                          fontSize: "20px",
-                        }}
-                        type="primary"
-                        htmlType="submit"
-                      >
-                        Sign up
-                      </Button>
-                    </Form.Item>
+                    <Button
+                      style={{
+                        width: "300px",
+                        border: "0px",
+                        fontSize: "20px",
+                      }}
+                      type="primary"
+                      htmlType="submit"
+                    >
+                      Sign up
+                    </Button>
                   </Col>
                 </Row>
               </Form>
