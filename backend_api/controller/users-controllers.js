@@ -80,13 +80,12 @@ const register = async(req, res, next) =>{
     res.status(201).json({
         newUsers, token
     });
-    //const url = `http://localhost:3000/api/users/confirmation/${token}`;
-    const url = `http://localhost:3001/${token}`;
+    const url = `http://localhost:3000/api/users/confirmation/${token}`;
     transporter.sendMail({
         to: createdUser.email,
         subject: 'Confirm Email',
         html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
-      });    
+    });    
 };
 
 const login = async(req,res,next) => {

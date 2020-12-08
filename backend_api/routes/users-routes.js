@@ -20,7 +20,10 @@ router.post('/signup',
 router.post('/createAdmin',usersController.admin);
 
 router.post('/login', usersController.login);
-router.get('/confirmation/:token',usersController.getConfirmation);
+router.get('/confirmation/:token', async (req, res) =>{
+    return res.redirect('http://localhost:3001/')
+},
+usersController.getConfirmation);
 
 router.use(isAuth);
 
