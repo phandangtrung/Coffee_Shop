@@ -228,7 +228,6 @@ const updateMyUser = async(req, res, next) => {
         return next(error);
     }
     console.log(users)
-    console.log("Con cho")
     if(!users)
     {
         const error =  new HttpError('Could not find any users', 404);

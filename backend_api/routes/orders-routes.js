@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/',ordersController.getAllOrder);
 router.get('/:oid',ordersController.getOrderById);
-
+router.get('/userid',ordersController.getOrderByUserId);
 
 router.post('/', 
 [
