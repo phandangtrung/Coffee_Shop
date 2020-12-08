@@ -15,6 +15,7 @@ import {
   Radio,
   Checkbox,
   notification,
+  Spin,
 } from "antd";
 
 import { Link } from "react-router-dom";
@@ -216,51 +217,52 @@ const RightMenu = (props) => {
               </Form>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Sign Up" key="signup">
-              <Form
-                layout="horizontal"
-                form={form}
-                // initialValues={{ size: componentSize }}
-                // onValuesChange={onFormLayoutChange}
-                onFinish={onSignup}
-                size="large"
-              >
-                <Row>
-                  <Col span={12}>
-                    <Form.Item
-                      name="fName"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your Fullname!",
-                        },
-                      ]}
-                    >
-                      <Input
-                        style={{ width: "100%" }}
-                        placeholder="Full name"
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col span={12}>
-                    <Form.Item
-                      name="email"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your email!",
-                        },
-                      ]}
-                    >
-                      <Input
-                        // addonAfter="@gmail.com"
-                        // defaultValue="kaitrung"
-                        placeholder="Email"
-                        autoComplete="off"
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                {/* <Row>
+              <Spin spinning={loadingmodal}>
+                <Form
+                  layout="horizontal"
+                  form={form}
+                  // initialValues={{ size: componentSize }}
+                  // onValuesChange={onFormLayoutChange}
+                  onFinish={onSignup}
+                  size="large"
+                >
+                  <Row>
+                    <Col span={12}>
+                      <Form.Item
+                        name="fName"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Fullname!",
+                          },
+                        ]}
+                      >
+                        <Input
+                          style={{ width: "100%" }}
+                          placeholder="Full name"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        name="email"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your email!",
+                          },
+                        ]}
+                      >
+                        <Input
+                          // addonAfter="@gmail.com"
+                          // defaultValue="kaitrung"
+                          placeholder="Email"
+                          autoComplete="off"
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  {/* <Row>
                   <Col span={12}>
                     <Form.Item name="phone">
                       <Input placeholder="Phone number" />
@@ -272,8 +274,8 @@ const RightMenu = (props) => {
                     </Form.Item>
                   </Col>
                 </Row> */}
-                <Row>
-                  {/* <Col span={12}>
+                  <Row>
+                    {/* <Col span={12}>
                     <Form.Item name="gender">
                       <Radio.Group buttonStyle="solid" size="large">
                         <Radio.Button value="male">Male</Radio.Button>
@@ -282,48 +284,49 @@ const RightMenu = (props) => {
                       </Radio.Group>
                     </Form.Item>
                   </Col> */}
-                  <Col span={12}>
-                    <Form.Item
-                      name="password"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your password!",
-                        },
-                      ]}
-                    >
-                      <Input.Password
-                        style={{
-                          width: "100%",
-                        }}
-                        placeholder="input password"
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row style={{ paddingTop: "50px" }}>
-                  <Col
-                    span={24}
-                    style={{
-                      width: "90%",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Button
+                    <Col span={12}>
+                      <Form.Item
+                        name="password"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your password!",
+                          },
+                        ]}
+                      >
+                        <Input.Password
+                          style={{
+                            width: "100%",
+                          }}
+                          placeholder="input password"
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row style={{ paddingTop: "50px" }}>
+                    <Col
+                      span={24}
                       style={{
-                        width: "300px",
-                        border: "0px",
-                        fontSize: "20px",
+                        width: "90%",
+                        display: "flex",
+                        justifyContent: "center",
                       }}
-                      type="primary"
-                      htmlType="submit"
                     >
-                      Sign up
-                    </Button>
-                  </Col>
-                </Row>
-              </Form>
+                      <Button
+                        style={{
+                          width: "300px",
+                          border: "0px",
+                          fontSize: "20px",
+                        }}
+                        type="primary"
+                        htmlType="submit"
+                      >
+                        Sign up
+                      </Button>
+                    </Col>
+                  </Row>
+                </Form>
+              </Spin>
             </Tabs.TabPane>
           </Tabs>
         </div>
