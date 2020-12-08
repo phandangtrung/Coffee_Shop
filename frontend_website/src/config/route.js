@@ -13,6 +13,11 @@ export const Menu = [
     component: Homepage,
   },
   {
+    path: "/:userid",
+    exact: true,
+    component: Homepage,
+  },
+  {
     path: "/product",
     exact: true,
     component: Product,

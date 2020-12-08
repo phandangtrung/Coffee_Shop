@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   Menu,
   Grid,
@@ -15,6 +16,7 @@ import {
   Checkbox,
   notification,
 } from "antd";
+
 import { Link } from "react-router-dom";
 import {
   ShoppingCartOutlined,
@@ -29,6 +31,7 @@ const MenuItemGroup = Menu.ItemGroup;
 const { useBreakpoint } = Grid;
 
 const RightMenu = (props) => {
+  const location = useLocation();
   const { md } = useBreakpoint();
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -44,43 +47,60 @@ const RightMenu = (props) => {
     setIsModalVisible(false);
   };
   const [loadingmodal, setloadingmodal] = useState(false);
+  const [form] = Form.useForm();
   const onSignup = (values) => {
-    // console.log("value sign up", values.birthday._d);
+    console.log("value sign up", values);
     const data = {
       ...values,
-      birthday: values.birthday._d,
+
       email: `${values.email}@gmail.com`,
     };
     console.log("data", data);
 
     const fetchCreateProduct = async () => {
       // dispatch({ type: "FETCH_INIT" });
+      form
+        .validateFields()
+        .then((values) => {
+          form.resetFields();
+          // onCreate(values);
+          console.log(">>>value", values);
 
-      try {
-        setloadingmodal(true);
+          const fetchCreateProduct = async () => {
+            // dispatch({ type: "FETCH_INIT" });
 
-        // const params = { _page: 1, _limit: 10 };
-        const response = await userApi.createproduct(data);
-        console.log("Fetch products succesfully: ", response);
-        // console.log(response.products);
-        // setProductList(response.products);
-        // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
-        // dispatch(doCreate_success(response));
-        setloadingmodal(false);
+            try {
+              setloadingmodal(true);
 
-        notification.info({
-          message: `Signup Successfully`,
-          description: "Please check email to conform your account",
-          icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
-          placement: "bottomRight",
+              // const params = { _page: 1, _limit: 10 };
+              const response = await userApi.createuser(data);
+              console.log("Fetch user succesfully: ", response);
+              // console.log(response.products);
+              // setProductList(response.products);
+              // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+              // dispatch(doCreate_success(response));
+              setloadingmodal(false);
+
+              notification.info({
+                message: `Signup Successfully`,
+                description: "Please check email to conform your account",
+                icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+                placement: "bottomRight",
+              });
+
+              // console.log(">>>> productlist: ", productList);
+            } catch (error) {
+              console.log("failed to fetch product list: ", error);
+              // dispatch(doCreate_error);
+            }
+          };
+          fetchCreateProduct();
+        })
+        .catch((info) => {
+          console.log("Validate Failed:", info);
         });
-
-        // console.log(">>>> productlist: ", productList);
-      } catch (error) {
-        console.log("failed to fetch product list: ", error);
-        // dispatch(doCreate_error);
-      }
     };
+    fetchCreateProduct();
   };
   return (
     <>
@@ -198,6 +218,7 @@ const RightMenu = (props) => {
             <Tabs.TabPane tab="Sign Up" key="signup">
               <Form
                 layout="horizontal"
+                form={form}
                 // initialValues={{ size: componentSize }}
                 // onValuesChange={onFormLayoutChange}
                 onFinish={onSignup}
@@ -205,7 +226,15 @@ const RightMenu = (props) => {
               >
                 <Row>
                   <Col span={12}>
-                    <Form.Item name="fName">
+                    <Form.Item
+                      name="fName"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your Fullname!",
+                        },
+                      ]}
+                    >
                       <Input
                         style={{ width: "100%" }}
                         placeholder="Full name"
@@ -213,7 +242,15 @@ const RightMenu = (props) => {
                     </Form.Item>
                   </Col>
                   <Col span={12}>
-                    <Form.Item name="email">
+                    <Form.Item
+                      name="email"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your email!",
+                        },
+                      ]}
+                    >
                       <Input
                         addonAfter="@gmail.com"
                         // defaultValue="kaitrung"
@@ -223,7 +260,7 @@ const RightMenu = (props) => {
                     </Form.Item>
                   </Col>
                 </Row>
-                <Row>
+                {/* <Row>
                   <Col span={12}>
                     <Form.Item name="phone">
                       <Input placeholder="Phone number" />
@@ -234,9 +271,9 @@ const RightMenu = (props) => {
                       <DatePicker />
                     </Form.Item>
                   </Col>
-                </Row>
+                </Row> */}
                 <Row>
-                  <Col span={12}>
+                  {/* <Col span={12}>
                     <Form.Item name="gender">
                       <Radio.Group buttonStyle="solid" size="large">
                         <Radio.Button value="male">Male</Radio.Button>
@@ -244,9 +281,17 @@ const RightMenu = (props) => {
                         <Radio.Button value="orther">Orther</Radio.Button>
                       </Radio.Group>
                     </Form.Item>
-                  </Col>
+                  </Col> */}
                   <Col span={12}>
-                    <Form.Item name="password">
+                    <Form.Item
+                      name="password"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input your password!",
+                        },
+                      ]}
+                    >
                       <Input.Password
                         style={{
                           width: "100%",
