@@ -166,7 +166,7 @@ const getConfirmation = async(req, res, next) => {
     };
 
     //res.status(200).json({message: 'Verify email Success'});
-    return res.redirect('http://localhost:3001/');  
+    return res.redirect('http://localhost:3001/sigupsuccess/');  
 };
 
 const getAllUsers = async(req, res, next) => {
