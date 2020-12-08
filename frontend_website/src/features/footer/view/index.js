@@ -31,6 +31,7 @@ export class Footer extends Component {
                 cũng vẫn giữ đúng như thế.
               </div>
             </Col>
+            <Col span={1}></Col>
             <Col className="footer-column" span={8}>
               <div className="title-footer">Get In Touch</div>
               <div className="detail">
@@ -48,7 +49,7 @@ export class Footer extends Component {
                 </div>
               </div>
             </Col>
-            <Col className="footer-column" span={8}>
+            <Col className="footer-column" span={5}>
               <div className="title-footer">Social Contact</div>
               <div className="detail">
                 <div className="detail-text">
