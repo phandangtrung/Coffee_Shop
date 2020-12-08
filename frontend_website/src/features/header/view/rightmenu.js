@@ -53,7 +53,7 @@ const RightMenu = (props) => {
     const data = {
       ...values,
 
-      email: `${values.email}@gmail.com`,
+      // email: `${values.email}@gmail.com`,
     };
     console.log("data", data);
 
@@ -252,7 +252,7 @@ const RightMenu = (props) => {
                       ]}
                     >
                       <Input
-                        addonAfter="@gmail.com"
+                        // addonAfter="@gmail.com"
                         // defaultValue="kaitrung"
                         placeholder="Email"
                         autoComplete="off"

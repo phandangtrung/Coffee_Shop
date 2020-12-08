@@ -20,7 +20,7 @@ export const Menu = [
     component: Product,
   },
   {
-    path: "/signupsucess",
+    path: "/signupsuccess",
     exact: true,
     component: signupsucess,
   },
