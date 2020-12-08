@@ -149,20 +149,20 @@ const getConfirmation = async(req, res, next) => {
         isConfirm: true
     };
     let users;
-    try{
-        users = await User.updateOne({email: userData.email},updatedUser);
-        console.log(users);
-    } catch (err) {
-        const error = new HttpError('Your confirmation is out of time', 500);
-        return next(error);
-    }
-
     if(!users)
     {
         const error =  new HttpError('Could not find any users', 404);
         return next(error);
-    }
-    res.status(200).json({message: 'Verify email Success'});
+    };
+    //res.status(200).json({message: 'Verify email Success'});
+    try{
+        users = await User.updateOne({email: userData.email},updatedUser);
+        //console.log(users);
+        return res.redirect('http://localhost:3001/');
+    } catch (err) {
+        const error = new HttpError('Your confirmation is out of time', 500);
+        return next(error);
+    };  
 };
 
 const getAllUsers = async(req, res, next) => {
