@@ -80,7 +80,8 @@ const register = async(req, res, next) =>{
     res.status(201).json({
         newUsers, token
     });
-    const url = `http://localhost:3000/api/users/confirmation/${token}`;
+    //const url = `http://localhost:3000/api/users/confirmation/${token}`;
+    const url = `http://localhost:3001/${token}`;
     transporter.sendMail({
         to: createdUser.email,
         subject: 'Confirm Email',
@@ -162,7 +163,7 @@ const getConfirmation = async(req, res, next) => {
         const error =  new HttpError('Could not find any users', 404);
         return next(error);
     }
-    res.status(200).json({message: 'Success'});
+    res.status(200).json({message: 'Verify email Success'});
 };
 
 const getAllUsers = async(req, res, next) => {
@@ -236,11 +237,9 @@ const updateMyUser = async(req, res, next) => {
 
     const userInfo = {
         fName: req.body.fName,
-        address: req.body.address,
         gender: req.body.gender,
         birthday: req.body.birthday,
-        phone: req.body.phone,
-        avatar: req.body.avatar,
+        phone: req.body.phone
     }
 
     let userUpdate;
@@ -295,7 +294,7 @@ const admin = async (req, res, next) => {
     let newAdmin; 
     newAdmin = new User(createdAdmin);
         await newAdmin.save();
-    res.status(201).json({
+        res.status(201).json({
         createdAdmin, 
         message: "Created Admin"
     });
