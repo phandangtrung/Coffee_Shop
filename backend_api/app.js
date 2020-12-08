@@ -11,7 +11,7 @@ const categoriesRouters = require("./routes/categories-routes");
 const productsRouters = require("./routes/products-routes");
 const ordersRouters = require("./routes/orders-routes");
 const shippersRouters = require("./routes/shippers-routes");
-const usersRouters = require("./routes/users-routes");
+const usersRouters = require("./api/routes/users-routes");
 
 const app = express();
 app.use(bodyParser.json());
@@ -34,7 +34,7 @@ app.use("/api/categories", categoriesRouters);
 app.use("/api/products", productsRouters);
 app.use("/api/orders", ordersRouters);
 app.use("/api/shippers", shippersRouters);
-app.use("/api/users", usersRouters);
+app.use("/users", usersRouters);
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route.", 404);
