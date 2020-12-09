@@ -184,7 +184,9 @@ function Product() {
     form.setFieldsValue(record);
     setstate({
       ...state,
-      fileList: [{ url: `http://localhost:3000/${record.images}` }],
+      fileList: [
+        { url: `http://localhost:3000/${record.images}`, src: record.images },
+      ],
     });
     SetVisible(!isvisible);
     console.log(">>>record ", record);
@@ -265,6 +267,7 @@ function Product() {
           if (imgfile === null) {
             data = {
               ...values,
+              images: state.fileList.src,
               createAt: CurrentDate,
               ...sizecheck,
             };
@@ -291,8 +294,8 @@ function Product() {
               setloadingmodal(true);
 
               // const params = { _page: 1, _limit: 10 };
-              const response = await productApi.createproduct(form_data);
-              console.log("Fetch products succesfully: ", response);
+              const response = await productApi.updateproduct(form_data);
+              console.log("Fetch update products succesfully: ", response);
               // console.log(response.products);
               // setProductList(response.products);
               // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
