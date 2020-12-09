@@ -18,7 +18,6 @@ const createOrder = async (req, res, next) => {
         quantity: req.body.quantity,
         prices: req.body.prices,
         status: req.body.status,
-        ratings: req.body.ratings,
         userAddress: req.body.userAddress,
         userId : req.body.userId               
     };
@@ -51,7 +50,6 @@ const updateOrderById = async (req, res, next) => {
         quantity: req.body.quantity,
         prices: req.body.prices,
         status: req.body.status,
-        ratings: req.body.ratings,
         userAddress: req.body.userAddress
       };
     let orders;
@@ -118,7 +116,7 @@ const getOrderById = async (req, res, next) => {
     let orders;
     const UserId = req.params.userId;
     try {
-      orders = await Order.findOne({"userId": UserId});
+      orders = await Order.find({"userId": UserId});
     } catch (err) {
       const error = new HttpError(
         'Something went wrong, could not find any user.',500);
