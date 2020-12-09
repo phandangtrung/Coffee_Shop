@@ -104,7 +104,7 @@ const deleteProductById = async (req, res, next) => {
   const ProId = req.params.pid;
   let products;
   try {
-    products = await Product.findOneAndDelete(ProId);
+    products = await Product.findByIdAndDelete(ProId);
   } catch (err) {
     const error = new HttpError("Something went wrong, can not delete", 500);
     return next(error);
