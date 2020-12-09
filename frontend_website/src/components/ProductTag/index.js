@@ -21,7 +21,7 @@ function ProductTag(props) {
           key: props._id,
           _id: props._id,
           name: props.name,
-          image: Images.COCF,
+          image: `http://localhost:3000/${props.img}`,
           size: "M",
           amount: 1,
           price: props.price,
@@ -41,7 +41,7 @@ function ProductTag(props) {
             key: props._id,
             _id: props._id,
             name: props.name,
-            image: Images.COCF,
+            image: `http://localhost:3000/${props.img}`,
             size: "M",
             amount: 1,
             price: props.price,
@@ -68,7 +68,7 @@ function ProductTag(props) {
     <div>
       <div className="menu-item">
         <div className="menu-image">
-          <img alt="picture" src={Images.COCF} />
+          <img alt="picture" src={`http://localhost:3000/${props.img}`} />
         </div>
         <div className="menu-detail">
           <Link
@@ -82,6 +82,7 @@ function ProductTag(props) {
                 namepro: props.name,
                 pricepro: props.price,
                 despro: props.description,
+                img: props.img,
               },
             }}
           >

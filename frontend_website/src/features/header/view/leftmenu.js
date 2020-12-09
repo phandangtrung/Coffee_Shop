@@ -50,13 +50,11 @@ const LeftMenu = (props) => {
         </Menu.Item>
 
         <Menu.Item key="menu">
-          <a href="" clasname="titlemenu">
-            Menu
-          </a>
+          <Link to="/intro">Menu</Link>
         </Menu.Item>
-        <Menu.Item key="alipay">
+        {/* <Menu.Item key="alipay">
           <a onClick={showModal}>Contact Us</a>
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu>
       <Modal
         title="Basic Modal"

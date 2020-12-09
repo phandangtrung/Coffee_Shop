@@ -169,6 +169,7 @@ function Product() {
                   <ProductTag
                     _id={product._id}
                     name={product.name}
+                    img={product.images}
                     price={product.prices}
                     description={product.description}
                   />
@@ -177,11 +178,11 @@ function Product() {
             )}
           </Row>
 
-          <Pagination
+          {/* <Pagination
             style={{ textAlign: "end" }}
             defaultCurrent={1}
             total={50}
-          />
+          /> */}
         </div>
       </div>
       <BackTop>

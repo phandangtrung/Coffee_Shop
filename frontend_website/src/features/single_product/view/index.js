@@ -27,7 +27,10 @@ function SingleProduct({ props }) {
       <div className="sproduct-form">
         <Row>
           <Col style={{ textAlign: "start" }} span={12}>
-            <img alt="single-product" src={Images.COCF} />
+            <img
+              alt="single-product"
+              src={`http://localhost:3000/${location.state.img}`}
+            />
           </Col>
           <Col span={12}>
             <div className="title">{location.state.namepro}</div>
