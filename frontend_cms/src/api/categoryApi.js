@@ -5,6 +5,10 @@ class CategoryApi {
     const url = "/api/categories";
     return axiosClient.get(url);
   };
+  getbyID = (categoryid) => {
+    const url = `/api/categories/${categoryid}`;
+    return axiosClient.get(url);
+  };
   createcategory = (category) => {
     const url = "/api/categories";
     return axiosClient.post(url, category);

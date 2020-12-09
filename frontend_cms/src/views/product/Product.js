@@ -131,13 +131,15 @@ function Product() {
     // }],
   });
   const [detail, setdetail] = useState(null);
-  const [imgfile, setimgfile] = useState({});
+  const [imgfile, setimgfile] = useState(null);
   const [tabledata, settabledata] = useState([]);
   //uploadimage
   const [sizecheck, setSizecheck] = useState({ size_M: true, size_L: false });
   const [loadingmodal, setloadingmodal] = useState(false);
   const toggle = () => {
     SetVisible(!isvisible);
+    form.resetFields();
+    setstate({ ...state, fileList: [] });
   };
   const handleChange = (fileList) => {
     setstate(fileList);
@@ -180,6 +182,10 @@ function Product() {
   const updateProduct = (record) => {
     setdetail(record);
     form.setFieldsValue(record);
+    setstate({
+      ...state,
+      fileList: [{ url: `http://localhost:3000/${record.images}` }],
+    });
     SetVisible(!isvisible);
     console.log(">>>record ", record);
   };
@@ -191,61 +197,128 @@ function Product() {
     onChange: uploadimg,
   };
   const handleOk = (values) => {
-    form
-      .validateFields()
-      .then((values) => {
-        form.resetFields();
-        // onCreate(values);
-        console.log(">>>value", values);
-        var CurrentDate = moment().toISOString();
+    if (detail === null) {
+      form
+        .validateFields()
+        .then((values) => {
+          form.resetFields();
+          // onCreate(values);
+          console.log(">>>value", values);
+          var CurrentDate = moment().toISOString();
 
-        const data = {
-          ...values,
-          images: imgfile,
-          createAt: CurrentDate,
-          ...sizecheck,
-        };
-        console.log("data >>>", data);
-        var form_data = new FormData();
+          const data = {
+            ...values,
+            images: imgfile,
+            createAt: CurrentDate,
+            ...sizecheck,
+          };
+          console.log("data >>>", data);
+          var form_data = new FormData();
 
-        for (var key in data) {
-          form_data.append(key, data[key]);
-        }
-        const fetchCreateProduct = async () => {
-          // dispatch({ type: "FETCH_INIT" });
-
-          dispatch(doCreate(data));
-          try {
-            setloadingmodal(true);
-
-            // const params = { _page: 1, _limit: 10 };
-            const response = await productApi.createproduct(form_data);
-            console.log("Fetch products succesfully: ", response);
-            // console.log(response.products);
-            // setProductList(response.products);
-            // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
-            // dispatch(doCreate_success(response));
-            setstate({ ...state, fileList: [] });
-            settabledata([...tabledata, response.newProducts]);
-            setloadingmodal(false);
-
-            notification.info({
-              message: `Created Successfully`,
-              icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
-              placement: "bottomRight",
-            });
-
-            // console.log(">>>> productlist: ", productList);
-          } catch (error) {
-            console.log("failed to fetch product list: ", error);
-            // dispatch(doCreate_error);
+          for (var key in data) {
+            form_data.append(key, data[key]);
           }
-        };
-        fetchCreateProduct();
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
+          const fetchCreateProduct = async () => {
+            // dispatch({ type: "FETCH_INIT" });
+
+            dispatch(doCreate(data));
+            try {
+              setloadingmodal(true);
+
+              // const params = { _page: 1, _limit: 10 };
+              const response = await productApi.createproduct(form_data);
+              console.log("Fetch products succesfully: ", response);
+              // console.log(response.products);
+              // setProductList(response.products);
+              // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+              // dispatch(doCreate_success(response));
+              setstate({ ...state, fileList: [] });
+              settabledata([...tabledata, response.newProducts]);
+              setloadingmodal(false);
+              setimgfile(null);
+              notification.info({
+                message: `Created Successfully`,
+                icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+                placement: "bottomRight",
+              });
+
+              // console.log(">>>> productlist: ", productList);
+            } catch (error) {
+              console.log("failed to fetch product list: ", error);
+              // dispatch(doCreate_error);
+            }
+          };
+          fetchCreateProduct();
+        })
+        .catch((info) => {
+          console.log("Validate Failed:", info);
+        });
+    } else {
+      console.log(">>>Update");
+      form
+        .validateFields()
+        .then((values) => {
+          // onCreate(values);
+          console.log(">>>value", values);
+          var CurrentDate = moment().toISOString();
+          let data = {};
+          if (imgfile === null) {
+            data = {
+              ...values,
+              createAt: CurrentDate,
+              ...sizecheck,
+            };
+          } else {
+            data = {
+              ...values,
+              images: imgfile,
+              createAt: CurrentDate,
+              ...sizecheck,
+            };
+          }
+
+          console.log("data >>>", data);
+          var form_data = new FormData();
+
+          for (var key in data) {
+            form_data.append(key, data[key]);
+          }
+          const fetchCreateProduct = async () => {
+            // dispatch({ type: "FETCH_INIT" });
+
+            dispatch(doCreate(data));
+            try {
+              setloadingmodal(true);
+
+              // const params = { _page: 1, _limit: 10 };
+              const response = await productApi.createproduct(form_data);
+              console.log("Fetch products succesfully: ", response);
+              // console.log(response.products);
+              // setProductList(response.products);
+              // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+              // dispatch(doCreate_success(response));
+              setstate({ ...state, fileList: [] });
+              settabledata([...tabledata, response.newProducts]);
+              setloadingmodal(false);
+
+              notification.info({
+                message: `Update Successfully`,
+                icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+                placement: "bottomRight",
+              });
+
+              // console.log(">>>> productlist: ", productList);
+            } catch (error) {
+              console.log("failed to fetch product list: ", error);
+              // dispatch(doCreate_error);
+            }
+          };
+          fetchCreateProduct();
+        })
+        .catch((info) => {
+          console.log("Validate Failed:", info);
+        });
+    }
   };
   function onChangemcb(e) {
     setSizecheck({ ...sizecheck, size_M: e.target.checked });
@@ -254,6 +327,18 @@ function Product() {
   function onChangelcb(e) {
     setSizecheck({ ...sizecheck, size_L: e.target.checked });
   }
+  // const fetchCategorybyID = async (categoryID) => {
+  //   try {
+  //     // setIsLoading(true);
+  //     const response = await categoryApi.getbyID(categoryID);
+  //     console.log("Fetch categoryby ID succesfully: ", response);
+  //     return response.categories.name;
+  //     // settabledata(response.products);
+  //     // setIsLoading(false);
+  //   } catch (error) {
+  //     console.log("failed to fetch category list: ", error);
+  //   }
+  // };
   const initialData = [];
   const [isLoading, setIsLoading] = useState(false);
   const [isvisible, SetVisible] = useState(false);
@@ -291,11 +376,9 @@ function Product() {
       // dispatch({ type: "FETCH_INIT" });
       dispatchCategory(doGetListCategory);
       try {
-        setIsLoading(true);
         const response = await categoryApi.getAll();
         console.log("Fetch products succesfully: ", response);
         dispatchCategory(doGetList_successCategory(response.categories));
-        setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
         dispatchCategory(doGetList_errorCategory);
@@ -379,12 +462,12 @@ function Product() {
               </Col>
             </Row>
             <Row style={{ display: "flex", justifyContent: "space-between" }}>
-              <Col span={12} style={{ paddingTop: "15px" }}>
+              {/* <Col span={12} style={{ paddingTop: "15px" }}>
                 <Form.Item name="alias">
                   <Input placeholder="Alias" />
                 </Form.Item>
-              </Col>
-              <Col span={6} style={{ paddingTop: "15px" }}>
+              </Col> */}
+              <Col span={12} style={{ paddingTop: "15px" }}>
                 <Form.Item
                   name="categoryId"
                   rules={[
@@ -414,13 +497,14 @@ function Product() {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={5}>
+              <Col span={1}></Col>
+              <Col span={11}>
                 Size
                 <div
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    width: "50%",
+                    width: "30%",
                   }}
                 >
                   <Form.Item>
