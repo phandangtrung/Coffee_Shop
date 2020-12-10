@@ -16,9 +16,9 @@ router.post('/signup',
     check('password').isLength({min:6})
 ]
 ,usersController.register);
-
 router.post('/createAdmin',usersController.admin);
 
+router.post('/login/admin',usersController.loginAdmin);
 router.post('/login', usersController.login);
 router.get('/confirmation/:token',usersController.getConfirmation);
 
@@ -31,7 +31,6 @@ router.use(isAdmin);
 
 router.get('/',usersController.getAllUsers);
 router.get('/:uid', usersController.getUserById)
-router.post('/login/admin',usersController.loginAdmin);
 router.patch('/lock/:uid',usersController.lockUser);
 
 module.exports = router;

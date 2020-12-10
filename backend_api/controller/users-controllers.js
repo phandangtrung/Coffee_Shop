@@ -293,6 +293,7 @@ const admin = async (req, res, next) => {
         email: "Admin",
         password: "Admin@123",
         isAdmin: true,
+        isConfirm: true,
     };
     let newAdmin; 
     newAdmin = new User(createdAdmin);
@@ -300,6 +301,16 @@ const admin = async (req, res, next) => {
         res.status(201).json({
         createdAdmin, 
         message: "Created Admin"
+    });
+    let token;
+    try {
+        token = getToken(createdAdmin); 
+    } catch (err) {
+        const error = new HttpError('Signing up failed, please try again later.',500);
+         return next(error)
+    }
+    res.status(201).json({
+        newAdmin, token
     });
 }
 
@@ -326,11 +337,21 @@ const loginAdmin = async (req, res, next) => {
         return next(error);
     };
 
+    let token;
+    try {
+        token = getToken(existingAdmin);
+    } catch (err) {
+        const error = new HttpError('Login failed, please try again later.',500);
+        return next(error)
+    }
+
     res.status(200).json({
         email: existingAdmin.email,
         isAdmin: existingAdmin.isAdmin,
+        token: token,
         message: "Login successful"
     });
+
 }
 
 module.exports = {register, login, getConfirmation, lockUser, getMyUser, updateMyUser, getAllUsers, getUserById,admin, loginAdmin};
