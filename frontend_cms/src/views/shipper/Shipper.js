@@ -1,43 +1,97 @@
-import React, { lazy } from "react";
+import React, { lazy, useEffect, useState } from "react";
 import {
-  CBadge,
   CCard,
-  CCardBody,
   CCardHeader,
-  CDataTable,
-  CLink,
   CButton,
+  CCardBody,
+  useReducer,
 } from "@coreui/react";
+import {
+  Table,
+  Space,
+  Spin,
+  Modal,
+  Row,
+  Col,
+  Input,
+  Form,
+  notification,
+  Checkbox,
+  Upload,
+  Select,
+  Button,
+  Popconfirm,
+} from "antd";
+import { CheckCircleOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./style.css";
 import CIcon from "@coreui/icons-react";
-
+import shippersApi from "../../api/shippersApi";
 import usersData from "../users/UsersData";
-const fields = [
-  // { key: "id", label: "INDEX", _style: { width: "5%" } },
-  { key: "fname", label: "FULL NAME", _style: { width: "15%" } },
-  { key: "username", label: "PHONE", _style: { width: "15%" } },
-  { key: "address", label: "POINTS", _style: { width: "23%" } },
-  { key: "phone", label: "CREATE AT", _style: { width: "17%" } },
-  { key: "action", label: "ACTION", _style: { width: "10%" } },
-  // { key: "registered", _style: { width: "40%" } },
-  // "role",
-  // "status",
-];
-const getBadge = (status) => {
-  switch (status) {
-    case "Active":
-      return "success";
-    case "Inactive":
-      return "secondary";
-    case "Pending":
-      return "warning";
-    case "Banned":
-      return "danger";
-    default:
-      return "primary";
-  }
-};
+import moment from "moment";
+import Moment from "react-moment";
+
 function Shipper() {
+  const [isLoading, setIsLoading] = useState(false);
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Alias",
+      dataIndex: "alias",
+      key: "alias",
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Create at",
+      dataIndex: "createAt",
+      key: "createAt",
+      render: (time) => (
+        <p>
+          <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
+        </p>
+      ),
+    },
+
+    {
+      title: "Action",
+      key: "action",
+      width: 200,
+      render: (text, record) => (
+        <Space size="middle">
+          <Button type="primary">Edit</Button>
+          <Popconfirm
+            title="Are you sure？"
+            icon={<DeleteOutlined style={{ color: "red" }} />}
+            // onConfirm={() => deleteProduct(record)}
+          >
+            <Button type="primary" danger>
+              Delete
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
+  const [tabledata, settabledata] = useState([]);
+  useEffect(() => {
+    const fetchCategoryList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      try {
+        setIsLoading(true);
+        const response = await shippersApi.getAll();
+        console.log("Fetch products succesfully: ", response);
+        settabledata(response.categories);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+      }
+    };
+    fetchCategoryList();
+  }, []);
   return (
     <>
       <CCard>
@@ -56,45 +110,13 @@ function Shipper() {
           Add Shipper
         </CButton>
         <CCardBody>
-          <CDataTable
-            items={usersData}
-            fields={fields}
-            striped
-            itemsPerPage={8}
-            pagination
-            scopedSlots={{
-              index: (item) => <td>{item.id}</td>,
-              status: (item) => (
-                <td>
-                  <CBadge color={getBadge(item.status)}>{item.status}</CBadge>
-                </td>
-              ),
-              action: () => (
-                <td style={{ display: "flex", justifyContent: "start" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      width: "80%",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <CLink className="c-subheader-nav-link" href="#">
-                      <CIcon name="cil-pencil" alt="Edit" />
-                      {/* &nbsp;Edit */}
-                    </CLink>
-                    <CLink className="c-subheader-nav-link" href="#">
-                      <CIcon
-                        style={{ color: "red" }}
-                        name="cil-trash"
-                        alt="Delete"
-                      />
-                      {/* &nbsp;Edit */}
-                    </CLink>
-                  </div>
-                </td>
-              ),
-            }}
-          />
+          {isLoading ? (
+            <div style={{ textAlign: "center" }}>
+              <Spin size="large" />
+            </div>
+          ) : (
+            <Table columns={columns} dataSource={tabledata} rowKey="_id" />
+          )}
         </CCardBody>
       </CCard>
     </>

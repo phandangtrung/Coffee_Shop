@@ -279,7 +279,6 @@ function Product() {
               ...sizecheck,
             };
           }
-          console.log(">>checkimg", checkaddimg);
           console.log(">>data product image ", data);
 
           // console.log("data >>>", data);
