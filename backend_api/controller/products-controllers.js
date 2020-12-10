@@ -158,6 +158,7 @@ const getProductById = async (req, res, next) => {
   res.json({ products: products.toObject({ getters: true }) });
 };
 
+
 module.exports = {
   getAllProducts,
   getProductById,
