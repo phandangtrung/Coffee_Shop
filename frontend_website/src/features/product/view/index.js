@@ -147,7 +147,12 @@ function Product() {
             ) : (
               categoryList.data.map((category) => {
                 return (
-                  <Menu.Item key={category._id}>{category.name}</Menu.Item>
+                  <Menu.Item
+                    style={{ textTransform: "uppercase" }}
+                    key={category._id}
+                  >
+                    {category.name}
+                  </Menu.Item>
                 );
               })
             )}

@@ -136,6 +136,7 @@ function Product() {
   //uploadimage
   const [sizecheck, setSizecheck] = useState({ size_M: true, size_L: false });
   const [loadingmodal, setloadingmodal] = useState(false);
+  const [checkaddimg, setcheck] = useState(false);
   const toggle = () => {
     SetVisible(!isvisible);
     form.resetFields();
@@ -144,6 +145,7 @@ function Product() {
   const handleChange = (fileList) => {
     setstate(fileList);
     setimgfile(fileList.file.originFileObj);
+    setcheck(true);
     console.log(">>state", state);
     console.log(">>fileList", fileList);
     console.log(">>originFileObj", imgfile);
@@ -184,9 +186,7 @@ function Product() {
     form.setFieldsValue(record);
     setstate({
       ...state,
-      fileList: [
-        { url: `http://localhost:3000/${record.images}`, src: record.images },
-      ],
+      fileList: [{ url: `http://localhost:3000/${record.images}` }],
     });
     SetVisible(!isvisible);
     console.log(">>>record ", record);
@@ -236,8 +236,9 @@ function Product() {
               // dispatch(doCreate_success(response));
               setstate({ ...state, fileList: [] });
               settabledata([...tabledata, response.newProducts]);
-              setloadingmodal(false);
               setimgfile(null);
+              setcheck(false);
+              setloadingmodal(false);
               notification.info({
                 message: `Created Successfully`,
                 icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
@@ -264,10 +265,9 @@ function Product() {
           console.log(">>>value", values);
           var CurrentDate = moment().toISOString();
           let data = {};
-          if (imgfile === null) {
+          if (checkaddimg === true) {
             data = {
               ...values,
-              images: state.fileList.src,
               createAt: CurrentDate,
               ...sizecheck,
             };
@@ -279,44 +279,46 @@ function Product() {
               ...sizecheck,
             };
           }
+          console.log(">>checkimg", checkaddimg);
+          console.log(">>data product image ", data);
 
-          console.log("data >>>", data);
-          var form_data = new FormData();
+          // console.log("data >>>", data);
+          // var form_data = new FormData();
 
-          for (var key in data) {
-            form_data.append(key, data[key]);
-          }
-          const fetchCreateProduct = async () => {
-            // dispatch({ type: "FETCH_INIT" });
+          // for (var key in data) {
+          //   form_data.append(key, data[key]);
+          // }
+          // const fetchCreateProduct = async () => {
+          //   // dispatch({ type: "FETCH_INIT" });
 
-            dispatch(doCreate(data));
-            try {
-              setloadingmodal(true);
+          //   dispatch(doCreate(data));
+          //   try {
+          //     setloadingmodal(true);
 
-              // const params = { _page: 1, _limit: 10 };
-              const response = await productApi.updateproduct(form_data);
-              console.log("Fetch update products succesfully: ", response);
-              // console.log(response.products);
-              // setProductList(response.products);
-              // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
-              // dispatch(doCreate_success(response));
-              setstate({ ...state, fileList: [] });
-              settabledata([...tabledata, response.newProducts]);
-              setloadingmodal(false);
+          //     // const params = { _page: 1, _limit: 10 };
+          //     const response = await productApi.updateproduct(form_data);
+          //     console.log("Fetch update products succesfully: ", response);
+          //     // console.log(response.products);
+          //     // setProductList(response.products);
+          //     // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
+          //     // dispatch(doCreate_success(response));
+          //     setstate({ ...state, fileList: [] });
+          //     settabledata([...tabledata, response.newProducts]);
+          //     setloadingmodal(false);
 
-              notification.info({
-                message: `Update Successfully`,
-                icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
-                placement: "bottomRight",
-              });
+          //     notification.info({
+          //       message: `Update Successfully`,
+          //       icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+          //       placement: "bottomRight",
+          //     });
 
-              // console.log(">>>> productlist: ", productList);
-            } catch (error) {
-              console.log("failed to fetch product list: ", error);
-              // dispatch(doCreate_error);
-            }
-          };
-          fetchCreateProduct();
+          //     // console.log(">>>> productlist: ", productList);
+          //   } catch (error) {
+          //     console.log("failed to fetch product list: ", error);
+          //     // dispatch(doCreate_error);
+          //   }
+          // };
+          // fetchCreateProduct();
         })
         .catch((info) => {
           console.log("Validate Failed:", info);

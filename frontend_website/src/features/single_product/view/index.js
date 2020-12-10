@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./style.css";
 import {
   Row,
@@ -15,6 +15,9 @@ import { Images } from "../../../config/image";
 const { TabPane } = Tabs;
 function SingleProduct({ props }) {
   let location = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   const handleSubmit = (values) => {
     console.log("Value: ", values);
     console.log(">>productname: ", location.state.namepro);
