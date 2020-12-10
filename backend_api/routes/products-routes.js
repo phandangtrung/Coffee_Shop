@@ -1,7 +1,7 @@
 const express = require('express');
 const { check } = require('express-validator');
 
-const uploadfile = require('../middleware/upload');
+const {fileUploadProduct} = require('../middleware/upload');
 const productsController = require('../controller/products-controllers');
 
 const router = express.Router();
@@ -11,14 +11,14 @@ router.get('/:pid',productsController.getProductById);
 
 
 router.post('/',
-uploadfile.single('images'),
+fileUploadProduct.single('imagesProduct'),
 [
     check('name').not().isEmpty()
 ]
 ,productsController.createProduct);
 
 router.patch('/:pid',
-uploadfile.single('images'),
+fileUploadProduct.single('imagesProduct'),
 [
     check('name').not().isEmpty()
 ]
