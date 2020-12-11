@@ -166,7 +166,7 @@
   font-family: cursive;
 }
 .ant-form-item-control-input-content {
-  max-width: 90%;
+  max-width: 100%;
 }
 .ant-picker-large {
   width: 100%;

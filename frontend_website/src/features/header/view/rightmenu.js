@@ -26,6 +26,7 @@ import {
   CheckCircleOutlined,
 } from "@ant-design/icons";
 import userApi from "../../../api/userApi";
+import Cookies from "js-cookie";
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
@@ -103,6 +104,30 @@ const RightMenu = (props) => {
     };
     fetchCreateProduct();
   };
+  const [isLoading, setIsLoading] = useState(false);
+
+  const onSignIn = (values) => {
+    const datalogin = { ...values, email: `${values.email}@gmail.com` };
+    console.log("login >>", datalogin);
+    const fetchCategoryList = async () => {
+      try {
+        setIsLoading(true);
+        const response = await userApi.signinUser(datalogin);
+        console.log("Fetch login succesfully: ", response);
+        const token = response.token;
+        Cookies.set("tokenUser", token);
+        // console.log(">>>token", token);
+      } catch (error) {
+        console.log("failed to fetch login: ", error);
+        notification.open({
+          message: "Fail Login",
+          description: "Your email or password is wrong",
+        });
+      }
+      setIsLoading(false);
+    };
+    fetchCategoryList();
+  };
   return (
     <>
       <Menu
@@ -129,7 +154,7 @@ const RightMenu = (props) => {
       </Menu>
       <Modal
         visible={isModalVisible}
-        width={800}
+        width={400}
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[]}
@@ -137,84 +162,96 @@ const RightMenu = (props) => {
         <div className="header_modal-title">
           <Tabs style={{ fontSize: "30px" }} tabPosition={"top"}>
             <Tabs.TabPane tab="Sign In" key="signin" className="loginmodal">
-              <Form
-                name="basic"
-                initialValues={{ remember: true }}
-                size="large"
-                // onFinish={onFinish}
-                // onFinishFailed={onFinishFailed}
-              >
-                <Row>
-                  <Col
-                    span={24}
-                    style={{
-                      paddingLeft: "20px",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Form.Item
+              <Spin spinning={isLoading}>
+                <Form
+                  name="basic"
+                  initialValues={{ remember: true }}
+                  size="large"
+                  onFinish={onSignIn}
+                  // onFinishFailed={onFinishFailed}
+                >
+                  <Row>
+                    <Col
+                      span={24}
                       style={{
-                        width: "600px",
-                      }}
-                      name="email"
-                    >
-                      <Input
-                        addonAfter="@gmail.com"
-                        // defaultValue="kaitrung"
-                        placeholder="Email"
-                        autoComplete="off"
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col
-                    span={24}
-                    style={{
-                      paddingLeft: "20px",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Form.Item
-                      name="fName"
-                      style={{
-                        width: "600px",
+                        display: "flex",
+                        justifyContent: "center",
                       }}
                     >
-                      <Input.Password
-                        style={{ width: "100%" }}
-                        placeholder="Password"
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col
-                    span={24}
-                    style={{
-                      width: "90%",
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <Form.Item name="fName">
-                      <Button
+                      <Form.Item
                         style={{
-                          width: "300px",
-                          border: "0px",
-                          fontSize: "20px",
+                          width: "600px",
                         }}
-                        type="primary"
-                        htmlType="submit"
+                        name="email"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your email!",
+                          },
+                        ]}
                       >
-                        Sign in
-                      </Button>
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Form>
+                        <Input
+                          addonAfter="@gmail.com"
+                          // defaultValue="kaitrung"
+                          placeholder="Email"
+                          autoComplete="off"
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col
+                      span={24}
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Form.Item
+                        name="password"
+                        style={{
+                          width: "600px",
+                        }}
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your password!",
+                          },
+                        ]}
+                      >
+                        <Input.Password
+                          style={{ width: "100%" }}
+                          placeholder="Password"
+                        />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col
+                      span={24}
+                      style={{
+                        width: "90%",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Form.Item>
+                        <Button
+                          style={{
+                            width: "300px",
+                            border: "0px",
+                            fontSize: "20px",
+                          }}
+                          type="primary"
+                          htmlType="submit"
+                        >
+                          Sign in
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              </Spin>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Sign Up" key="signup">
               <Spin spinning={loadingmodal}>
@@ -227,7 +264,7 @@ const RightMenu = (props) => {
                   size="large"
                 >
                   <Row>
-                    <Col span={12}>
+                    <Col span={24}>
                       <Form.Item
                         name="fName"
                         rules={[
@@ -243,7 +280,9 @@ const RightMenu = (props) => {
                         />
                       </Form.Item>
                     </Col>
-                    <Col span={12}>
+                  </Row>
+                  <Row>
+                    <Col span={24}>
                       <Form.Item
                         name="email"
                         rules={[
@@ -284,7 +323,7 @@ const RightMenu = (props) => {
                       </Radio.Group>
                     </Form.Item>
                   </Col> */}
-                    <Col span={12}>
+                    <Col span={24}>
                       <Form.Item
                         name="password"
                         rules={[
@@ -303,7 +342,7 @@ const RightMenu = (props) => {
                       </Form.Item>
                     </Col>
                   </Row>
-                  <Row style={{ paddingTop: "50px" }}>
+                  <Row>
                     <Col
                       span={24}
                       style={{
