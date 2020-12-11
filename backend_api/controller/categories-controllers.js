@@ -57,8 +57,11 @@ const updateCategoryById = async (req, res, next) => {
         createAt: req.body.createAt
       };
     let categories;
-    categories = await Category.findByIdAndUpdate(CateId, updatedCategory);
-    res.status(200).json({categories: updatedCategory});
+    categories = await Category.findOne({_id: CateId}, updatedCategory);
+    res.status(200).json({
+      message:"update success",
+      categories: updatedCategory});
+    
 };
 
 const deleteCategoryById = async (req, res, next) => {
