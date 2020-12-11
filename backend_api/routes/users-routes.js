@@ -25,12 +25,12 @@ router.get('/confirmation/:token',usersController.getConfirmation);
 router.use(isAuth);
 
 router.get('/myUser',usersController.getMyUser);
-router.patch('/myUser',usersController.updateMyUser);
+router.put('/myUser',usersController.updateMyUser);
 
 router.use(isAdmin);
 
 router.get('/',usersController.getAllUsers);
 router.get('/:uid', usersController.getUserById)
-router.patch('/lock/:uid',usersController.lockUser);
+router.put('/lock/:uid',usersController.lockUser);
 
 module.exports = router;

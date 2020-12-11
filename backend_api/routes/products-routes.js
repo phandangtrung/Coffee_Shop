@@ -17,7 +17,7 @@ fileUploadProduct.single('imagesProduct'),
 ]
 ,productsController.createProduct);
 
-router.patch('/:pid',
+router.put('/:pid',
 fileUploadProduct.single('imagesProduct'),
 [
     check('name').not().isEmpty()

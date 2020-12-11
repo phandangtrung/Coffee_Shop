@@ -57,7 +57,7 @@ const updateCategoryById = async (req, res, next) => {
         createAt: req.body.createAt
       };
     let categories;
-    categories = await Category.findOne({_id: CateId}, updatedCategory);
+    categories = await Category.findOneAndUpdate(CateId, updatedCategory);
     res.status(200).json({
       message:"update success",
       categories: updatedCategory});
