@@ -5,7 +5,6 @@ const ordersSchema = new mongoose.Schema({
     quantity:{type:Number, require: true},
     prices:{type:Number, require: true},
     status:{type:String, require: true},
-    ratings:{type:Number, require: false},
     userAddress:{type:String, require: true},
     productId:{type:String, required: false},
     userId:{type:String, required: false}
