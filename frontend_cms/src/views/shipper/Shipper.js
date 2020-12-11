@@ -37,18 +37,26 @@ function Shipper() {
       title: "Name",
       dataIndex: "name",
       key: "name",
+      width: 200,
       // render: (text) => <a>{text}</a>,
     },
     {
-      title: "Alias",
-      dataIndex: "alias",
-      key: "alias",
-      // render: (text) => <a>{text}</a>,
+      title: "Images",
+      dataIndex: "imagesShipper",
+      key: "imagesShipper",
+      width: 250,
+      render: (img) => (
+        <img
+          style={{ width: "100%", height: "auto" }}
+          src={`http://localhost:3000/${img}`}
+        />
+      ),
     },
     {
       title: "Create at",
       dataIndex: "createAt",
       key: "createAt",
+      width: 200,
       render: (time) => (
         <p>
           <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
@@ -84,7 +92,7 @@ function Shipper() {
         setIsLoading(true);
         const response = await shippersApi.getAll();
         console.log("Fetch products succesfully: ", response);
-        settabledata(response.categories);
+        settabledata(response.shippers);
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
