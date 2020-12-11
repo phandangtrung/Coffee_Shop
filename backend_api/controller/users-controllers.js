@@ -265,7 +265,7 @@ const updateMyUser = async(req, res, next) => {
 
 const lockUser = async(req, res, next) => {
     const Userid = req.params.uid;
-    console.log(id);
+    console.log(Userid);
     const userLock = {
         isLock: true
     } 
@@ -284,7 +284,10 @@ const lockUser = async(req, res, next) => {
         const error =  new HttpError('Could not lock this user', 404);
         return next(error);
     }
-    res.status(200).json({message: 'Update success'});
+    res.status(200).json({
+        message: 'lock user successful',
+        users
+    });
 }
 
 const admin = async (req, res, next) => {
@@ -294,6 +297,7 @@ const admin = async (req, res, next) => {
         password: "Admin@123",
         isAdmin: true,
         isConfirm: true,
+        isConfirm: false
     };
     let newAdmin; 
     newAdmin = new User(createdAdmin);
