@@ -24,6 +24,8 @@ import {
   EyeInvisibleOutlined,
   EyeTwoTone,
   CheckCircleOutlined,
+  ExclamationCircleFilled,
+  LogoutOutlined,
 } from "@ant-design/icons";
 import userApi from "../../../api/userApi";
 import Cookies from "js-cookie";
@@ -116,18 +118,29 @@ const RightMenu = (props) => {
         console.log("Fetch login succesfully: ", response);
         const token = response.token;
         Cookies.set("tokenUser", token);
+        setIsModalVisible(false);
         // console.log(">>>token", token);
       } catch (error) {
         console.log("failed to fetch login: ", error);
         notification.open({
           message: "Fail Login",
           description: "Your email or password is wrong",
+          icon: <ExclamationCircleFilled style={{ color: "red" }} />,
         });
       }
       setIsLoading(false);
     };
     fetchCategoryList();
   };
+  const onsignout = () => {
+    Cookies.remove("tokenUser");
+    notification.open({
+      message: "You have logged out",
+      icon: <LogoutOutlined style={{ color: "red" }} />,
+      placement: "bottomRight",
+    });
+  };
+  let islogin = Cookies.get("tokenUser");
   return (
     <>
       <Menu
@@ -137,9 +150,15 @@ const RightMenu = (props) => {
         className="menutitle"
       >
         <Menu.Item className="button-signup" key="mail">
-          <Button onClick={showModal} className="button-signup">
-            Signin
-          </Button>
+          {islogin === undefined ? (
+            <Button onClick={showModal} className="button-signup">
+              Signin
+            </Button>
+          ) : (
+            <Button onClick={onsignout} className="button-signup">
+              Signout
+            </Button>
+          )}
         </Menu.Item>
         <Menu.Item className="button-signup" key="app">
           {/* <Button className="button-signup" onClick={props.showSignup}>
