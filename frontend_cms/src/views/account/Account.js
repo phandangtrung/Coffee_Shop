@@ -46,6 +46,26 @@ const fields = [
 function Account() {
   const [isLoading, setIsLoading] = useState(false);
   const [tabledata, settabledata] = useState([]);
+  const lockUser = (record) => {
+    console.log("record: ", record);
+    const fetchLockUser = async () => {
+      try {
+        setIsLoading(true);
+        const tokenUser = Cookies.get("tokenUser");
+        const params = {
+          _id: record._id,
+          token: tokenUser,
+        };
+        const response = await userApi.lockUser(params);
+        console.log("Fetch user succesfully: ", response);
+        settabledata(response.users);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch user lock: ", error);
+      }
+    };
+    fetchLockUser();
+  };
   const columns = [
     {
       title: "Email",
@@ -108,14 +128,21 @@ function Account() {
       width: 200,
       render: (text, record) => (
         <Space size="middle">
-          <Popconfirm
-            title="Are you sure？"
-            // icon={<DeleteOutlined style={{ color: "red" }} />}
-          >
-            <Button type="primary" danger>
+          {record.isLock === false && record.isConfirm === true ? (
+            <Popconfirm
+              title="Are you sure？"
+              icon={<LockOutlined style={{ color: "red" }} />}
+              onConfirm={() => lockUser(record)}
+            >
+              <Button type="primary" danger>
+                <span>Lock User</span>
+              </Button>
+            </Popconfirm>
+          ) : (
+            <Button disabled type="primary" danger>
               <span>Lock User</span>
             </Button>
-          </Popconfirm>
+          )}
         </Space>
       ),
     },
