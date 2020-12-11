@@ -8,6 +8,7 @@ const { validationResult } = require("express-validator");
 const HttpError = require("../error-handle/http-error");
 
 const createShipper = async (req, res, next) => {
+<<<<<<< HEAD
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
@@ -27,6 +28,27 @@ const createShipper = async (req, res, next) => {
     res.status(200).json({
       message: "Create success",
       newShippers,
+=======
+    const errors = validationResult(req);
+    if(!errors.isEmpty())
+    {
+        console.log(errors);
+        const error =  new HttpError('Invalid Input! Pls check your data', 400);
+        return next(error);
+    }
+    const createShipper = {
+        name: req.body.name,
+        phone: req.body.phone,
+        imagesShipper: req.file.path,
+        point: req.body.point,
+        createAt: req.body.createAt
+    };
+    try {
+        const newShippers = new Shipper(createShipper);
+        await newShippers.save();
+        res.status(200).json({
+        message: "Create success", newShippers
+>>>>>>> Cuong
     });
   } catch (error) {
     if (error.name === "MongoError" && error.code === 11000) {
@@ -38,6 +60,7 @@ const createShipper = async (req, res, next) => {
 };
 
 const updateShipperById = async (req, res, next) => {
+<<<<<<< HEAD
   const errors = validationResult(req);
   const ShipId = req.params.sid;
   if (!errors.isEmpty()) {
@@ -55,6 +78,26 @@ const updateShipperById = async (req, res, next) => {
   let shippers;
   shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
   res.status(200).json({ shippers: updatedShipper });
+=======
+    const errors = validationResult(req);
+    const ShipId = req.params.sid;
+    if(!errors.isEmpty())
+    {
+        console.log(errors);
+        const error =  new HttpError('Invalid Input! Pls check your data', 400);
+        return next(error);
+    }
+    const updatedShipper = {
+        name: req.body.name,
+        phone: req.body.phone,
+        imagesShipper: req.file.path,
+        point: req.body.point,
+        createAt: req.body.createAt
+      };
+    let shippers;
+    shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
+    res.status(200).json({shippers: updatedShipper});
+>>>>>>> Cuong
 };
 
 const deleteShipperById = async (req, res, next) => {
@@ -74,6 +117,7 @@ const deleteShipperById = async (req, res, next) => {
 };
 
 const getAllShipper = async (req, res, next) => {
+<<<<<<< HEAD
   let shippers;
   try {
     shippers = await Shipper.find();
@@ -84,6 +128,24 @@ const getAllShipper = async (req, res, next) => {
     );
     return next(error);
   }
+=======
+    let shippers;
+    try{
+        shippers = await Shipper.find();
+    } catch (err) {
+        const error = new HttpError('Something went wrong, coud not find any shipper', 500);
+        return next(error);
+    };
+    console.log(shippers);
+    if(!shippers)
+    {
+        const error =  new HttpError('Could not find any shipper', 404);
+        return next(error);
+    }
+    res.status(200).json({shippers});
+  
+  };
+>>>>>>> Cuong
 
   if (!shippers.name) {
     const error = new HttpError("Could not find any shipper", 404);

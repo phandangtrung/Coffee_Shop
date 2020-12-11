@@ -17,7 +17,8 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
-app.use("/upload/images", express.static(path.join("upload", "images")));
+app.use("/upload/imagesProduct", express.static(path.join("upload", "imagesProduct")));
+app.use("/upload/imagesShipper", express.static(path.join("upload", "imagesShipper")));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
