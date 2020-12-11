@@ -1,9 +1,9 @@
 import axiosClient from "./axiosClient";
 // api/productApi.js
 class UserApi {
-  postUser = () => {
+  postUser = (params) => {
     const url = "/api/users/login/admin";
-    return axiosClient.post(url);
+    return axiosClient.post(url, params);
   };
 }
 const userApi = new UserApi();
