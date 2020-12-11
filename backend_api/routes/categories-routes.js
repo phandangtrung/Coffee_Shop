@@ -15,7 +15,7 @@ router.post('/',
 ]
 ,categoriesController.createCategory);
 
-router.patch('/:cid',
+router.put('/:cid',
 [
     check('name').not().isEmpty()
 ]

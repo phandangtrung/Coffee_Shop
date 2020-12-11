@@ -17,7 +17,7 @@ fileUploadShipper.single('imagesShipper'),
 ]
 ,shippersController.createShipper);
 
-router.patch('/:pid',
+router.put('/:pid',
 fileUploadShipper.single('imagesShipper'),
 [
     check('name').not().isEmpty()
