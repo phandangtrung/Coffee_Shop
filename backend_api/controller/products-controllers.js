@@ -42,7 +42,7 @@ const createProduct = async (req, res, next) => {
     createAt: req.body.createAt,
     description: req.body.description,
     alias: getAlias(req.body.name),
-    images: req.file.path,
+    imagesProduct: req.file.path,
     categoryId: req.body.categoryId,
   };
   console.log(createProduct);
@@ -82,7 +82,7 @@ const updateProductbyId = async (req, res, next) => {
     createAt: req.body.createAt,
     description: req.body.description,
     alias: getAlias(req.body.name),
-    images: req.file.path,
+    imagesProduct: req.file.path,
   };
   /* let products;
     products = await Product.findByIdAndUpdate(ProId, updatedProduct);
