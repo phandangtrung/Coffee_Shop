@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
+import { PrivateRoute, AuthButton } from "./fakeAuth";
+import Cookies from "js-cookie";
 // import { PrivateRoute } from "./config/PrivateRoute";
 import "./scss/style.scss";
 
@@ -24,6 +26,7 @@ class App extends Component {
       <HashRouter>
         <React.Suspense fallback={loading}>
           <Switch>
+            {/* <AuthButton /> */}
             <Route
               exact
               path="/login"
@@ -43,11 +46,20 @@ class App extends Component {
               name="Page 500"
               render={(props) => <Page500 {...props} />}
             />
-            <Route
-              path="/"
-              name="Home"
-              render={(props) => <TheLayout {...props} />}
-            />
+            {Cookies.get("tokenUser") !== undefined ? (
+              <Route
+                path="/"
+                name="Home"
+                render={(props) => <TheLayout {...props} />}
+              />
+            ) : (
+              <PrivateRoute
+                path="/"
+                name="Home"
+                component={TheLayout}
+                // render={(props) => <TheLayout {...props} />}
+              />
+            )}
           </Switch>
         </React.Suspense>
       </HashRouter>

@@ -14,7 +14,7 @@ router.post('/',
 ]
 ,ordersController.createOrder);
 
-router.patch('/:cid',
+router.put('/:cid',
 [
     check('name').not().isEmpty()
 ]

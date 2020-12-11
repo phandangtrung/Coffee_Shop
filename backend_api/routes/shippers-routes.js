@@ -1,6 +1,7 @@
 const express = require('express');
 const { check } = require('express-validator');
 
+const {fileUploadShipper} = require('../middleware/upload');
 const shippersController = require('../controller/shippers-controllers');
 
 const router = express.Router();
@@ -9,13 +10,15 @@ router.get('/',shippersController.getAllShipper);
 router.get('/:pid',shippersController.getshipperById);
 
 
-router.post('/', 
+router.post('/',
+fileUploadShipper.single('imagesShipper'), 
 [
     check('name').not().isEmpty()
 ]
 ,shippersController.createShipper);
 
-router.patch('/:pid',
+router.put('/:pid',
+fileUploadShipper.single('imagesShipper'),
 [
     check('name').not().isEmpty()
 ]
