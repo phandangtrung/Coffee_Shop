@@ -40,38 +40,20 @@ function ShoppingPage(props) {
     name: "SOMA",
     position: { lat: 37.778519, lng: -122.40564 },
   });
-  const dataSource = [
-    {
-      key: "1",
-      name: "AMERICANO",
-      image: Images.COCF,
-      quantity: 1,
-      price: 39000,
-      total: 39000,
-    },
-    {
-      key: "2",
-      name: "AMERICANO",
-      image: Images.COCF,
-      quantity: 1,
-      price: 39000,
-      total: 39000,
-    },
-  ];
 
   const columns = [
-    {
-      title: "PRODUCT",
-      dataIndex: "image",
-      key: "image",
-      render: (image) => (
-        <>
-          <img style={{ width: "80%", height: "auto" }} src={Images.COCF} />
-        </>
-      ),
-      width: "200px",
-      height: "auto",
-    },
+    // {
+    //   title: "PRODUCT",
+    //   dataIndex: "image",
+    //   key: "image",
+    //   render: (image) => (
+    //     <>
+    //       <img style={{ width: "80%", height: "auto" }} src={Images.COCF} />
+    //     </>
+    //   ),
+    //   width: "200px",
+    //   height: "auto",
+    // },
     {
       title: "NAME",
       dataIndex: "name",

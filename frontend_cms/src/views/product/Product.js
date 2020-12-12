@@ -53,8 +53,8 @@ function Product() {
     },
     {
       title: "Image",
-      dataIndex: "images",
-      key: "images",
+      dataIndex: "imagesProduct",
+      key: "imagesProduct",
       width: 200,
       render: (images) => (
         <img style={{ width: "100%" }} src={`${locallink}/${images}`} />
@@ -210,7 +210,7 @@ function Product() {
 
           const data = {
             ...values,
-            images: imgfile,
+            imagesProduct: imgfile,
             createAt: CurrentDate,
             ...sizecheck,
           };
