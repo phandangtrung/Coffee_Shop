@@ -62,7 +62,7 @@ const deleteShipperById = async (req, res, next) => {
     const ShipId = req.params.sid;
     let shippers;
     try{
-        shippers = await Shipper.findByIdAndDelete(sid);
+        shippers = await Shipper.findByIdAndDelete(ShipId);
     }
     catch (err) {
         const error = new HttpError('Something went wrong, can not delete', 500);
