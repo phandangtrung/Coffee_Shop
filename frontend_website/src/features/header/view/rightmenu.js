@@ -16,6 +16,7 @@ import {
   Checkbox,
   notification,
   Spin,
+  Dropdown,
 } from "antd";
 
 import { Link } from "react-router-dom";
@@ -26,6 +27,8 @@ import {
   CheckCircleOutlined,
   ExclamationCircleFilled,
   LogoutOutlined,
+  UserOutlined,
+  SolutionOutlined,
 } from "@ant-design/icons";
 import userApi from "../../../api/userApi";
 import Cookies from "js-cookie";
@@ -140,6 +143,24 @@ const RightMenu = (props) => {
       placement: "bottomRight",
     });
   };
+  const menu = (
+    <Menu>
+      <Menu.Item>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href="http://www.alipay.com/"
+        >
+          <SolutionOutlined /> My Profile
+        </a>
+      </Menu.Item>
+      <Menu.Item danger>
+        <a target="_blank" rel="noopener noreferrer" onClick={onsignout}>
+          <LogoutOutlined /> Signout
+        </a>
+      </Menu.Item>
+    </Menu>
+  );
   let islogin = Cookies.get("tokenUser");
   return (
     <>
@@ -155,9 +176,14 @@ const RightMenu = (props) => {
               Signin
             </Button>
           ) : (
-            <Button onClick={onsignout} className="button-signup">
-              Signout
-            </Button>
+            <Dropdown overlay={menu}>
+              <a
+                className="ant-dropdown-link"
+                onClick={(e) => e.preventDefault()}
+              >
+                <UserOutlined style={{ fontSize: "25px" }} />
+              </a>
+            </Dropdown>
           )}
         </Menu.Item>
         <Menu.Item className="button-signup" key="app">
