@@ -22,7 +22,12 @@ import {
   Button,
   Popconfirm,
 } from "antd";
-import { CheckCircleOutlined, DeleteOutlined } from "@ant-design/icons";
+
+import {
+  CheckCircleOutlined,
+  DeleteOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import "./style.css";
 import CIcon from "@coreui/icons-react";
 import shippersApi from "../../api/shippersApi";
@@ -32,6 +37,14 @@ import Moment from "react-moment";
 
 function Shipper() {
   const [isLoading, setIsLoading] = useState(false);
+  const [form] = Form.useForm();
+  const uploadimg = (info) => {
+    console.log(">>>>info: ", info);
+    console.log(fileList);
+  };
+  const props = {
+    onChange: uploadimg,
+  };
   const columns = [
     {
       title: "Name",
@@ -84,7 +97,81 @@ function Shipper() {
       ),
     },
   ];
+  const [fileList, setfileList] = useState([]);
+  const [isvisible, SetVisible] = useState(false);
   const [tabledata, settabledata] = useState([]);
+  const [loadingmodal, setloadingmodal] = useState(false);
+  const [state, setstate] = useState({
+    previewVisible: false,
+    previewImage: "",
+    fileList: [],
+  });
+  const handlePreview = (file) => {
+    setstate({
+      ...state,
+      previewImage: file.url || file.thumbUrl,
+      previewVisible: true,
+    });
+  };
+  const toggle = () => {
+    SetVisible(!isvisible);
+  };
+  const [imgfile, setimgfile] = useState(null);
+  const [checkaddimg, setcheck] = useState(false);
+  const handleChange = (fileList) => {
+    setstate(fileList);
+    setimgfile(fileList.file.originFileObj);
+    setcheck(true);
+    console.log(">>state", state);
+    console.log(">>fileList", fileList);
+    console.log(">>originFileObj", imgfile);
+  };
+  const handleOk = () => {
+    form
+      .validateFields()
+      .then((values) => {
+        form.resetFields();
+        // onCreate(values);
+        console.log(">>>value", values);
+        var CurrentDate = moment().toISOString();
+        const data = {
+          ...values,
+          imagesShipper: imgfile,
+          createAt: CurrentDate,
+        };
+        console.log("data >>>", data);
+        var form_data = new FormData();
+
+        for (var key in data) {
+          form_data.append(key, data[key]);
+        }
+        const fetchCreateProduct = async () => {
+          try {
+            setloadingmodal(true);
+
+            // const params = { _page: 1, _limit: 10 };
+            const response = await shippersApi.createShipper(form_data);
+            console.log("Fetch shipper succesfully: ", response);
+            console.log(">>>response.shipper", response.newShippers);
+            settabledata([...tabledata, response.newShippers]);
+            setloadingmodal(false);
+
+            notification.info({
+              message: `Created Successfully`,
+              icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+              placement: "bottomRight",
+            });
+          } catch (error) {
+            console.log("failed to fetch product list: ", error);
+            // dispatch(doCreate_error);
+          }
+        };
+        fetchCreateProduct();
+      })
+      .catch((info) => {
+        console.log("Validate Failed:", info);
+      });
+  };
   useEffect(() => {
     const fetchCategoryList = async () => {
       // dispatch({ type: "FETCH_INIT" });
@@ -113,6 +200,7 @@ function Shipper() {
           }}
           shape="pill"
           color="info"
+          onClick={toggle}
         >
           {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
           Add Shipper
@@ -127,6 +215,58 @@ function Shipper() {
           )}
         </CCardBody>
       </CCard>
+      <Modal
+        title="Add Shipper"
+        visible={isvisible}
+        onOk={handleOk}
+        onCancel={toggle}
+        style={{ marginTop: "5%" }}
+      >
+        <Spin spinning={loadingmodal} size="large">
+          <Form
+            // initialValues={{ size: componentSize }}
+            // onValuesChange={onFormLayoutChange}
+            form={form}
+            size={"large"}
+          >
+            <Row style={{ display: "flex", justifyContent: "space-between" }}>
+              <Col span={24}>
+                <Form.Item name="name">
+                  <Input placeholder="Name" />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item name="phone">
+                  <Input placeholder="Phone" />
+                </Form.Item>
+              </Col>
+              <Col span={11}>
+                <Form.Item>
+                  <Upload
+                    {...props}
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    listType="picture"
+                    defaultFileList={[...fileList]}
+                    className="upload-list-inline"
+                    onPreview={handlePreview}
+                    onChange={handleChange}
+                    fileList={state.fileList}
+                  >
+                    <p style={{ paddingBottom: "10px", fontSize: "15px" }}>
+                      Product Image (png only)
+                    </p>
+                    {state?.fileList.length < 1 && (
+                      <Button onClick={uploadimg} icon={<UploadOutlined />}>
+                        Upload
+                      </Button>
+                    )}
+                  </Upload>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Spin>
+      </Modal>
     </>
   );
 }
