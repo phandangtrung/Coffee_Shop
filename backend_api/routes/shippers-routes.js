@@ -7,7 +7,7 @@ const shippersController = require('../controller/shippers-controllers');
 const router = express.Router();
 
 router.get('/',shippersController.getAllShipper);
-router.get('/:pid',shippersController.getshipperById);
+router.get('/:sid',shippersController.getshipperById);
 
 
 router.post('/',
@@ -17,13 +17,13 @@ fileUploadShipper.single('imagesShipper'),
 ]
 ,shippersController.createShipper);
 
-router.put('/:pid',
+router.put('/:sid',
 fileUploadShipper.single('imagesShipper'),
 [
     check('name').not().isEmpty()
 ]
 ,shippersController.updateShipperById);
 
-router.delete('/:pid', shippersController.deleteShipperById);
+router.delete('/:sid', shippersController.deleteShipperById);
 
 module.exports = router;

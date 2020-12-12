@@ -285,10 +285,10 @@ const lockUser = async(req, res, next) => {
         return next(error);
     }
     res.status(200).json({
-        message: 'lock user successful',
-        users
+        users: users.toObject({ getters: true }),
+        message: 'lock user successful'
     });
-}
+};
 
 const admin = async (req, res, next) => {
     const createdAdmin = {
@@ -297,7 +297,7 @@ const admin = async (req, res, next) => {
         password: "Admin@123",
         isAdmin: true,
         isConfirm: true,
-        isConfirm: false
+        isLock: false
     };
     let newAdmin; 
     newAdmin = new User(createdAdmin);
@@ -316,7 +316,7 @@ const admin = async (req, res, next) => {
     res.status(201).json({
         newAdmin, token
     });
-}
+};
 
 const loginAdmin = async (req, res, next) => {
     const {email, password} = req.body;
