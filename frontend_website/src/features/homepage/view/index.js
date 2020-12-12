@@ -27,7 +27,10 @@ const Homepage = () => {
           <img style={contentStyle} alt={"slide3"} src={Images.SLIDE2} />
         </div>
       </Carousel>
-      <Bestseller />
+      {/* <Bestseller /> */}
+      <div style={{ width: "100%", height: "auto", paddingTop: "30px" }}>
+        <img style={{ width: "80%", height: "auto" }} src={Images.ADS} />
+      </div>
       <Storeinfo />
     </div>
   );

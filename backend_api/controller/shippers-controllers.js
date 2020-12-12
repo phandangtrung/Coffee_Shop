@@ -17,7 +17,7 @@ const createShipper = async (req, res, next) => {
   const createShipper = {
     name: req.body.name,
     phone: req.body.phone,
-    images: req.file.path,
+    imagesShipper: req.file.path,
     point: req.body.point,
     createAt: req.body.createAt,
   };
@@ -48,7 +48,7 @@ const updateShipperById = async (req, res, next) => {
   const updatedShipper = {
     name: req.body.name,
     phone: req.body.phone,
-    images: req.file.path,
+    imagesShipper: req.file.path,
     point: req.body.point,
     createAt: req.body.createAt,
   };
@@ -84,8 +84,8 @@ const getAllShipper = async (req, res, next) => {
     );
     return next(error);
   }
-
-  if (!shippers.name) {
+  console.log(shippers);
+  if (!shippers) {
     const error = new HttpError("Could not find any shipper", 404);
     return next(error);
   }

@@ -174,7 +174,7 @@ function Product() {
                   <ProductTag
                     _id={product._id}
                     name={product.name}
-                    img={product.images}
+                    img={product.imagesProduct}
                     price={product.prices}
                     description={product.description}
                   />

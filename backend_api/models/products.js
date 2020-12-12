@@ -9,7 +9,7 @@ const productsSchema = new mongoose.Schema({
     createAt: {type: String, required: true},
     description: {type: String, require: false},
     alias: {type: String, require: false},   
-    images: {type: String, require: false},
+    imagesProduct: {type: String, require: false},
     reviews:{type:String, require: false},
     ratings:{type:Number, require: false},
     categoryId: {type: String, required: false}     

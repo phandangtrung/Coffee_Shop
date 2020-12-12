@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
 import { Row, Col } from "antd";
 
 import ProductTag from "../ProductTag/index";
+import productApit from "../../api/productApi";
 function index() {
   return (
     <div className="container">

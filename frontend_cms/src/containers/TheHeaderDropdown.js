@@ -8,8 +8,12 @@ import {
   CImg,
 } from "@coreui/react";
 import CIcon from "@coreui/icons-react";
-
+import Cookies from "js-cookie";
 const TheHeaderDropdown = () => {
+  const onlogout = () => {
+    Cookies.remove("tokenUser");
+    window.location.reload();
+  };
   return (
     <CDropdown inNav className="c-header-nav-items mx-2" direction="down">
       <CDropdownToggle className="c-header-nav-link" caret={false}>
@@ -82,7 +86,7 @@ const TheHeaderDropdown = () => {
           </CBadge>
         </CDropdownItem> */}
         <CDropdownItem divider />
-        <CDropdownItem>
+        <CDropdownItem onClick={onlogout}>
           <CIcon name="cil-lock-locked" className="mfe-2" />
           Lock Account
         </CDropdownItem>
