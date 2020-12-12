@@ -58,11 +58,10 @@ const updateShipperById = async (req, res, next) => {
 };
 
 const deleteShipperById = async (req, res, next) => {
-<<<<<<< HEAD
   const ShipId = req.params.sid;
   let shippers;
   try {
-    shippers = await Shipper.findByIdAndDelete(sid);
+    shippers = await Shipper.findByIdAndDelete(ShipId);
   } catch (err) {
     const error = new HttpError("Something went wrong, can not delete", 500);
     return next(error);
@@ -73,24 +72,6 @@ const deleteShipperById = async (req, res, next) => {
   }
   res.status(200).json({ message: "Deleted Shipper successfull" });
 };
-=======
-    const ShipId = req.params.sid;
-    let shippers;
-    try{
-        shippers = await Shipper.findByIdAndDelete(ShipId);
-    }
-    catch (err) {
-        const error = new HttpError('Something went wrong, can not delete', 500);
-        return next(error);
-    }
-    if(!shippers)
-    {
-        const error =  new HttpError('Could not find any Shipper', 404);
-        return next(error);
-    }
-    res.status(200).json({message: 'Deleted Shipper successfull'});
-}
->>>>>>> Cuong
 
 const getAllShipper = async (req, res, next) => {
   let shippers;
