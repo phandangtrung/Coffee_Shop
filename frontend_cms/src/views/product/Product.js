@@ -123,12 +123,6 @@ function Product() {
     previewVisible: false,
     previewImage: "",
     fileList: [],
-    // [{
-    //   uid: -1,
-    //   name: 'xxx.png',
-    //   status: 'done',
-    //   url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    // }],
   });
   const [detail, setdetail] = useState(null);
   const [imgfile, setimgfile] = useState(null);
@@ -181,15 +175,17 @@ function Product() {
     };
     fetchDeleteProduct();
   };
+  const [idProdupdate, setidProdupdate] = useState(null);
   const updateProduct = (record) => {
     setdetail(record);
     form.setFieldsValue(record);
     setstate({
       ...state,
-      fileList: [{ url: `http://localhost:3000/${record.images}` }],
+      fileList: [{ url: `http://localhost:3000/${record.imagesProduct}` }],
     });
     SetVisible(!isvisible);
     console.log(">>>record ", record);
+    setidProdupdate(record._id);
   };
   const uploadimg = (info) => {
     console.log(">>>>info: ", info);
@@ -226,14 +222,8 @@ function Product() {
             dispatch(doCreate(data));
             try {
               setloadingmodal(true);
-
-              // const params = { _page: 1, _limit: 10 };
               const response = await productApi.createproduct(form_data);
               console.log("Fetch products succesfully: ", response);
-              // console.log(response.products);
-              // setProductList(response.products);
-              // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
-              // dispatch(doCreate_success(response));
               setstate({ ...state, fileList: [] });
               settabledata([...tabledata, response.newProducts]);
               setimgfile(null);
@@ -244,11 +234,8 @@ function Product() {
                 icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
                 placement: "bottomRight",
               });
-
-              // console.log(">>>> productlist: ", productList);
             } catch (error) {
               console.log("failed to fetch product list: ", error);
-              // dispatch(doCreate_error);
             }
           };
           fetchCreateProduct();
@@ -265,59 +252,53 @@ function Product() {
           console.log(">>>value", values);
           var CurrentDate = moment().toISOString();
           let data = {};
-          if (checkaddimg === true) {
+          if (checkaddimg === false) {
             data = {
               ...values,
+              _id: idProdupdate,
               createAt: CurrentDate,
               ...sizecheck,
             };
           } else {
             data = {
               ...values,
-              images: imgfile,
+              _id: idProdupdate,
+              imagesProduct: imgfile,
               createAt: CurrentDate,
               ...sizecheck,
             };
           }
           console.log(">>data product image ", data);
 
-          // console.log("data >>>", data);
-          // var form_data = new FormData();
+          var form_data = new FormData();
 
-          // for (var key in data) {
-          //   form_data.append(key, data[key]);
-          // }
-          // const fetchCreateProduct = async () => {
-          //   // dispatch({ type: "FETCH_INIT" });
+          for (var key in data) {
+            form_data.append(key, data[key]);
+          }
+          const dataapi = { _id: data._id, formdata: form_data };
+          const fetchUpdateProduct = async () => {
+            // dispatch({ type: "FETCH_INIT" });
 
-          //   dispatch(doCreate(data));
-          //   try {
-          //     setloadingmodal(true);
+            try {
+              setloadingmodal(true);
 
-          //     // const params = { _page: 1, _limit: 10 };
-          //     const response = await productApi.updateproduct(form_data);
-          //     console.log("Fetch update products succesfully: ", response);
-          //     // console.log(response.products);
-          //     // setProductList(response.products);
-          //     // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
-          //     // dispatch(doCreate_success(response));
-          //     setstate({ ...state, fileList: [] });
-          //     settabledata([...tabledata, response.newProducts]);
-          //     setloadingmodal(false);
+              // const params = { _page: 1, _limit: 10 };
+              const response = await productApi.updateproduct(dataapi);
+              console.log("Fetch update products succesfully: ", response);
+              setstate({ ...state, fileList: [] });
+              // settabledata([...tabledata, response.newProducts]);
+              setloadingmodal(false);
 
-          //     notification.info({
-          //       message: `Update Successfully`,
-          //       icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
-          //       placement: "bottomRight",
-          //     });
-
-          //     // console.log(">>>> productlist: ", productList);
-          //   } catch (error) {
-          //     console.log("failed to fetch product list: ", error);
-          //     // dispatch(doCreate_error);
-          //   }
-          // };
-          // fetchCreateProduct();
+              notification.info({
+                message: `Update Successfully`,
+                icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+                placement: "bottomRight",
+              });
+            } catch (error) {
+              console.log("failed to fetch product list: ", error);
+            }
+          };
+          fetchUpdateProduct();
         })
         .catch((info) => {
           console.log("Validate Failed:", info);
