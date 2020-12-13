@@ -14,9 +14,14 @@ const createOrder = async (req, res, next) => {
         return next(error);
     }
     const createOrder = {
+        customerName : req.body.customerName,
+        customerAddress : req.body.customerAddress,
+        customerPhone : req.body.customerPhone,
         quantity: req.body.quantity,
-        prices: req.body.prices,
+        totalPrices: req.body.totalPrices,
         status: req.body.status,
+        createAt: req.body.createAt,
+        doneAt: req.body.doneAt,
         userAddress: req.body.userAddress,
         userId : req.body.userId               
     };
@@ -45,10 +50,14 @@ const updateOrderById = async (req, res, next) => {
         return next(error);
     }
     const updatedOrder = {
-        quantity: req.body.quantity,
-        prices: req.body.prices,
-        status: req.body.status,
-        userAddress: req.body.userAddress
+      customerName : req.body.customerName,
+      customerAddress : req.body.customerAddress,
+      customerPhone : req.body.customerPhone,
+      quantity: req.body.quantity,
+      totalPrices: req.body.totalPrices,
+      status: req.body.status,
+      createAt: req.body.createAt,
+      doneAt: req.body.doneAt
       };
     let orders;
     orders = await Order.findByIdAndUpdate(OrderId, updatedOrder);
