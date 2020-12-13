@@ -4,7 +4,7 @@ const { check } = require('express-validator');
 const usersController = require('../controller/users-controllers');
 const { path } = require('dotenv/lib/env-options');
 const {isAdmin, isAuth} = require('../middleware/uilt');
-const { Router } = require('express');
+
 
 const router = express.Router();
 

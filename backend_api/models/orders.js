@@ -4,12 +4,11 @@ const ordersSchema = new mongoose.Schema({
     customerName:{type: String, require: true},
     customerPhone: {type: String, required: true},
     customerAddress:{type:String, require: true},
-    quantity:{type:Number, require: true},
     totalPrices:{type:Number, require: true},
-    status:{type:String, require: true},
+    status:{type:Boolean, default: false},
     createAt: {type: Date, require: false},
-    doneAt: {type: Date, require: false},   
-    productId:{type:String, required: false},
+    doneAt: {type: Date, require: false},
+    productlist: {type: Array, require: false},   
     userId:{type:String, required: false}
 });
 
