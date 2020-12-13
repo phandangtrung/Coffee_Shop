@@ -33,6 +33,10 @@ function MyProfile() {
           fname: response.users.fName,
           phone: response.users.phone,
         });
+        if (response.users.gender === undefined) setgenderpick("male");
+        else setgenderpick(response.users.gender);
+        if (response.users.birthday !== undefined)
+          setgenderpick(response.users.gender);
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
@@ -40,12 +44,22 @@ function MyProfile() {
     };
     fetchCategoryList();
   }, []);
-  const [value, setValue] = React.useState(1);
+  const [dataUpdate, setdataUpdate] = useState({});
+  const [datetime, setdatetime] = useState();
+  const [genderpick, setgenderpick] = useState();
+  const handleUpdate = (values) => {
+    setdataUpdate({ ...values, birthday: datetime, gender: genderpick });
+    console.log(">>data", dataUpdate);
+  };
 
   const onChange = (e) => {
     console.log("radio checked", e.target.value);
-    setValue(e.target.value);
+    setgenderpick(e.target.value);
   };
+  function onChangeDate(dateString) {
+    console.log(dateString);
+    setdatetime(dateString);
+  }
   return (
     <div className="container">
       <Spin spinning={isLoading}>
@@ -60,8 +74,9 @@ function MyProfile() {
                   form={form}
                   labelCol={{ span: 8 }}
                   wrapperCol={{ span: 14 }}
+                  onFinish={handleUpdate}
                 >
-                  <Form.Item name="email" label="Email">
+                  <Form.Item label="Email">
                     <span>{userinfo.email}</span>
                   </Form.Item>
                   <Form.Item
@@ -76,14 +91,17 @@ function MyProfile() {
                     <Input />
                   </Form.Item>
                   <Form.Item name="gender" initialValue="male" label="Gender">
-                    <Radio.Group onChange={onChange} value={value}>
+                    <Radio.Group onChange={onChange} value={genderpick}>
                       <Radio value="male">Male</Radio>
                       <Radio value="female">Female</Radio>
                       <Radio value="other">Other</Radio>
                     </Radio.Group>
                   </Form.Item>
                   <Form.Item label="Date of birth">
-                    <DatePicker style={{ width: "100%" }} onChange={onChange} />
+                    <DatePicker
+                      style={{ width: "100%" }}
+                      onChange={onChangeDate}
+                    />
                   </Form.Item>
                   <Button
                     style={{ float: "right", border: "0px" }}
@@ -127,7 +145,7 @@ function MyProfile() {
               </Col>
             </Row>
           </Card>
-        </div>{" "}
+        </div>
       </Spin>
     </div>
   );
