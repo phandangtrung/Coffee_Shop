@@ -112,7 +112,7 @@ const RightMenu = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onSignIn = (values) => {
-    const datalogin = { ...values, email: `${values.email}@gmail.com` };
+    const datalogin = { ...values };
     console.log("login >>", datalogin);
     const fetchCategoryList = async () => {
       try {
@@ -120,7 +120,7 @@ const RightMenu = (props) => {
         const response = await userApi.signinUser(datalogin);
         console.log("Fetch login succesfully: ", response);
         const token = response.token;
-        Cookies.set("tokenUser", token);
+        Cookies.set("tokenCustomer", token);
         setIsModalVisible(false);
         // console.log(">>>token", token);
       } catch (error) {
@@ -136,7 +136,7 @@ const RightMenu = (props) => {
     fetchCategoryList();
   };
   const onsignout = () => {
-    Cookies.remove("tokenUser");
+    Cookies.remove("tokenCustomer");
     notification.open({
       message: "You have logged out",
       icon: <LogoutOutlined style={{ color: "red" }} />,
@@ -146,13 +146,9 @@ const RightMenu = (props) => {
   const menu = (
     <Menu>
       <Menu.Item>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="http://www.alipay.com/"
-        >
+        <Link to="/myprofile">
           <SolutionOutlined /> My Profile
-        </a>
+        </Link>
       </Menu.Item>
       <Menu.Item danger>
         <a target="_blank" rel="noopener noreferrer" onClick={onsignout}>
@@ -161,7 +157,7 @@ const RightMenu = (props) => {
       </Menu.Item>
     </Menu>
   );
-  let islogin = Cookies.get("tokenUser");
+  let islogin = Cookies.get("tokenCustomer");
   return (
     <>
       <Menu
@@ -236,7 +232,7 @@ const RightMenu = (props) => {
                         ]}
                       >
                         <Input
-                          addonAfter="@gmail.com"
+                          // addonAfter="@gmail.com"
                           // defaultValue="kaitrung"
                           placeholder="Email"
                           autoComplete="off"

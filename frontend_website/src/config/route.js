@@ -7,6 +7,7 @@ import NotfoundPage from "../features/notfoundpage/NoFound";
 import IntroPage from "../features/IntroPage/view";
 import AddressPage from "../features/addresspage/view";
 import signupsucess from "../features/signupsucess/signupsucess";
+import MyProfile from "../features/myprofile/view";
 export const Menu = [
   {
     path: "/",
@@ -48,6 +49,11 @@ export const Menu = [
     path: "/address",
     exact: true,
     component: AddressPage,
+  },
+  {
+    path: "/myprofile",
+    exact: true,
+    component: MyProfile,
   },
   {
     path: "*",

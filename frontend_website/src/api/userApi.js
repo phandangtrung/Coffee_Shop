@@ -9,6 +9,14 @@ class UserApi {
     const url = "/api/users/login/";
     return axiosClient.post(url, params);
   };
+  getMyprofile = (token) => {
+    const url = "/api/users/myUser";
+    return axiosClient.post(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  };
 }
 const userApi = new UserApi();
 export default userApi;
