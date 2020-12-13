@@ -16,6 +16,7 @@ import {
   Checkbox,
   notification,
   Spin,
+  Dropdown,
 } from "antd";
 
 import { Link } from "react-router-dom";
@@ -26,6 +27,8 @@ import {
   CheckCircleOutlined,
   ExclamationCircleFilled,
   LogoutOutlined,
+  UserOutlined,
+  SolutionOutlined,
 } from "@ant-design/icons";
 import userApi from "../../../api/userApi";
 import Cookies from "js-cookie";
@@ -109,7 +112,7 @@ const RightMenu = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onSignIn = (values) => {
-    const datalogin = { ...values, email: `${values.email}@gmail.com` };
+    const datalogin = { ...values };
     console.log("login >>", datalogin);
     const fetchCategoryList = async () => {
       try {
@@ -117,7 +120,7 @@ const RightMenu = (props) => {
         const response = await userApi.signinUser(datalogin);
         console.log("Fetch login succesfully: ", response);
         const token = response.token;
-        Cookies.set("tokenUser", token);
+        Cookies.set("tokenCustomer", token);
         setIsModalVisible(false);
         // console.log(">>>token", token);
       } catch (error) {
@@ -133,14 +136,28 @@ const RightMenu = (props) => {
     fetchCategoryList();
   };
   const onsignout = () => {
-    Cookies.remove("tokenUser");
+    Cookies.remove("tokenCustomer");
     notification.open({
       message: "You have logged out",
       icon: <LogoutOutlined style={{ color: "red" }} />,
       placement: "bottomRight",
     });
   };
-  let islogin = Cookies.get("tokenUser");
+  const menu = (
+    <Menu>
+      <Menu.Item>
+        <Link to="/myprofile">
+          <SolutionOutlined /> My Profile
+        </Link>
+      </Menu.Item>
+      <Menu.Item danger>
+        <a target="_blank" rel="noopener noreferrer" onClick={onsignout}>
+          <LogoutOutlined /> Signout
+        </a>
+      </Menu.Item>
+    </Menu>
+  );
+  let islogin = Cookies.get("tokenCustomer");
   return (
     <>
       <Menu
@@ -155,9 +172,14 @@ const RightMenu = (props) => {
               Signin
             </Button>
           ) : (
-            <Button onClick={onsignout} className="button-signup">
-              Signout
-            </Button>
+            <Dropdown overlay={menu}>
+              <a
+                className="ant-dropdown-link"
+                onClick={(e) => e.preventDefault()}
+              >
+                <UserOutlined style={{ fontSize: "25px" }} />
+              </a>
+            </Dropdown>
           )}
         </Menu.Item>
         <Menu.Item className="button-signup" key="app">
@@ -210,7 +232,7 @@ const RightMenu = (props) => {
                         ]}
                       >
                         <Input
-                          addonAfter="@gmail.com"
+                          // addonAfter="@gmail.com"
                           // defaultValue="kaitrung"
                           placeholder="Email"
                           autoComplete="off"

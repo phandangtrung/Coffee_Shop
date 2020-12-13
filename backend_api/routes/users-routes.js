@@ -1,11 +1,10 @@
 const express = require('express');
 const { check } = require('express-validator');
 
-const uploadfile = require('../middleware/upload');
 const usersController = require('../controller/users-controllers');
 const { path } = require('dotenv/lib/env-options');
 const {isAdmin, isAuth} = require('../middleware/uilt');
-const { Router } = require('express');
+
 
 const router = express.Router();
 

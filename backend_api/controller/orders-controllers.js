@@ -14,10 +14,14 @@ const createOrder = async (req, res, next) => {
         return next(error);
     }
     const createOrder = {
-        name: req.body.name,
-        quantity: req.body.quantity,
-        prices: req.body.prices,
+        customerName : req.body.customerName,
+        customerAddress : req.body.customerAddress,
+        customerPhone : req.body.customerPhone,
+        totalPrices: req.body.totalPrices,
         status: req.body.status,
+        createAt: req.body.createAt,
+        doneAt: req.body.doneAt,
+        productlist: req.body.productlist,
         userAddress: req.body.userAddress,
         userId : req.body.userId               
     };
@@ -46,11 +50,7 @@ const updateOrderById = async (req, res, next) => {
         return next(error);
     }
     const updatedOrder = {
-        name: req.body.name,
-        quantity: req.body.quantity,
-        prices: req.body.prices,
-        status: req.body.status,
-        userAddress: req.body.userAddress
+      status: req.body.status,
       };
     let orders;
     orders = await Order.findByIdAndUpdate(OrderId, updatedOrder);
@@ -103,12 +103,12 @@ const getOrderById = async (req, res, next) => {
         return next(error);
     };
   
-    if(!orders.name)
+    if(!orders)
     {
         const error =  new HttpError('Could not find any order', 404);
         return next(error);
     }
-    res.status(200).json({categories});
+    res.status(200).json({orders});
   
   };
 

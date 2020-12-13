@@ -1,4 +1,4 @@
-import React, { lazy } from "react";
+import React, { lazy, useState, useEffect } from "react";
 import {
   CBadge,
   CCard,
@@ -8,82 +8,121 @@ import {
   CLink,
   CButton,
 } from "@coreui/react";
+import {
+  Table,
+  Space,
+  Spin,
+  Modal,
+  Row,
+  Col,
+  Input,
+  Form,
+  notification,
+  Button,
+  Popconfirm,
+} from "antd";
+import {
+  CheckCircleOutlined,
+  DeleteOutlined,
+  UploadOutlined,
+} from "@ant-design/icons";
 import "./style.css";
 import CIcon from "@coreui/icons-react";
-
-import usersData from "../users/UsersData";
-const fields = [
-  // { key: "id", label: "INDEX", _style: { width: "5%" } },
-  { key: "id", label: "ID", _style: { width: "15%" } },
-  { key: "username", label: "CREATE BY", _style: { width: "15%" } },
-  { key: "phone", label: "CREATE AT", _style: { width: "17%" } },
-  { key: "address", label: "TOTAL", _style: { width: "23%" } },
-
-  { key: "action", label: "ACTION", _style: { width: "10%" } },
-  // { key: "registered", _style: { width: "40%" } },
-  // "role",
-  // "status",
-];
-const getBadge = (status) => {
-  switch (status) {
-    case "Active":
-      return "success";
-    case "Inactive":
-      return "secondary";
-    case "Pending":
-      return "warning";
-    case "Banned":
-      return "danger";
-    default:
-      return "primary";
-  }
-};
+import moment from "moment";
+import Moment from "react-moment";
 function Bill() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [tabledata, settabledata] = useState([]);
+  const columns = [
+    {
+      title: "ORDER ID",
+      dataIndex: "_id",
+      key: "_id",
+      width: 200,
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Customer Name",
+      dataIndex: "customerName",
+      key: "customerName",
+      width: 250,
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Phone",
+      dataIndex: "customerPhone",
+      key: "customerPhone",
+      width: 200,
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Address",
+      dataIndex: "customerAddress",
+      key: "customerAddress",
+      width: 200,
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Total",
+      dataIndex: "totalPrices",
+      key: "totalPrices",
+      width: 200,
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: 100,
+      // render: (text) => <a>{text}</a>,
+    },
+
+    {
+      title: "Done at",
+      dataIndex: "doneAt",
+      key: "doneAt",
+      width: 200,
+    },
+    {
+      title: "Create at",
+      dataIndex: "createAt",
+      key: "createAt",
+      width: 200,
+      render: (time) => (
+        <p>
+          <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
+        </p>
+      ),
+    },
+
+    {
+      title: "Action",
+      key: "action",
+      width: 200,
+      render: (text, record) => (
+        <Space size="middle">
+          <Button type="primary">Detail</Button>
+
+          <Button type="primary" danger>
+            Conform
+          </Button>
+        </Space>
+      ),
+    },
+  ];
   return (
     <>
       <CCard>
         <CCardHeader className="CCardHeader-title ">Bill</CCardHeader>
 
         <CCardBody>
-          <CDataTable
-            items={usersData}
-            fields={fields}
-            striped
-            itemsPerPage={8}
-            pagination
-            scopedSlots={{
-              index: (item) => <td>{item.id}</td>,
-              status: (item) => (
-                <td>
-                  <CBadge color={getBadge(item.status)}>{item.status}</CBadge>
-                </td>
-              ),
-              action: () => (
-                <td style={{ display: "flex", justifyContent: "start" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      width: "50%",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <CLink className="c-subheader-nav-link" href="#">
-                      <CIcon name="cil-notes" alt="Edit" />
-                      {/* &nbsp;Edit */}
-                    </CLink>
-                    <CLink className="c-subheader-nav-link" href="#">
-                      <CIcon
-                        style={{ color: "red" }}
-                        name="cil-trash"
-                        alt="Delete"
-                      />
-                      {/* &nbsp;Edit */}
-                    </CLink>
-                  </div>
-                </td>
-              ),
-            }}
-          />
+          {isLoading ? (
+            <div style={{ textAlign: "center" }}>
+              <Spin size="large" />
+            </div>
+          ) : (
+            <Table columns={columns} dataSource={tabledata} rowKey="_id" />
+          )}
         </CCardBody>
       </CCard>
     </>
