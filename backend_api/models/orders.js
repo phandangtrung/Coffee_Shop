@@ -1,7 +1,6 @@
 const mongoose = require('mongoose')
 
 const ordersSchema = new mongoose.Schema({
-    name:{type:String, require: true},
     quantity:{type:Number, require: true},
     prices:{type:Number, require: true},
     status:{type:String, require: true},

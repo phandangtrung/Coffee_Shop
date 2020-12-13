@@ -14,7 +14,6 @@ const createOrder = async (req, res, next) => {
         return next(error);
     }
     const createOrder = {
-        name: req.body.name,
         quantity: req.body.quantity,
         prices: req.body.prices,
         status: req.body.status,
@@ -46,7 +45,6 @@ const updateOrderById = async (req, res, next) => {
         return next(error);
     }
     const updatedOrder = {
-        name: req.body.name,
         quantity: req.body.quantity,
         prices: req.body.prices,
         status: req.body.status,
