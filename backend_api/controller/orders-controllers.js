@@ -103,7 +103,7 @@ const getOrderById = async (req, res, next) => {
         return next(error);
     };
   
-    if(!orders.name)
+    if(!orders)
     {
         const error =  new HttpError('Could not find any order', 404);
         return next(error);
