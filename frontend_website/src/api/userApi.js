@@ -11,7 +11,7 @@ class UserApi {
   };
   getMyprofile = (token) => {
     const url = "/api/users/myUser";
-    return axiosClient.post(url, {
+    return axiosClient.get(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
