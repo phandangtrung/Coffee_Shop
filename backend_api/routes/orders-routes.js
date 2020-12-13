@@ -8,11 +8,7 @@ router.get('/',ordersController.getAllOrder);
 router.get('/:oid',ordersController.getOrderById);
 router.get('/userid',ordersController.getOrderByUserId);
 
-router.post('/', 
-[
-    check('name').not().isEmpty()
-]
-,ordersController.createOrder);
+router.post('/',ordersController.createOrder);
 
 router.put('/:cid',
 [
