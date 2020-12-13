@@ -264,13 +264,12 @@ const updateMyUser = async(req, res, next) => {
 };
 
 const lockUser = async(req, res, next) => {
+    let users;
     const Userid = req.params.uid;
-    console.log(Userid);
+    //console.log(Userid);
     const userLock = {
         isLock: true
     } 
-
-    let users;
     try{
         users = await User.findByIdAndUpdate(Userid, userLock);
         console.log(users);
@@ -285,8 +284,8 @@ const lockUser = async(req, res, next) => {
         return next(error);
     }
     res.status(200).json({
-        users: users.toObject({ getters: true }),
-        message: 'lock user successful'
+        message: 'lock user successful',
+        users : userLock
     });
 };
 

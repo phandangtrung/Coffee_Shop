@@ -108,7 +108,7 @@ const getOrderById = async (req, res, next) => {
         const error =  new HttpError('Could not find any order', 404);
         return next(error);
     }
-    res.status(200).json({categories});
+    res.status(200).json({orders});
   
   };
 
