@@ -33,8 +33,8 @@ export default [
   },
   {
     _tag: "CSidebarNavItem",
-    name: "Bill",
-    to: "/bill",
+    name: "Order",
+    to: "/order",
     icon: "cil-notes",
   },
   {
