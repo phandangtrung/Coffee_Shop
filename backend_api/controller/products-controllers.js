@@ -90,14 +90,18 @@ const updateProductbyId = async (req, res, next) => {
   try {
     let products;
     products = await Product.findByIdAndUpdate(ProId, updatedProduct);
-    res.status(200).json({ products: updatedProduct });
+    return res.status(200).send({
+      message: "Update Product success",  
+      data: updatedProduct
+    });
   } catch (error) {
     if (error.name === "MongoError" && error.code === 11000) {
-      // Duplicate username
+      // Duplicate name
       return res.status(422).send({ message: "Product already exist!" });
     }
     return res.status(422).send(error);
   }
+
 };
 
 const deleteProductById = async (req, res, next) => {
