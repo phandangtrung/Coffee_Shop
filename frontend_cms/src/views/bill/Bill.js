@@ -35,23 +35,53 @@ function Bill() {
   const [tabledata, settabledata] = useState([]);
   const columns = [
     {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
+      title: "ORDER ID",
+      dataIndex: "_id",
+      key: "_id",
       width: 200,
       // render: (text) => <a>{text}</a>,
     },
     {
-      title: "Images",
-      dataIndex: "imagesShipper",
-      key: "imagesShipper",
-      width: 150,
-      render: (img) => (
-        <img
-          style={{ width: "100%", height: "auto" }}
-          src={`http://localhost:3000/${img}`}
-        />
-      ),
+      title: "Customer Name",
+      dataIndex: "customerName",
+      key: "customerName",
+      width: 250,
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Phone",
+      dataIndex: "customerPhone",
+      key: "customerPhone",
+      width: 200,
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Address",
+      dataIndex: "customerAddress",
+      key: "customerAddress",
+      width: 200,
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Total",
+      dataIndex: "totalPrices",
+      key: "totalPrices",
+      width: 200,
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: 100,
+      // render: (text) => <a>{text}</a>,
+    },
+
+    {
+      title: "Done at",
+      dataIndex: "doneAt",
+      key: "doneAt",
+      width: 200,
     },
     {
       title: "Create at",
@@ -71,16 +101,11 @@ function Bill() {
       width: 200,
       render: (text, record) => (
         <Space size="middle">
-          <Button type="primary">Edit</Button>
-          <Popconfirm
-            title="Are you sure？"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            // onConfirm={() => deleteProduct(record)}
-          >
-            <Button type="primary" danger>
-              Delete
-            </Button>
-          </Popconfirm>
+          <Button type="primary">Detail</Button>
+
+          <Button type="primary" danger>
+            Conform
+          </Button>
         </Space>
       ),
     },
