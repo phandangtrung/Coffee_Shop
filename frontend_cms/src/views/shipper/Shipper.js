@@ -57,7 +57,7 @@ function Shipper() {
       title: "Images",
       dataIndex: "imagesShipper",
       key: "imagesShipper",
-      width: 250,
+      width: 150,
       render: (img) => (
         <img
           style={{ width: "100%", height: "auto" }}
@@ -87,7 +87,7 @@ function Shipper() {
           <Popconfirm
             title="Are you sure？"
             icon={<DeleteOutlined style={{ color: "red" }} />}
-            // onConfirm={() => deleteProduct(record)}
+            onConfirm={() => deleteProduct(record)}
           >
             <Button type="primary" danger>
               Delete
@@ -106,6 +106,32 @@ function Shipper() {
     previewImage: "",
     fileList: [],
   });
+  const deleteProduct = (record) => {
+    console.log(">>>record", record);
+    const fetchCreateProduct = async () => {
+      try {
+        setloadingmodal(true);
+
+        // const params = { _page: 1, _limit: 10 };
+        const response = await shippersApi.deleteShipper(record._id);
+        console.log("Fetch deleteshipper succesfully: ", response);
+        console.log(">>>response.shipper", response);
+        settabledata(tabledata.filter((item) => item._id !== record._id));
+
+        notification.info({
+          message: `Deleted Successfully`,
+          icon: <DeleteOutlined style={{ color: "#FF0000" }} />,
+          description: `You have deleted ${record.name}`,
+          placement: "bottomRight",
+        });
+        setloadingmodal(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+        // dispatch(doCreate_error);
+      }
+    };
+    fetchCreateProduct();
+  };
   const handlePreview = (file) => {
     setstate({
       ...state,
@@ -153,9 +179,10 @@ function Shipper() {
             const response = await shippersApi.createShipper(form_data);
             console.log("Fetch shipper succesfully: ", response);
             console.log(">>>response.shipper", response.newShippers);
+            setstate({ ...state, fileList: [] });
             settabledata([...tabledata, response.newShippers]);
             setloadingmodal(false);
-
+            setimgfile(null);
             notification.info({
               message: `Created Successfully`,
               icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
