@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./style.css";
 import {
   Row,
@@ -9,6 +9,7 @@ import {
   Tabs,
   Rate,
   Pagination,
+  Input,
 } from "antd";
 import { useLocation } from "react-router-dom";
 import { Images } from "../../../config/image";
@@ -24,6 +25,15 @@ function SingleProduct({ props }) {
   };
   const onChange = () => {
     console.log("Change!");
+  };
+  const hanldecomment = (values) => {
+    console.log(">>commnet", values);
+  };
+  const { TextArea } = Input;
+  const [ratevalue, setratevalue] = useState(3);
+  const desc = ["terrible", "bad", "normal", "good", "wonderful"];
+  const handleChangeRate = (value) => {
+    setratevalue(value);
   };
   return (
     <div className="container">
@@ -105,10 +115,50 @@ function SingleProduct({ props }) {
                   <Pagination defaultCurrent={1} total={50} />
                 </div>
               </TabPane>
-              <TabPane tab="Your Review" key="3">
-                <p>Content of Tab Pane 3</p>
-                <p>Content of Tab Pane 3</p>
-                <p>Content of Tab Pane 3</p>
+              <TabPane
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  paddingTop: "30px",
+                }}
+                tab="Your Review"
+                key="3"
+              >
+                <Form style={{ width: "80%" }} onFinish={hanldecomment}>
+                  <Form.Item name="comment">
+                    <TextArea
+                      placeholder="Type your comment here"
+                      autoSize={{ minRows: 5, maxRows: 8 }}
+                    />
+                  </Form.Item>
+                  <div
+                    style={{
+                      textAlign: "start",
+                      zoom: "1.2",
+                      paddingBottom: "20px",
+                    }}
+                  >
+                    <Rate
+                      tooltips={desc}
+                      onChange={handleChangeRate}
+                      value={ratevalue}
+                    />
+                    {ratevalue ? (
+                      <span className="ant-rate-text">
+                        {desc[ratevalue - 1]}
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </div>
+                  <Button
+                    htmlType="submit"
+                    type="primary"
+                    style={{ float: "left", border: "0px" }}
+                  >
+                    Comment
+                  </Button>
+                </Form>
               </TabPane>
             </Tabs>
           </div>
