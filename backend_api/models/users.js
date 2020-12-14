@@ -11,8 +11,7 @@ const usersSchema = new mongoose.Schema({
     phone: {type:String, require: false},
     isAdmin: { type: Boolean, required: true, default: false },
     isConfirm: {type: Boolean, require: true, default: false },
-    isLock: {type: Boolean, require: true, default: false },
-    createAt: {type: String, require: false}
+    isLock: {type: Boolean, require: true, default: false }
 });
 
 

@@ -1,10 +1,9 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
 const commentsSchema = new mongoose.Schema({
-    email: {type: String, require: false},
-    content: {type: String, required: false},
-    productId: {type: String, required: false}
+  email: { type: String, require: false },
+  content: { type: String, required: false },
+  productId: { type: String, required: false },
 });
 
-
-module.exports = mongoose.model('Comment',commentsSchema);
+module.exports = mongoose.model("Comment", commentsSchema);
