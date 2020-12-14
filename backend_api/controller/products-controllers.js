@@ -71,37 +71,68 @@ const updateProductbyId = async (req, res, next) => {
     const error = new HttpError("Invalid Input! Pls check your data", 400);
     return next(error);
   }
-  const updatedProduct = {
-    name: req.body.name,
-    size_M: req.body.size_M,
-    size_L: req.body.size_L,
-    prices: req.body.prices,
-    quantity: req.body.quantity,
-    status: req.body.status,
-    reviews: req.body.reviews,
-    createAt: req.body.createAt,
-    description: req.body.description,
-    alias: getAlias(req.body.name),
-    imagesProduct: req.file.path,
-  };
-  /* let products;
-    products = await Product.findByIdAndUpdate(ProId, updatedProduct);
-    res.status(200).json({products: updatedProduct}); */
-  try {
-    let products;
-    products = await Product.findByIdAndUpdate(ProId, updatedProduct);
-    return res.status(200).send({
-      message: "Update Product success",  
-      data: updatedProduct
-    });
-  } catch (error) {
-    if (error.name === "MongoError" && error.code === 11000) {
-      // Duplicate name
-      return res.status(422).send({ message: "Product already exist!" });
-    }
-    return res.status(422).send(error);
-  }
 
+  let imagesProduct;
+  if (typeof req.file !== "undefined") {
+    imageimagesProduct = req.file.path;
+  } else imagesProduct = null;
+  if (imagesProduct === null) {
+    const updatedProduct = {
+      name: req.body.name,
+      size_M: req.body.size_M,
+      size_L: req.body.size_L,
+      prices: req.body.prices,
+      quantity: req.body.quantity,
+      status: req.body.status,
+      reviews: req.body.reviews,
+      createAt: req.body.createAt,
+      description: req.body.description,
+      alias: getAlias(req.body.name),
+      //imagesProduct: req.file.path,
+    };
+    try {
+      let products;
+      products = await Product.findByIdAndUpdate(ProId, updatedProduct);
+      return res.status(200).send({
+        message: "Update Product success",
+        data: updatedProduct,
+      });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate name
+        return res.status(422).send({ message: "Product already exist!" });
+      }
+      return res.status(422).send(error);
+    }
+  } else {
+    const updatedProduct = {
+      name: req.body.name,
+      size_M: req.body.size_M,
+      size_L: req.body.size_L,
+      prices: req.body.prices,
+      quantity: req.body.quantity,
+      status: req.body.status,
+      reviews: req.body.reviews,
+      createAt: req.body.createAt,
+      description: req.body.description,
+      alias: getAlias(req.body.name),
+      imagesProduct: req.file.path,
+    };
+    try {
+      let products;
+      products = await Product.findByIdAndUpdate(ProId, updatedProduct);
+      return res.status(200).send({
+        message: "Update Product success",
+        data: updatedProduct,
+      });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate name
+        return res.status(422).send({ message: "Product already exist!" });
+      }
+      return res.status(422).send(error);
+    }
+  }
 };
 
 const deleteProductById = async (req, res, next) => {

@@ -1,29 +1,28 @@
-const express = require('express');
-const { check } = require('express-validator');
+const express = require("express");
+const { check } = require("express-validator");
 
-const {fileUploadShipper} = require('../middleware/upload');
-const shippersController = require('../controller/shippers-controllers');
+const { fileUploadShipper } = require("../middleware/upload");
+const shippersController = require("../controller/shippers-controllers");
 
 const router = express.Router();
 
-router.get('/',shippersController.getAllShipper);
-router.get('/:sid',shippersController.getshipperById);
+router.get("/", shippersController.getAllShipper);
+router.get("/:sid", shippersController.getshipperById);
 
+router.post(
+  "/",
+  fileUploadShipper.single("imagesShipper"),
+  [check("name").not().isEmpty()],
+  shippersController.createShipper
+);
 
-router.post('/',
-fileUploadShipper.single('imagesShipper'), 
-[
-    check('name').not().isEmpty()
-]
-,shippersController.createShipper);
+router.put(
+  "/:sid",
+  fileUploadShipper.single("imagesShipper"),
+  [check("name").not().isEmpty()],
+  shippersController.updateShipperById
+);
 
-router.put('/:sid',
-fileUploadShipper.single('imagesShipper'),
-[
-    check('name').not().isEmpty()
-]
-,shippersController.updateShipperById);
-
-router.delete('/:sid', shippersController.deleteShipperById);
+router.delete("/:sid", shippersController.deleteShipperById);
 
 module.exports = router;
