@@ -238,7 +238,7 @@ const updateMyUser = async (req, res, next) => {
   let users;
   const userCurrent = req.userData.email;
   try {
-    users = await User.findOneAndUpdate({ email: userCurrent });
+    users = await User.findOne({ email: userCurrent });
   } catch (err) {
     const error = new HttpError("You are not log in. Pls login", 500);
     return next(error);
@@ -258,7 +258,7 @@ const updateMyUser = async (req, res, next) => {
 
   let userUpdate;
   try {
-    userUpdate = await User.updateOne({ email: userCurrent }, userInfo);
+    userUpdate = await User.findOneAndUpdate({ email: userCurrent }, userInfo);
   } catch (err) {
     console.log(err);
     const error = new HttpError("Update Fail", 500);
