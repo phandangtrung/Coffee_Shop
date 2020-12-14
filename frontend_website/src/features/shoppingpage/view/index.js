@@ -10,6 +10,7 @@ import {
   Row,
   Select,
   Table,
+  Steps,
 } from "antd";
 import { Images } from "../../../config/image";
 import {
@@ -18,6 +19,9 @@ import {
   UserOutlined,
   PhoneOutlined,
   AudioOutlined,
+  SolutionOutlined,
+  LoadingOutlined,
+  SmileOutlined,
 } from "@ant-design/icons";
 import Mapstore from "../../../components/Maps/Maps";
 import Geocode from "react-geocode";
@@ -148,6 +152,7 @@ function ShoppingPage(props) {
   const handleCancel = () => {
     setVisible(false);
   };
+  const { Step } = Steps;
   return (
     <div className="shopping-container">
       <div className="shopping-card">
@@ -156,12 +161,15 @@ function ShoppingPage(props) {
             <div className="title">Shopping Cart</div>
             <div className="item-cart">{cart.length} Items</div>
           </div>
+
           <hr />
+
           <Table
             className="mytable"
             pagination={false}
             dataSource={cart}
             columns={columns}
+            rowKey="_id"
           />
         </div>
       </div>
@@ -253,6 +261,25 @@ function ShoppingPage(props) {
                 </Form.Item>
               </Col>
             </Row>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              <Steps
+                style={{
+                  width: "80%",
+                }}
+              >
+                <Step
+                  status="finish"
+                  title="Select Product"
+                  icon={<UserOutlined />}
+                />
+                <Step
+                  status="process"
+                  title="Fill order"
+                  icon={<SolutionOutlined />}
+                />
+                <Step status="wait" title="Done" icon={<SmileOutlined />} />
+              </Steps>
+            </div>
           </Form>
         </div>
       </Modal>
