@@ -27,6 +27,7 @@ function MyProfile() {
   const [userinfo, setuserinfo] = useState({});
   const [datetime, setdatetime] = useState("");
   const [genderpick, setgenderpick] = useState("");
+  const [opendate, setopendate] = useState(false);
   useEffect(() => {
     const fetchUserList = async () => {
       // dispatch({ type: "FETCH_INIT" });
@@ -55,7 +56,9 @@ function MyProfile() {
     };
     fetchUserList();
   }, []);
-
+  const openDatepick = () => {
+    setopendate(!opendate);
+  };
   const handleUpdate = (values) => {
     const dataupdate = { ...values, birthday: datetime, gender: genderpick };
     const datafetch = {
@@ -68,7 +71,7 @@ function MyProfile() {
         setIsLoading(true);
         const response = await userApi.updateMyprofile(datafetch);
         console.log("Fetch products succesfully: ", response);
-
+        setopendate(!opendate);
         setIsLoading(false);
         notification.open({
           message: "Update Success",
@@ -131,19 +134,26 @@ function MyProfile() {
                     </Radio.Group>
                   </Form.Item>
                   <Form.Item label="Date of birth">
-                    <Text>{datetime}</Text>
-                    <Button
-                      type="primary"
-                      style={{ border: "0px", float: "right" }}
-                      shape="circle"
-                    >
-                      <EditOutlined />
-                    </Button>
-                    {/* <DatePicker
-                      style={{ width: "100%" }}
-                      onChange={onChangeDate}
-                      defaultValue={datetime}
-                    /> */}
+                    {opendate === false ? (
+                      <>
+                        <Text>{datetime}</Text>
+                        <Button
+                          style={{
+                            border: "0px",
+                            marginLeft: "5px",
+                          }}
+                          onClick={openDatepick}
+                          shape="circle"
+                        >
+                          <EditOutlined />
+                        </Button>{" "}
+                      </>
+                    ) : (
+                      <DatePicker
+                        style={{ width: "100%" }}
+                        onChange={onChangeDate}
+                      />
+                    )}
                   </Form.Item>
                   <Button
                     style={{ float: "right", border: "0px" }}
