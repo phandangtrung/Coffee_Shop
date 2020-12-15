@@ -65,6 +65,7 @@ const createProduct = async (req, res, next) => {
 };
 
 const updateProductbyId = async (req, res, next) => {
+  let products;
   const errors = validationResult(req);
   const ProId = req.params.pid;
   if (!errors.isEmpty()) {
@@ -93,12 +94,11 @@ const updateProductbyId = async (req, res, next) => {
     };
     console.log(products);
     try {
-      let products;
       products = await Product.findByIdAndUpdate(ProId, updatedProduct);
       console.log(products);
       return res.status(200).json({
         message: "Update Product success",
-        products: updatedProduct       
+        products: updatedProduct,
       });
     } catch (error) {
       return res.status(422).send(error);
@@ -118,7 +118,6 @@ const updateProductbyId = async (req, res, next) => {
       imagesProduct: imagesProduct,
     };
     try {
-      let products;
       products = await Product.findByIdAndUpdate(ProId, updatedProduct);
       console.log(products);
       return res.status(200).json({

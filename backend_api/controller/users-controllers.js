@@ -209,7 +209,7 @@ const getUserById = async (req, res, next) => {
   }
   if (!users) {
     const error = new HttpError(
-      "Could not find aany unserfor the provided id.",
+      "Could not find any user for the provided id.",
       404
     );
     return next(error);
@@ -259,8 +259,6 @@ const updateMyUser = async (req, res, next) => {
   let userUpdate;
   try {
     userUpdate = await User.findOneAndUpdate({ email: userCurrent }, userInfo);
-    console.log(userInfo);
-    console.log(userUpdate);
   } catch (err) {
     console.log(err);
     const error = new HttpError("Update Fail", 500);
@@ -272,8 +270,7 @@ const updateMyUser = async (req, res, next) => {
     return next(error);
   }
   res.status(200).json({
-    message: "Update Successfully",
-    users: userInfo,
+    message: "Update Successfully!",
   });
 };
 
