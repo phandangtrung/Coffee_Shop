@@ -15,6 +15,7 @@ import {
   notification,
 } from "antd";
 import moment from "moment";
+import Moment from "react-moment";
 import { UserOutlined, SmileOutlined } from "@ant-design/icons";
 import userApi from "../../../api/userApi";
 function MyProfile() {
@@ -38,10 +39,13 @@ function MyProfile() {
           fName: response.users.fName,
           phone: response.users.phone,
         });
+        // if (response.users.birthday === undefined) setdatetime("2015/01/01");
+        // else setdatetime(response.users.birthday);
         if (response.users.gender === undefined) setgenderpick("male");
         else setgenderpick(response.users.gender);
         if (response.users.birthday !== undefined)
           setdatetime(response.users.birthday);
+        else setdatetime("2015-01-01");
 
         setIsLoading(false);
       } catch (error) {
@@ -80,8 +84,8 @@ function MyProfile() {
     console.log("radio checked", e.target.value);
     setgenderpick(e.target.value);
   };
-  function onChangeDate(dateString) {
-    console.log(dateString);
+  function onChangeDate(date, dateString) {
+    console.log("date", dateString);
     setdatetime(dateString);
   }
   return (
@@ -127,10 +131,9 @@ function MyProfile() {
                   </Form.Item>
                   <Form.Item label="Date of birth">
                     <DatePicker
-                      defaultValue={moment(datetime, dateFormat)}
-                      format={dateFormat}
                       style={{ width: "100%" }}
                       onChange={onChangeDate}
+                      defaultValue={moment(datetime, "YYYY-MM-DD")}
                     />
                   </Form.Item>
                   <Button
