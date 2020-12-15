@@ -5,6 +5,7 @@ const Category = require("../models/categories");
 const { validationResult } = require("express-validator");
 
 const HttpError = require("../error-handle/http-error");
+const products = require("../models/products");
 
 const getAlias = (str) => {
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -74,7 +75,7 @@ const updateProductbyId = async (req, res, next) => {
 
   let imagesProduct;
   if (typeof req.file !== "undefined") {
-    imageimagesProduct = req.file.path;
+    imagesProduct = req.file.path;
   } else imagesProduct = null;
   if (imagesProduct === null) {
     const updatedProduct = {
@@ -87,21 +88,19 @@ const updateProductbyId = async (req, res, next) => {
       reviews: req.body.reviews,
       createAt: req.body.createAt,
       description: req.body.description,
-      alias: getAlias(req.body.name),
+      //alias: getAlias(req.body.name),
       //imagesProduct: req.file.path,
     };
+    console.log(products);
     try {
       let products;
       products = await Product.findByIdAndUpdate(ProId, updatedProduct);
-      return res.status(200).send({
+      console.log(products);
+      return res.status(200).json({
         message: "Update Product success",
-        data: updatedProduct,
+        products: updatedProduct       
       });
     } catch (error) {
-      if (error.name === "MongoError" && error.code === 11000) {
-        // Duplicate name
-        return res.status(422).send({ message: "Product already exist!" });
-      }
       return res.status(422).send(error);
     }
   } else {
@@ -115,21 +114,18 @@ const updateProductbyId = async (req, res, next) => {
       reviews: req.body.reviews,
       createAt: req.body.createAt,
       description: req.body.description,
-      alias: getAlias(req.body.name),
-      imagesProduct: req.file.path,
+      //alias: getAlias(req.body.name),
+      imagesProduct: imagesProduct,
     };
     try {
       let products;
       products = await Product.findByIdAndUpdate(ProId, updatedProduct);
-      return res.status(200).send({
+      console.log(products);
+      return res.status(200).json({
         message: "Update Product success",
-        data: updatedProduct,
+        products: updatedProduct,
       });
     } catch (error) {
-      if (error.name === "MongoError" && error.code === 11000) {
-        // Duplicate name
-        return res.status(422).send({ message: "Product already exist!" });
-      }
       return res.status(422).send(error);
     }
   }

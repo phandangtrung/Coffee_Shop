@@ -19,7 +19,6 @@ router.post(
 router.put(
   "/:sid",
   fileUploadShipper.single("imagesShipper"),
-  [check("name").not().isEmpty()],
   shippersController.updateShipperById
 );
 

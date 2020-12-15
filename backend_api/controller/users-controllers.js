@@ -269,7 +269,9 @@ const updateMyUser = async (req, res, next) => {
     const error = new HttpError("Could not find any users", 404);
     return next(error);
   }
-  res.status(200).json({ userUpdate });
+  res.status(200).json({ 
+    message : "Update User Successfully",
+    user: userUpdate });
 };
 
 const lockUser = async (req, res, next) => {
