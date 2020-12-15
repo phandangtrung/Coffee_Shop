@@ -13,18 +13,19 @@ import {
   Avatar,
   Spin,
   notification,
+  Typography,
 } from "antd";
 import moment from "moment";
 import Moment from "react-moment";
-import { UserOutlined, SmileOutlined } from "@ant-design/icons";
+import { UserOutlined, SmileOutlined, EditOutlined } from "@ant-design/icons";
 import userApi from "../../../api/userApi";
 function MyProfile() {
+  const { Text, Link } = Typography;
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
   const tokenCus = Cookies.get("tokenCustomer");
   const [userinfo, setuserinfo] = useState({});
-  const dateFormat = "YYYY/MM/DD";
-  const [datetime, setdatetime] = useState("2015/01/01");
+  const [datetime, setdatetime] = useState("");
   const [genderpick, setgenderpick] = useState("");
   useEffect(() => {
     const fetchUserList = async () => {
@@ -130,11 +131,19 @@ function MyProfile() {
                     </Radio.Group>
                   </Form.Item>
                   <Form.Item label="Date of birth">
-                    <DatePicker
+                    <Text>{datetime}</Text>
+                    <Button
+                      type="primary"
+                      style={{ border: "0px", float: "right" }}
+                      shape="circle"
+                    >
+                      <EditOutlined />
+                    </Button>
+                    {/* <DatePicker
                       style={{ width: "100%" }}
                       onChange={onChangeDate}
-                      defaultValue={moment(datetime, "YYYY-MM-DD")}
-                    />
+                      defaultValue={datetime}
+                    /> */}
                   </Form.Item>
                   <Button
                     style={{ float: "right", border: "0px" }}
