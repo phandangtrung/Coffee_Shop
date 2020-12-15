@@ -12,16 +12,24 @@ import {
   Button,
   Avatar,
   Spin,
+  notification,
+  Typography,
 } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import moment from "moment";
+import Moment from "react-moment";
+import { UserOutlined, SmileOutlined, EditOutlined } from "@ant-design/icons";
 import userApi from "../../../api/userApi";
 function MyProfile() {
+  const { Text, Link } = Typography;
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
   const tokenCus = Cookies.get("tokenCustomer");
   const [userinfo, setuserinfo] = useState({});
+  const [datetime, setdatetime] = useState("");
+  const [genderpick, setgenderpick] = useState("");
+  const [opendate, setopendate] = useState(false);
   useEffect(() => {
-    const fetchCategoryList = async () => {
+    const fetchUserList = async () => {
       // dispatch({ type: "FETCH_INIT" });
       try {
         setIsLoading(true);
@@ -30,22 +38,60 @@ function MyProfile() {
         setuserinfo(response.users);
         console.log(">>userinfo", userinfo);
         form.setFieldsValue({
-          fname: response.users.fName,
+          fName: response.users.fName,
           phone: response.users.phone,
         });
+        // if (response.users.birthday === undefined) setdatetime("2015/01/01");
+        // else setdatetime(response.users.birthday);
+        if (response.users.gender === undefined) setgenderpick("male");
+        else setgenderpick(response.users.gender);
+        if (response.users.birthday !== undefined)
+          setdatetime(response.users.birthday);
+        else setdatetime("2015-01-01");
+
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
       }
     };
-    fetchCategoryList();
+    fetchUserList();
   }, []);
-  const [value, setValue] = React.useState(1);
+  const openDatepick = () => {
+    setopendate(!opendate);
+  };
+  const handleUpdate = (values) => {
+    const dataupdate = { ...values, birthday: datetime, gender: genderpick };
+    const datafetch = {
+      token: tokenCus,
+      data: dataupdate,
+    };
+    const fetchCategoryList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      try {
+        setIsLoading(true);
+        const response = await userApi.updateMyprofile(datafetch);
+        console.log("Fetch products succesfully: ", response);
+        setopendate(!opendate);
+        setIsLoading(false);
+        notification.open({
+          message: "Update Success",
+          icon: <SmileOutlined style={{ color: "#108ee9" }} />,
+        });
+      } catch (error) {
+        console.log("failed to fetch update user: ", error);
+      }
+    };
+    fetchCategoryList();
+  };
 
   const onChange = (e) => {
     console.log("radio checked", e.target.value);
-    setValue(e.target.value);
+    setgenderpick(e.target.value);
   };
+  function onChangeDate(date, dateString) {
+    console.log("date", dateString);
+    setdatetime(dateString);
+  }
   return (
     <div className="container">
       <Spin spinning={isLoading}>
@@ -60,14 +106,15 @@ function MyProfile() {
                   form={form}
                   labelCol={{ span: 8 }}
                   wrapperCol={{ span: 14 }}
+                  onFinish={handleUpdate}
                 >
-                  <Form.Item name="email" label="Email">
+                  <Form.Item label="Email">
                     <span>{userinfo.email}</span>
                   </Form.Item>
                   <Form.Item
                     // initialValue={userinfo.fName}
-                    key="fname"
-                    name="fname"
+                    key="fName"
+                    name="fName"
                     label="Full name"
                   >
                     <Input />
@@ -75,15 +122,38 @@ function MyProfile() {
                   <Form.Item name="phone" label="Phone">
                     <Input />
                   </Form.Item>
-                  <Form.Item name="gender" initialValue="male" label="Gender">
-                    <Radio.Group onChange={onChange} value={value}>
+                  <Form.Item label="Gender">
+                    <Radio.Group
+                      defaultValue={genderpick}
+                      onChange={onChange}
+                      value={genderpick}
+                    >
                       <Radio value="male">Male</Radio>
                       <Radio value="female">Female</Radio>
                       <Radio value="other">Other</Radio>
                     </Radio.Group>
                   </Form.Item>
                   <Form.Item label="Date of birth">
-                    <DatePicker style={{ width: "100%" }} onChange={onChange} />
+                    {opendate === false ? (
+                      <>
+                        <Text>{datetime}</Text>
+                        <Button
+                          style={{
+                            border: "0px",
+                            marginLeft: "5px",
+                          }}
+                          onClick={openDatepick}
+                          shape="circle"
+                        >
+                          <EditOutlined />
+                        </Button>{" "}
+                      </>
+                    ) : (
+                      <DatePicker
+                        style={{ width: "100%" }}
+                        onChange={onChangeDate}
+                      />
+                    )}
                   </Form.Item>
                   <Button
                     style={{ float: "right", border: "0px" }}
@@ -127,7 +197,7 @@ function MyProfile() {
               </Col>
             </Row>
           </Card>
-        </div>{" "}
+        </div>
       </Spin>
     </div>
   );

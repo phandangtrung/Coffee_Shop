@@ -5,6 +5,7 @@ const Category = require("../models/categories");
 const { validationResult } = require("express-validator");
 
 const HttpError = require("../error-handle/http-error");
+const products = require("../models/products");
 
 const getAlias = (str) => {
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -64,6 +65,7 @@ const createProduct = async (req, res, next) => {
 };
 
 const updateProductbyId = async (req, res, next) => {
+  let products;
   const errors = validationResult(req);
   const ProId = req.params.pid;
   if (!errors.isEmpty()) {
@@ -71,37 +73,61 @@ const updateProductbyId = async (req, res, next) => {
     const error = new HttpError("Invalid Input! Pls check your data", 400);
     return next(error);
   }
-  const updatedProduct = {
-    name: req.body.name,
-    size_M: req.body.size_M,
-    size_L: req.body.size_L,
-    prices: req.body.prices,
-    quantity: req.body.quantity,
-    status: req.body.status,
-    reviews: req.body.reviews,
-    createAt: req.body.createAt,
-    description: req.body.description,
-    alias: getAlias(req.body.name),
-    imagesProduct: req.file.path,
-  };
-  /* let products;
-    products = await Product.findByIdAndUpdate(ProId, updatedProduct);
-    res.status(200).json({products: updatedProduct}); */
-  try {
-    let products;
-    products = await Product.findByIdAndUpdate(ProId, updatedProduct);
-    return res.status(200).send({
-      message: "Update Product success",  
-      data: updatedProduct
-    });
-  } catch (error) {
-    if (error.name === "MongoError" && error.code === 11000) {
-      // Duplicate name
-      return res.status(422).send({ message: "Product already exist!" });
-    }
-    return res.status(422).send(error);
-  }
 
+  let imagesProduct;
+  if (typeof req.file !== "undefined") {
+    imagesProduct = req.file.path;
+  } else imagesProduct = null;
+  if (imagesProduct === null) {
+    const updatedProduct = {
+      name: req.body.name,
+      size_M: req.body.size_M,
+      size_L: req.body.size_L,
+      prices: req.body.prices,
+      quantity: req.body.quantity,
+      status: req.body.status,
+      reviews: req.body.reviews,
+      createAt: req.body.createAt,
+      description: req.body.description,
+      //alias: getAlias(req.body.name),
+      //imagesProduct: req.file.path,
+    };
+    console.log(products);
+    try {
+      products = await Product.findByIdAndUpdate(ProId, updatedProduct);
+      console.log(products);
+      return res.status(200).json({
+        message: "Update Product success",
+        products: updatedProduct,
+      });
+    } catch (error) {
+      return res.status(422).send(error);
+    }
+  } else {
+    const updatedProduct = {
+      name: req.body.name,
+      size_M: req.body.size_M,
+      size_L: req.body.size_L,
+      prices: req.body.prices,
+      quantity: req.body.quantity,
+      status: req.body.status,
+      reviews: req.body.reviews,
+      createAt: req.body.createAt,
+      description: req.body.description,
+      //alias: getAlias(req.body.name),
+      imagesProduct: imagesProduct,
+    };
+    try {
+      products = await Product.findByIdAndUpdate(ProId, updatedProduct);
+      console.log(products);
+      return res.status(200).json({
+        message: "Update Product success",
+        products: updatedProduct,
+      });
+    } catch (error) {
+      return res.status(422).send(error);
+    }
+  }
 };
 
 const deleteProductById = async (req, res, next) => {

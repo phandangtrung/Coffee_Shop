@@ -17,6 +17,14 @@ class UserApi {
       },
     });
   };
+  updateMyprofile = (params) => {
+    const url = "/api/users/myUser";
+    return axiosClient.put(url, params.data, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
+      },
+    });
+  };
 }
 const userApi = new UserApi();
 export default userApi;
