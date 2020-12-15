@@ -259,6 +259,8 @@ const updateMyUser = async (req, res, next) => {
   let userUpdate;
   try {
     userUpdate = await User.findOneAndUpdate({ email: userCurrent }, userInfo);
+    console.log(userInfo);
+    console.log(userUpdate);
   } catch (err) {
     console.log(err);
     const error = new HttpError("Update Fail", 500);
@@ -270,7 +272,8 @@ const updateMyUser = async (req, res, next) => {
     return next(error);
   }
   res.status(200).json({
-    message: "Update User Successfully",
+    message: "Update Successfully",
+    users: userInfo,
   });
 };
 
