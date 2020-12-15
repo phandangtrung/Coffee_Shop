@@ -21,7 +21,7 @@ function MyProfile() {
   const tokenCus = Cookies.get("tokenCustomer");
   const [userinfo, setuserinfo] = useState({});
   useEffect(() => {
-    const fetchCategoryList = async () => {
+    const fetchUserList = async () => {
       // dispatch({ type: "FETCH_INIT" });
       try {
         setIsLoading(true);
@@ -42,14 +42,31 @@ function MyProfile() {
         console.log("failed to fetch product list: ", error);
       }
     };
-    fetchCategoryList();
+    fetchUserList();
   }, []);
-  const [dataUpdate, setdataUpdate] = useState({});
   const [datetime, setdatetime] = useState();
   const [genderpick, setgenderpick] = useState();
   const handleUpdate = (values) => {
-    setdataUpdate({ ...values, birthday: datetime, gender: genderpick });
-    console.log(">>data", dataUpdate);
+    const dataupdate = { ...values, birthday: datetime, gender: genderpick };
+    const datafetch = {
+      token: tokenCus,
+      data: dataupdate,
+    };
+    const fetchCategoryList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      try {
+        setIsLoading(true);
+        const response = await userApi.updateMyprofile(datafetch);
+        console.log("Fetch products succesfully: ", response);
+        setuserinfo(response.users);
+        console.log(">>userinfo", userinfo);
+
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch update user: ", error);
+      }
+    };
+    fetchCategoryList();
   };
 
   const onChange = (e) => {
