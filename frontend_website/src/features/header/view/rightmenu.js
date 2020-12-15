@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import {
   Menu,
   Grid,
@@ -19,7 +19,6 @@ import {
   Dropdown,
 } from "antd";
 
-import { Link } from "react-router-dom";
 import {
   ShoppingCartOutlined,
   EyeInvisibleOutlined,
@@ -137,6 +136,7 @@ const RightMenu = (props) => {
   };
   const onsignout = () => {
     Cookies.remove("tokenCustomer");
+
     notification.open({
       message: "You have logged out",
       icon: <LogoutOutlined style={{ color: "red" }} />,
@@ -151,9 +151,9 @@ const RightMenu = (props) => {
         </Link>
       </Menu.Item>
       <Menu.Item danger>
-        <a target="_blank" rel="noopener noreferrer" onClick={onsignout}>
+        <Link to="/" rel="noopener noreferrer" onClick={onsignout}>
           <LogoutOutlined /> Signout
-        </a>
+        </Link>
       </Menu.Item>
     </Menu>
   );
