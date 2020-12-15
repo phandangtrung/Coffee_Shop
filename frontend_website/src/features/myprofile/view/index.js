@@ -12,14 +12,19 @@ import {
   Button,
   Avatar,
   Spin,
+  notification,
 } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import moment from "moment";
+import { UserOutlined, SmileOutlined } from "@ant-design/icons";
 import userApi from "../../../api/userApi";
 function MyProfile() {
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
   const tokenCus = Cookies.get("tokenCustomer");
   const [userinfo, setuserinfo] = useState({});
+  const dateFormat = "YYYY/MM/DD";
+  const [datetime, setdatetime] = useState("2015/01/01");
+  const [genderpick, setgenderpick] = useState("");
   useEffect(() => {
     const fetchUserList = async () => {
       // dispatch({ type: "FETCH_INIT" });
@@ -36,7 +41,8 @@ function MyProfile() {
         if (response.users.gender === undefined) setgenderpick("male");
         else setgenderpick(response.users.gender);
         if (response.users.birthday !== undefined)
-          setgenderpick(response.users.gender);
+          setdatetime(response.users.birthday);
+
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
@@ -44,8 +50,7 @@ function MyProfile() {
     };
     fetchUserList();
   }, []);
-  const [datetime, setdatetime] = useState();
-  const [genderpick, setgenderpick] = useState("");
+
   const handleUpdate = (values) => {
     const dataupdate = { ...values, birthday: datetime, gender: genderpick };
     const datafetch = {
@@ -60,6 +65,10 @@ function MyProfile() {
         console.log("Fetch products succesfully: ", response);
 
         setIsLoading(false);
+        notification.open({
+          message: "Update Success",
+          icon: <SmileOutlined style={{ color: "#108ee9" }} />,
+        });
       } catch (error) {
         console.log("failed to fetch update user: ", error);
       }
@@ -118,6 +127,8 @@ function MyProfile() {
                   </Form.Item>
                   <Form.Item label="Date of birth">
                     <DatePicker
+                      defaultValue={moment(datetime, dateFormat)}
+                      format={dateFormat}
                       style={{ width: "100%" }}
                       onChange={onChangeDate}
                     />
