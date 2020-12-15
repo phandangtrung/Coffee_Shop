@@ -30,7 +30,7 @@ function MyProfile() {
         setuserinfo(response.users);
         console.log(">>userinfo", userinfo);
         form.setFieldsValue({
-          fname: response.users.fName,
+          fName: response.users.fName,
           phone: response.users.phone,
         });
         if (response.users.gender === undefined) setgenderpick("male");
@@ -45,7 +45,7 @@ function MyProfile() {
     fetchUserList();
   }, []);
   const [datetime, setdatetime] = useState();
-  const [genderpick, setgenderpick] = useState();
+  const [genderpick, setgenderpick] = useState("");
   const handleUpdate = (values) => {
     const dataupdate = { ...values, birthday: datetime, gender: genderpick };
     const datafetch = {
@@ -58,8 +58,6 @@ function MyProfile() {
         setIsLoading(true);
         const response = await userApi.updateMyprofile(datafetch);
         console.log("Fetch products succesfully: ", response);
-        setuserinfo(response.users);
-        console.log(">>userinfo", userinfo);
 
         setIsLoading(false);
       } catch (error) {
@@ -98,8 +96,8 @@ function MyProfile() {
                   </Form.Item>
                   <Form.Item
                     // initialValue={userinfo.fName}
-                    key="fname"
-                    name="fname"
+                    key="fName"
+                    name="fName"
                     label="Full name"
                   >
                     <Input />
@@ -107,8 +105,12 @@ function MyProfile() {
                   <Form.Item name="phone" label="Phone">
                     <Input />
                   </Form.Item>
-                  <Form.Item name="gender" initialValue="male" label="Gender">
-                    <Radio.Group onChange={onChange} value={genderpick}>
+                  <Form.Item label="Gender">
+                    <Radio.Group
+                      defaultValue={genderpick}
+                      onChange={onChange}
+                      value={genderpick}
+                    >
                       <Radio value="male">Male</Radio>
                       <Radio value="female">Female</Radio>
                       <Radio value="other">Other</Radio>
