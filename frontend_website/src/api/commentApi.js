@@ -9,13 +9,9 @@ class CommentApi {
     const url = `/api/comments/${params}`;
     return axiosClient.get(url);
   };
-  updateMyprofile = (params) => {
-    const url = "/api/comments";
-    return axiosClient.put(url, params.data, {
-      headers: {
-        Authorization: `Bearer ${params.token}`,
-      },
-    });
+  deletecomment = (params) => {
+    const url = `/api/comments/${params}`;
+    return axiosClient.delete(url);
   };
 }
 const commentApi = new CommentApi();

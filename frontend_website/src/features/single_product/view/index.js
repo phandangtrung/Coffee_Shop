@@ -14,10 +14,18 @@ import {
   Spin,
   notification,
   Empty,
+  Menu,
+  Dropdown,
+  Popconfirm,
 } from "antd";
 import Cookies from "js-cookie";
 import commentApi from "../../../api/commentApi";
-import { SmileOutlined, ExceptionOutlined } from "@ant-design/icons";
+import {
+  SmileOutlined,
+  ExceptionOutlined,
+  DeleteOutlined,
+  QuestionCircleOutlined,
+} from "@ant-design/icons";
 import { useLocation, useParams } from "react-router-dom";
 
 import { Images } from "../../../config/image";
@@ -48,6 +56,24 @@ function SingleProduct({ props }) {
   const onChange = () => {
     console.log("Change!");
   };
+  const ondeleteComment = (_id) => {
+    console.log("avcd", _id);
+    const fetchCommentList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      try {
+        setloadcomment(true);
+        // const params = { _page: 1, _limit: 10 };
+        const response = await commentApi.deletecomment(_id);
+        console.log("Fetch comment succesfully: ", response);
+        setcommentList(commentList.filter((cmmt) => cmmt._id !== _id));
+        setloadcomment(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+      }
+    };
+    fetchCommentList();
+  };
+
   useEffect(() => {
     // productapi
     const fetchProductList = async () => {
@@ -81,6 +107,7 @@ function SingleProduct({ props }) {
         setloadcomment(true);
         const response = await commentApi.createcomment(datacomment);
         console.log("Fetch products succesfully: ", response);
+        setcommentList([...commentList, response.newComment]);
         setloadcomment(false);
         notification.open({
           message: "You posted a comment",
@@ -161,7 +188,32 @@ function SingleProduct({ props }) {
                     <div className="rate-container">
                       {commentList.map((comment) => (
                         <div className="rate-form" key={comment._id}>
-                          <div className="rate-username">{comment.email}</div>
+                          <div className="rate-username">
+                            {comment.email}
+                            {comment.email === emailCustomer ? (
+                              <Popconfirm
+                                title="Are you sure？"
+                                onConfirm={() => ondeleteComment(comment._id)}
+                                icon={
+                                  <QuestionCircleOutlined
+                                    style={{ color: "red" }}
+                                  />
+                                }
+                              >
+                                <DeleteOutlined
+                                  style={{
+                                    marginLeft: "10px",
+                                    fontSize: "12px",
+                                    cursor: "pointer",
+                                    color: "#808080",
+                                  }}
+                                />
+                              </Popconfirm>
+                            ) : (
+                              ""
+                            )}
+                          </div>
+
                           <div className="rate-start">
                             <Rate disabled defaultValue={comment.rating} />
                           </div>
