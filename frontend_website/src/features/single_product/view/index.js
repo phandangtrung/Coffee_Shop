@@ -112,7 +112,12 @@ function SingleProduct({ props }) {
                   </div>
                 </div>
                 <div className="pagination-form">
-                  <Pagination defaultCurrent={1} total={50} />
+                  <Pagination
+                    simple
+                    defaultCurrent={1}
+                    defaultPageSize={3}
+                    total={27}
+                  />
                 </div>
               </TabPane>
               <TabPane
