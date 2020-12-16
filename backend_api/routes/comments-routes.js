@@ -6,7 +6,7 @@ const commentsController = require("../controller/comments-controllers");
 const router = express.Router();
 
 router.get("/", commentsController.getAllComments);
-router.get("/pid", commentsController.getCommentByProductId);
+router.get("/:pid", commentsController.getCommentByProductId);
 
 router.post("/", commentsController.createComment);
 

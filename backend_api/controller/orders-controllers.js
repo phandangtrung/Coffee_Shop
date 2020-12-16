@@ -116,7 +116,7 @@ const getAllOrder = async (req, res, next) => {
 
 const getOrderByUserId = async (req, res, next) => {
   let orders;
-  const UserId = req.params.userId;
+  const UserId = req.params.uid;
   try {
     orders = await Order.find({ userId: UserId });
   } catch (err) {
@@ -126,7 +126,6 @@ const getOrderByUserId = async (req, res, next) => {
     );
     return next(error);
   }
-
   if (!orders) {
     const error = new HttpError(
       "Could not find a order for the provided id.",
@@ -134,7 +133,7 @@ const getOrderByUserId = async (req, res, next) => {
     );
     return next(error);
   }
-  res.json({ orders: orders.toObject({ getters: true }) });
+  res.json({ orders });
 };
 
 module.exports = {

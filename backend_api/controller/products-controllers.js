@@ -89,7 +89,7 @@ const updateProductbyId = async (req, res, next) => {
       reviews: req.body.reviews,
       createAt: req.body.createAt,
       description: req.body.description,
-      //alias: getAlias(req.body.name),
+      alias: getAlias(req.body.name),
       //imagesProduct: req.file.path,
     };
     console.log(products);
@@ -114,7 +114,7 @@ const updateProductbyId = async (req, res, next) => {
       reviews: req.body.reviews,
       createAt: req.body.createAt,
       description: req.body.description,
-      //alias: getAlias(req.body.name),
+      alias: getAlias(req.body.name),
       imagesProduct: imagesProduct,
     };
     try {

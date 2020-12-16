@@ -49,9 +49,13 @@ const getAllComments = async (req, res, next) => {
 
 const getCommentByProductId = async (req, res, next) => {
   const ProId = req.params.pid;
-  let comments;
+  let comments = [];
   try {
+<<<<<<< HEAD
     comments = await Product.find({productId = ProId});
+=======
+    comments = await Comment.find({ productId: ProId });
+>>>>>>> Cuong
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find comment of product.",
@@ -67,7 +71,7 @@ const getCommentByProductId = async (req, res, next) => {
     );
     return next(error);
   }
-  res.json({ comments: Product.toObject({ getters: true }) });
+  res.status(200).json({ comments });
 };
 
 const deleteCommentById = async (req, res, next) => {
