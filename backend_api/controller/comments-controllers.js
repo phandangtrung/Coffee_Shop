@@ -16,6 +16,7 @@ const createComment = async (req, res, next) => {
   const createComment = {
     email: req.body.email,
     content: req.body.content,
+    rating: req.body.rating,
     productId: req.body.productId,
   };
   const newComment = new Comment(createComment);
