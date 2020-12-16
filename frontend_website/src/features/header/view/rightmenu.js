@@ -120,6 +120,7 @@ const RightMenu = (props) => {
         console.log("Fetch login succesfully: ", response);
         const token = response.token;
         Cookies.set("tokenCustomer", token);
+        Cookies.set("CustomerEmail", datalogin.email);
         setIsModalVisible(false);
         // console.log(">>>token", token);
       } catch (error) {

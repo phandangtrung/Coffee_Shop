@@ -10,8 +10,10 @@ import {
   Rate,
   Pagination,
   Input,
+  Result,
 } from "antd";
-import { useLocation } from "react-router-dom";
+import Cookies from "js-cookie";
+import { useLocation, useParams } from "react-router-dom";
 import { Images } from "../../../config/image";
 const { TabPane } = Tabs;
 function SingleProduct({ props }) {
@@ -27,11 +29,19 @@ function SingleProduct({ props }) {
     console.log("Change!");
   };
   const hanldecomment = (values) => {
-    console.log(">>commnet", values);
+    const datacomment = {
+      ...values,
+      rating: ratevalue,
+      productId: location.state.idpro,
+      email: emailCustomer,
+    };
+    console.log(">>comment", datacomment);
   };
+  const tokenCustomer = Cookies.get("tokenCustomer");
+  const emailCustomer = Cookies.get("CustomerEmail");
   const { TextArea } = Input;
   const [ratevalue, setratevalue] = useState(3);
-  const desc = ["terrible", "bad", "normal", "good", "wonderful"];
+  const desc = ["TERRIBLE", "BAD", "NORMAL", "GOOD", "WONDERFUL"];
   const handleChangeRate = (value) => {
     setratevalue(value);
   };
@@ -129,41 +139,48 @@ function SingleProduct({ props }) {
                 tab="Your Review"
                 key="3"
               >
-                <Form style={{ width: "80%" }} onFinish={hanldecomment}>
-                  <Form.Item name="comment">
-                    <TextArea
-                      placeholder="Type your comment here"
-                      autoSize={{ minRows: 5, maxRows: 8 }}
-                    />
-                  </Form.Item>
-                  <div
-                    style={{
-                      textAlign: "start",
-                      zoom: "1.2",
-                      paddingBottom: "20px",
-                    }}
-                  >
-                    <Rate
-                      tooltips={desc}
-                      onChange={handleChangeRate}
-                      value={ratevalue}
-                    />
-                    {ratevalue ? (
-                      <span className="ant-rate-text">
-                        {desc[ratevalue - 1]}
-                      </span>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                  <Button
-                    htmlType="submit"
-                    type="primary"
-                    style={{ float: "left", border: "0px" }}
-                  >
-                    Comment
-                  </Button>
-                </Form>
+                {tokenCustomer !== undefined ? (
+                  <Form style={{ width: "80%" }} onFinish={hanldecomment}>
+                    <Form.Item name="content">
+                      <TextArea
+                        placeholder="Type your comment here"
+                        autoSize={{ minRows: 5, maxRows: 8 }}
+                      />
+                    </Form.Item>
+                    <div
+                      style={{
+                        textAlign: "start",
+                        zoom: "1.2",
+                        paddingBottom: "20px",
+                      }}
+                    >
+                      <Rate
+                        tooltips={desc}
+                        onChange={handleChangeRate}
+                        value={ratevalue}
+                      />
+                      {ratevalue ? (
+                        <span className="ant-rate-text">
+                          {desc[ratevalue - 1]}
+                        </span>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    <Button
+                      htmlType="submit"
+                      type="primary"
+                      style={{ float: "left", border: "0px" }}
+                    >
+                      Comment
+                    </Button>
+                  </Form>
+                ) : (
+                  <Result
+                    status="warning"
+                    title="You must be logged in to comment."
+                  />
+                )}
               </TabPane>
             </Tabs>
           </div>
