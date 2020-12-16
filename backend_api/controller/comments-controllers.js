@@ -51,11 +51,7 @@ const getCommentByProductId = async (req, res, next) => {
   const ProId = req.params.pid;
   let comments = [];
   try {
-<<<<<<< HEAD
-    comments = await Product.find({productId = ProId});
-=======
     comments = await Comment.find({ productId: ProId });
->>>>>>> Cuong
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find comment of product.",

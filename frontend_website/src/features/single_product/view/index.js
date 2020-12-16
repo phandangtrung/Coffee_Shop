@@ -11,11 +11,18 @@ import {
   Pagination,
   Input,
   Result,
+  Spin,
+  notification,
+  Empty,
 } from "antd";
 import Cookies from "js-cookie";
+import commentApi from "../../../api/commentApi";
+import { SmileOutlined, ExceptionOutlined } from "@ant-design/icons";
 import { useLocation, useParams } from "react-router-dom";
+
 import { Images } from "../../../config/image";
 const { TabPane } = Tabs;
+
 function SingleProduct({ props }) {
   let location = useLocation();
   useEffect(() => {
@@ -25,9 +32,42 @@ function SingleProduct({ props }) {
     console.log("Value: ", values);
     console.log(">>productname: ", location.state.namepro);
   };
+  const changePage = (values) => {
+    if (values <= 1) {
+      setpaginaPage({
+        minValue: 0,
+        maxValue: 3,
+      });
+    } else {
+      setpaginaPage({
+        minValue: paginaPage.maxValue,
+        maxValue: values * 3,
+      });
+    }
+  };
   const onChange = () => {
     console.log("Change!");
   };
+  useEffect(() => {
+    // productapi
+    const fetchProductList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      try {
+        setloadcomment(true);
+        // const params = { _page: 1, _limit: 10 };
+
+        const response = await commentApi.getcommentbyProId(
+          location.state.idpro
+        );
+        console.log("Fetch products succesfully: ", response);
+        setcommentList(response.comments);
+        setloadcomment(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+      }
+    };
+    fetchProductList();
+  }, []);
   const hanldecomment = (values) => {
     const datacomment = {
       ...values,
@@ -35,10 +75,36 @@ function SingleProduct({ props }) {
       productId: location.state.idpro,
       email: emailCustomer,
     };
+    const fetchProductList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      try {
+        setloadcomment(true);
+        const response = await commentApi.createcomment(datacomment);
+        console.log("Fetch products succesfully: ", response);
+        setloadcomment(false);
+        notification.open({
+          message: "You posted a comment",
+          icon: <SmileOutlined style={{ color: "#108ee9" }} />,
+        });
+      } catch (error) {
+        notification.open({
+          message: "Comment fail",
+          icon: <ExceptionOutlined style={{ color: "#red" }} />,
+        });
+        console.log("failed to fetch product list: ", error);
+      }
+    };
+    fetchProductList();
     console.log(">>comment", datacomment);
   };
   const tokenCustomer = Cookies.get("tokenCustomer");
   const emailCustomer = Cookies.get("CustomerEmail");
+  const [commentList, setcommentList] = useState([]);
+  const [loadcomment, setloadcomment] = useState(false);
+  const [paginaPage, setpaginaPage] = useState({
+    minValue: 0,
+    maxValue: 1,
+  });
   const { TextArea } = Input;
   const [ratevalue, setratevalue] = useState(3);
   const desc = ["TERRIBLE", "BAD", "NORMAL", "GOOD", "WONDERFUL"];
@@ -90,45 +156,23 @@ function SingleProduct({ props }) {
           <div className="tabs-rating">
             <Tabs type="card" size="large">
               <TabPane tab="Rate and Comment" key="1">
-                <div className="rate-container">
-                  <div className="rate-form">
-                    <div className="rate-username">Nguyễn Hùng Duy</div>
-                    <div className="rate-start">
-                      <Rate disabled defaultValue={5} />
+                <Spin spinning={loadcomment}>
+                  {commentList.length > 0 ? (
+                    <div className="rate-container">
+                      {commentList.map((comment) => (
+                        <div className="rate-form" key={comment._id}>
+                          <div className="rate-username">{comment.email}</div>
+                          <div className="rate-start">
+                            <Rate disabled defaultValue={comment.rating} />
+                          </div>
+                          <div className="rate-comment">{comment.content}</div>
+                        </div>
+                      ))}
                     </div>
-                    <div className="rate-comment">
-                      Cafe ngon, đúng điệu cafe, sẽ ủng hộ dài dài.
-                    </div>
-                  </div>
-                  <div className="rate-form">
-                    <div className="rate-username">Phạm Quốc Việt</div>
-                    <div className="rate-start">
-                      <Rate disabled defaultValue={4} />
-                    </div>
-                    <div className="rate-comment">
-                      Cà phê ngon, giao nhanh, nhưng chưa được đậm đà. Mong shop
-                      tiếp tục phát triển chất lượng cà phê của mình.
-                    </div>
-                  </div>
-                  <div className="rate-form">
-                    <div className="rate-username">Đỗ Phi Cường</div>
-                    <div className="rate-start">
-                      <Rate disabled defaultValue={1} />
-                    </div>
-                    <div className="rate-comment">
-                      Quán này của đối thủ mình nên mình đánh giá 1 sao, dù Cà
-                      phê quán rất ngon.
-                    </div>
-                  </div>
-                </div>
-                <div className="pagination-form">
-                  <Pagination
-                    simple
-                    defaultCurrent={1}
-                    defaultPageSize={3}
-                    total={27}
-                  />
-                </div>
+                  ) : (
+                    <Empty description={false} />
+                  )}
+                </Spin>
               </TabPane>
               <TabPane
                 style={{
@@ -141,39 +185,41 @@ function SingleProduct({ props }) {
               >
                 {tokenCustomer !== undefined ? (
                   <Form style={{ width: "80%" }} onFinish={hanldecomment}>
-                    <Form.Item name="content">
-                      <TextArea
-                        placeholder="Type your comment here"
-                        autoSize={{ minRows: 5, maxRows: 8 }}
-                      />
-                    </Form.Item>
-                    <div
-                      style={{
-                        textAlign: "start",
-                        zoom: "1.2",
-                        paddingBottom: "20px",
-                      }}
-                    >
-                      <Rate
-                        tooltips={desc}
-                        onChange={handleChangeRate}
-                        value={ratevalue}
-                      />
-                      {ratevalue ? (
-                        <span className="ant-rate-text">
-                          {desc[ratevalue - 1]}
-                        </span>
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                    <Button
-                      htmlType="submit"
-                      type="primary"
-                      style={{ float: "left", border: "0px" }}
-                    >
-                      Comment
-                    </Button>
+                    <Spin spinning={loadcomment}>
+                      <Form.Item name="content">
+                        <TextArea
+                          placeholder="Type your comment here"
+                          autoSize={{ minRows: 5, maxRows: 8 }}
+                        />
+                      </Form.Item>
+                      <div
+                        style={{
+                          textAlign: "start",
+                          zoom: "1.2",
+                          paddingBottom: "20px",
+                        }}
+                      >
+                        <Rate
+                          tooltips={desc}
+                          onChange={handleChangeRate}
+                          value={ratevalue}
+                        />
+                        {ratevalue ? (
+                          <span className="ant-rate-text">
+                            {desc[ratevalue - 1]}
+                          </span>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                      <Button
+                        htmlType="submit"
+                        type="primary"
+                        style={{ float: "left", border: "0px" }}
+                      >
+                        Comment
+                      </Button>
+                    </Spin>
                   </Form>
                 ) : (
                   <Result
