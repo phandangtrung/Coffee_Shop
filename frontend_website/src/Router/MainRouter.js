@@ -31,7 +31,7 @@ const MainRouter = () => {
           );
         })}
       </Switch>
-      {!["/login"].includes(location.pathname) && <Footer />}
+      {/* {!["/login"].includes(location.pathname) && <Footer />} */}
     </>
   );
 };
