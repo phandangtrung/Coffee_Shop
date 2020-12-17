@@ -164,7 +164,7 @@ const RightMenu = (props) => {
       <Menu
         mode={md ? "horizontal" : "inline"}
         onClick={props.handleClickMenu}
-        selectedKeys={[props.current.current]}
+        // selectedKeys={[props.current.current]}
         className="menutitle"
       >
         <Menu.Item className="button-signup" key="mail">
