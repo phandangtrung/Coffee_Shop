@@ -46,7 +46,6 @@ const updateShipperById = async (req, res, next) => {
     return next(error);
   }
   const updatedShipper = {
-    name: req.body.name,
     phone: req.body.phone,
     imagesShipper: req.file.path,
     point: req.body.point,
