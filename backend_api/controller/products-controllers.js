@@ -186,7 +186,7 @@ const getProductById = async (req, res, next) => {
 };
 
 const getProductByCateId = async (req, res, next) => {
-  const CateId = req.params.pid;
+  const CateId = req.params.cid;
   let products;
   try {
     products = await Product.find({ categoryId: CateId });
