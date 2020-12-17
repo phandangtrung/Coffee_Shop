@@ -187,7 +187,7 @@ const getProductById = async (req, res, next) => {
 
 const getProductByCateId = async (req, res, next) => {
   const CateId = req.params.pid;
-  let products = [];
+  let products;
   try {
     products = await Product.find({ categoryId: CateId });
   } catch (err) {
@@ -205,8 +205,9 @@ const getProductByCateId = async (req, res, next) => {
     );
     return next(error);
   }
-  res.json({ products });
+  res.status(200).json({ products });
 };
+
 
 module.exports = {
   getAllProducts,
