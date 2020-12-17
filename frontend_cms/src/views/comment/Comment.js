@@ -8,7 +8,7 @@ import {
   CLink,
 } from "@coreui/react";
 import { LockOutlined } from "@ant-design/icons";
-import Cookies from "js-cookie";
+import axios from "axios";
 import {
   Table,
   Space,
@@ -44,15 +44,7 @@ function Comment() {
     };
     fetchDeleteComment();
   };
-  const getProductname = async (proid) => {
-    try {
-      const response = await productApi.getbyId(proid);
-      console.log("Fetch name product succesfully: ", response);
-      return <p>{response.products.name}</p>;
-    } catch (error) {
-      console.log("failed to load name product: ", error);
-    }
-  };
+
   const columns = [
     {
       title: "Email",
@@ -70,7 +62,7 @@ function Comment() {
       title: "Product",
       dataIndex: "productId",
       key: "productId",
-      render: (proid) => getProductname(proid),
+      render: (proid) => <a>{proid}</a>,
     },
     {
       title: "Rating",
