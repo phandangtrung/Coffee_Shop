@@ -101,7 +101,7 @@ function MyProfile() {
             style={{ width: "100%", textAlign: "start" }}
           >
             <Row>
-              <Col span={16}>
+              <Col lg={16} sm={24}>
                 <Form
                   form={form}
                   labelCol={{ span: 8 }}
@@ -164,7 +164,7 @@ function MyProfile() {
                   </Button>
                 </Form>
               </Col>
-              <Col span={8}>
+              <Col lg={8}>
                 <div className="user-form" style={{ textAlign: "center" }}>
                   <div
                     style={{

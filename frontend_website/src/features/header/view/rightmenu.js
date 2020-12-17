@@ -120,6 +120,7 @@ const RightMenu = (props) => {
         console.log("Fetch login succesfully: ", response);
         const token = response.token;
         Cookies.set("tokenCustomer", token);
+        Cookies.set("CustomerEmail", datalogin.email);
         setIsModalVisible(false);
         // console.log(">>>token", token);
       } catch (error) {
@@ -163,7 +164,7 @@ const RightMenu = (props) => {
       <Menu
         mode={md ? "horizontal" : "inline"}
         onClick={props.handleClickMenu}
-        selectedKeys={[props.current.current]}
+        // selectedKeys={[props.current.current]}
         className="menutitle"
       >
         <Menu.Item className="button-signup" key="mail">

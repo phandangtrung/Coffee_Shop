@@ -154,9 +154,6 @@ function Product() {
   const deleteProduct = (record) => {
     console.log("Delete: ", record._id);
     const fetchDeleteProduct = async () => {
-      // dispatch({ type: "FETCH_INIT" });
-
-      // dispatch(doDelete(data));
       try {
         setIsLoading(true);
         const response = await productApi.deleteproduct(record._id);

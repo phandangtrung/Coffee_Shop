@@ -36,7 +36,7 @@ const LeftMenu = (props) => {
         mode={md ? "horizontal" : "inline"}
         className="rightmenu-containner menutitle"
         onClick={props.handleClickMenu}
-        selectedKeys={[props.current.current]}
+        // selectedKeys={[props.current.current]}
       >
         <Menu.Item name="home" key="home">
           <div clasname="titlemenu">

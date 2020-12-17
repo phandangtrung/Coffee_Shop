@@ -32,35 +32,72 @@ const createProduct = async (req, res, next) => {
     const error = new HttpError("Invalid Input! Pls check your data", 400);
     return next(error);
   }
-  const createProduct = {
-    name: req.body.name,
-    size_M: req.body.size_M,
-    size_L: req.body.size_L,
-    prices: req.body.prices,
-    quantity: req.body.quantity,
-    status: req.body.status,
-    reviews: req.body.reviews,
-    createAt: req.body.createAt,
-    description: req.body.description,
-    alias: getAlias(req.body.name),
-    imagesProduct: req.file.path,
-    categoryId: req.body.categoryId,
-  };
-  console.log(createProduct);
-  try {
-    const newProducts = new Product(createProduct);
-    await newProducts.save();
-    console.log(newProducts);
-    res.status(200).json({
-      message: "Create success",
-      newProducts,
-    });
-  } catch (error) {
-    if (error.name === "MongoError" && error.code === 11000) {
-      // Duplicate username
-      return res.status(422).send({ message: "Product already exist!" });
+
+  let imagesCurrent;
+  if (typeof req.file !== "undefined") {
+    imagesCurrent = req.file.path;
+  } else imagesCurrent = null;
+  if (imagesCurrent === null) {
+    const createProduct = {
+      name: req.body.name,
+      size_M: req.body.size_M,
+      size_L: req.body.size_L,
+      prices: req.body.prices,
+      quantity: req.body.quantity,
+      status: req.body.status,
+      reviews: req.body.reviews,
+      createAt: req.body.createAt,
+      description: req.body.description,
+      alias: getAlias(req.body.name),
+      categoryId: req.body.categoryId,
+    };
+    console.log(createProduct);
+    try {
+      const newProducts = new Product(createProduct);
+      await newProducts.save();
+      console.log(newProducts);
+      res.status(200).json({
+        message: "Create success",
+        newProducts,
+      });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate username
+        return res.status(422).send({ message: "Product already exist!" });
+      }
+      return res.status(422).send(error);
     }
-    return res.status(422).send(error);
+  } else {
+    const createProduct = {
+      name: req.body.name,
+      size_M: req.body.size_M,
+      size_L: req.body.size_L,
+      prices: req.body.prices,
+      quantity: req.body.quantity,
+      status: req.body.status,
+      reviews: req.body.reviews,
+      createAt: req.body.createAt,
+      description: req.body.description,
+      alias: getAlias(req.body.name),
+      imagesProduct: imagesCurrent,
+      categoryId: req.body.categoryId,
+    };
+    console.log(createProduct);
+    try {
+      const newProducts = new Product(createProduct);
+      await newProducts.save();
+      console.log(newProducts);
+      res.status(200).json({
+        message: "Create success",
+        newProducts,
+      });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate username
+        return res.status(422).send({ message: "Product already exist!" });
+      }
+      return res.status(422).send(error);
+    }
   }
 };
 
@@ -73,14 +110,12 @@ const updateProductbyId = async (req, res, next) => {
     const error = new HttpError("Invalid Input! Pls check your data", 400);
     return next(error);
   }
-
-  let imagesProduct;
+  let imagesCurrent;
   if (typeof req.file !== "undefined") {
-    imagesProduct = req.file.path;
-  } else imagesProduct = null;
-  if (imagesProduct === null) {
+    imagesCurrent = req.file.path;
+  } else imagesCurrent = null;
+  if (imagesCurrent === null) {
     const updatedProduct = {
-      name: req.body.name,
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
@@ -89,10 +124,7 @@ const updateProductbyId = async (req, res, next) => {
       reviews: req.body.reviews,
       createAt: req.body.createAt,
       description: req.body.description,
-      //alias: getAlias(req.body.name),
-      //imagesProduct: req.file.path,
     };
-    console.log(products);
     try {
       products = await Product.findByIdAndUpdate(ProId, updatedProduct);
       console.log(products);
@@ -105,7 +137,6 @@ const updateProductbyId = async (req, res, next) => {
     }
   } else {
     const updatedProduct = {
-      name: req.body.name,
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
@@ -114,8 +145,7 @@ const updateProductbyId = async (req, res, next) => {
       reviews: req.body.reviews,
       createAt: req.body.createAt,
       description: req.body.description,
-      //alias: getAlias(req.body.name),
-      imagesProduct: imagesProduct,
+      imagesProduct: imagesCurrent,
     };
     try {
       products = await Product.findByIdAndUpdate(ProId, updatedProduct);
@@ -188,10 +218,34 @@ const getProductById = async (req, res, next) => {
   res.json({ products: products.toObject({ getters: true }) });
 };
 
+const getProductByCateId = async (req, res, next) => {
+  const CateId = req.params.cid;
+  let products;
+  try {
+    products = await Product.find({ categoryId: CateId });
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find a product.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!products) {
+    const error = new HttpError(
+      "Could not find a product for the provided id.",
+      404
+    );
+    return next(error);
+  }
+  res.status(200).json({ products });
+};
+
 module.exports = {
   getAllProducts,
   getProductById,
   createProduct,
   updateProductbyId,
   deleteProductById,
+  getProductByCateId,
 };

@@ -24,8 +24,12 @@ import {
   CRow,
   CImg,
 } from "@coreui/react";
-import { Input, Form, Checkbox, Button } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { Input, Form, Checkbox, Button, notification } from "antd";
+import {
+  UserOutlined,
+  LockOutlined,
+  InfoCircleFilled,
+} from "@ant-design/icons";
 import { fakeAuth } from "../../../fakeAuth";
 import CIcon from "@coreui/icons-react";
 const setUserSession = (token, user) => {
@@ -58,6 +62,11 @@ const Login = (props) => {
         // console.log("token: ", response.token);
       } catch (error) {
         console.log("failed to fetch login: ", error);
+        notification.open({
+          message: "Login Fail",
+          description: "Your email or password is incorrect",
+          icon: <InfoCircleFilled style={{ color: "red" }} />,
+        });
       }
     };
     fetchCreateProduct();

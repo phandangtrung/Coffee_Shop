@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Order = require("../models/orders");
+const Product = require("../models/products");
 
 const { validationResult } = require("express-validator");
 
@@ -27,6 +28,32 @@ const createOrder = async (req, res, next) => {
   try {
     const newOrder = new Order(createOrder);
     await newOrder.save();
+    console.log("Successfull");
+    console.log(newOrder.productlist[0].product_id);
+    console.log(newOrder.productlist.length);
+    let i;
+    for (i = 0; i < newOrder.productlist.length; i++) {
+      console.log(i);
+      productId = newOrder.productlist[i].product_id;
+
+      let productInfo;
+      productInfo = await Product.findById(productId);
+      console.log(productInfo);
+
+      let productQuantityUpdate;
+      productQuantityUpdate =
+        productInfo.quantity - newOrder.productlist[i].quantity;
+      console.log(productQuantityUpdate);
+
+      let productUpdate;
+      const quantityUpdate = {
+        quantity: productQuantityUpdate,
+      };
+      productUpdate = await Product.findByIdAndUpdate(
+        productId,
+        quantityUpdate
+      );
+    }
     res.status(200).json({
       message: "Create success",
       newOrder,
@@ -116,7 +143,7 @@ const getAllOrder = async (req, res, next) => {
 
 const getOrderByUserId = async (req, res, next) => {
   let orders;
-  const UserId = req.params.userId;
+  const UserId = req.params.uid;
   try {
     orders = await Order.find({ userId: UserId });
   } catch (err) {
@@ -126,7 +153,6 @@ const getOrderByUserId = async (req, res, next) => {
     );
     return next(error);
   }
-
   if (!orders) {
     const error = new HttpError(
       "Could not find a order for the provided id.",
@@ -134,7 +160,7 @@ const getOrderByUserId = async (req, res, next) => {
     );
     return next(error);
   }
-  res.json({ orders: orders.toObject({ getters: true }) });
+  res.json({ orders });
 };
 
 module.exports = {

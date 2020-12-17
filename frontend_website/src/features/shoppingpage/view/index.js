@@ -46,18 +46,6 @@ function ShoppingPage(props) {
   });
 
   const columns = [
-    // {
-    //   title: "PRODUCT",
-    //   dataIndex: "image",
-    //   key: "image",
-    //   render: (image) => (
-    //     <>
-    //       <img style={{ width: "80%", height: "auto" }} src={Images.COCF} />
-    //     </>
-    //   ),
-    //   width: "200px",
-    //   height: "auto",
-    // },
     {
       title: "NAME",
       dataIndex: "name",
@@ -154,52 +142,56 @@ function ShoppingPage(props) {
   };
   const { Step } = Steps;
   return (
-    <div className="shopping-container">
-      <div className="shopping-card">
-        <div className="cart-container">
-          <div className="title-form">
-            <div className="title">Shopping Cart</div>
-            <div className="item-cart">{cart.length} Items</div>
+    <>
+      <div className="shopping-container">
+        <div className="shopping-card">
+          <div className="cart-container">
+            <div className="title-form">
+              <div className="title">Shopping Cart</div>
+              <div className="item-cart">{cart.length} Items</div>
+            </div>
+
+            <hr />
+            <Table
+              pagination={false}
+              dataSource={cart}
+              columns={columns}
+              rowKey="_id"
+            />
+
+            <Button className="button-checkout-repon" onClick={showModal}>
+              CHECK OUT DT
+            </Button>
           </div>
-
-          <hr />
-
-          <Table
-            className="mytable"
-            pagination={false}
-            dataSource={cart}
-            columns={columns}
-            rowKey="_id"
-          />
         </div>
-      </div>
-      <div className="order-form">
-        <div className="order-content">
-          <div className="title-form">Order Summary</div>
-          <hr />
-          <div className="amount__price">
-            <div className="item-amount">ITEMS 3</div>
-            <div className="price">30000 VND</div>
+        <div className="order-form">
+          <div className="order-content">
+            <div className="title-form">Order Summary</div>
+            <hr />
+            <div className="amount__price">
+              <div className="item-amount">ITEMS 3</div>
+              <div className="price">30000 VND</div>
+            </div>
+            <div className="saleoff-form">
+              <div className="title">PROMO CODE</div>
+              <Form>
+                <Form.Item name="code">
+                  <Input />
+                </Form.Item>
+                <Button className="button-apply" type="dashed" danger>
+                  APPLY
+                </Button>
+              </Form>
+            </div>
+            <hr />
+            <div className="totalcost-form">
+              <div>TOTAL COST</div>
+              <div>30000 VND</div>
+            </div>
+            <Button className="button-checkout" onClick={showModal}>
+              CHECK OUT
+            </Button>
           </div>
-          <div className="saleoff-form">
-            <div className="title">PROMO CODE</div>
-            <Form>
-              <Form.Item name="code">
-                <Input />
-              </Form.Item>
-              <Button className="button-apply" type="dashed" danger>
-                APPLY
-              </Button>
-            </Form>
-          </div>
-          <hr />
-          <div className="totalcost-form">
-            <div>TOTAL COST</div>
-            <div>30000 VND</div>
-          </div>
-          <Button className="button-checkout" onClick={showModal}>
-            CHECK OUT
-          </Button>
         </div>
       </div>
       <Modal
@@ -283,7 +275,7 @@ function ShoppingPage(props) {
           </Form>
         </div>
       </Modal>
-    </div>
+    </>
   );
 }
 

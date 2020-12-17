@@ -30,18 +30,6 @@ import {
 
 import usersData from "../users/UsersData";
 import userApi from "../../api/userApi";
-const fields = [
-  // { key: "id", label: "INDEX", _style: { width: "5%" } },
-  { key: "fname", label: "FULL NAME", _style: { width: "15%" } },
-  { key: "username", label: "USERNAME", _style: { width: "15%" } },
-  { key: "address", label: "ADDRESS", _style: { width: "23%" } },
-  { key: "gmail", label: "GMAIL", _style: { width: "20%" } },
-  { key: "phone", label: "PHONE", _style: { width: "17%" } },
-  { key: "action", label: "ACTION", _style: { width: "10%" } },
-  // { key: "registered", _style: { width: "40%" } },
-  // "role",
-  // "status",
-];
 
 function Account() {
   const [isLoading, setIsLoading] = useState(false);

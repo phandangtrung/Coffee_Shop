@@ -6,15 +6,11 @@ const router = express.Router();
 
 router.get("/", ordersController.getAllOrder);
 router.get("/:oid", ordersController.getOrderById);
-router.get("/userid", ordersController.getOrderByUserId);
+router.get("/:uid", ordersController.getOrderByUserId);
 
 router.post("/", ordersController.createOrder);
 
-router.put(
-  "/:cid",
-  [check("name").not().isEmpty()],
-  ordersController.updateOrderById
-);
+router.put("/:cid", ordersController.updateOrderById);
 
 router.delete("/:oid", ordersController.deleteOrderById);
 
