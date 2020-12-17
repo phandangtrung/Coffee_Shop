@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get("/", categoriesController.getAllCategory);
 router.get("/:cid", categoriesController.getCategoryById);
-
+router.get("/Products/:cid",productsController.getProductByCateId);
 router.post(
   "/",
   [check("name").not().isEmpty()],
