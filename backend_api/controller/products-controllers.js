@@ -185,10 +185,34 @@ const getProductById = async (req, res, next) => {
   res.json({ products: products.toObject({ getters: true }) });
 };
 
+const getProductByCateId = async (req, res, next) => {
+  const CateId = req.params.pid;
+  let products = [];
+  try {
+    products = await Product.find({ categoryId: CateId });
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, could not find a product.",
+      500
+    );
+    return next(error);
+  }
+
+  if (!products) {
+    const error = new HttpError(
+      "Could not find a product for the provided id.",
+      404
+    );
+    return next(error);
+  }
+  res.json({ products });
+};
+
 module.exports = {
   getAllProducts,
   getProductById,
   createProduct,
   updateProductbyId,
   deleteProductById,
+  getProductByCateId,
 };
