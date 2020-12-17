@@ -73,13 +73,12 @@ const updateProductbyId = async (req, res, next) => {
     const error = new HttpError("Invalid Input! Pls check your data", 400);
     return next(error);
   }
-  let imagesProduct;
+  let imagesCurrent;
   if (typeof req.file !== "undefined") {
-    imagesProduct = req.file.path;
-  } else imagesProduct = null;
-  if (imagesProduct === null) {
+    imagesCurrent = req.file.path;
+  } else imagesCurrent = null;
+  if (imagesCurrent === null) {
     const updatedProduct = {
-      name: req.body.name,
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
@@ -88,7 +87,6 @@ const updateProductbyId = async (req, res, next) => {
       reviews: req.body.reviews,
       createAt: req.body.createAt,
       description: req.body.description,
-      alias: getAlias(req.body.name),
     };
     try {
       products = await Product.findByIdAndUpdate(ProId, updatedProduct);
@@ -102,7 +100,6 @@ const updateProductbyId = async (req, res, next) => {
     }
   } else {
     const updatedProduct = {
-      name: req.body.name,
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
@@ -111,8 +108,7 @@ const updateProductbyId = async (req, res, next) => {
       reviews: req.body.reviews,
       createAt: req.body.createAt,
       description: req.body.description,
-      alias: getAlias(req.body.name),
-      imagesProduct: imagesProduct,
+      imagesProduct: imagesCurrent,
     };
     try {
       products = await Product.findByIdAndUpdate(ProId, updatedProduct);

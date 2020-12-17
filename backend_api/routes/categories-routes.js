@@ -8,18 +8,14 @@ const router = express.Router();
 
 router.get("/", categoriesController.getAllCategory);
 router.get("/:cid", categoriesController.getCategoryById);
-router.get("/Products/:cid",productsController.getProductByCateId);
+router.get("/Products/:cid", productsController.getProductByCateId);
 router.post(
   "/",
   [check("name").not().isEmpty()],
   categoriesController.createCategory
 );
 
-router.put(
-  "/:cid",
-  [check("name").not().isEmpty()],
-  categoriesController.updateCategoryById
-);
+router.put("/:cid", categoriesController.updateCategoryById);
 
 router.delete("/:cid", categoriesController.deleteProductByCateId);
 //router.delete("/:cid", categoriesController.deleteCategoryById);
