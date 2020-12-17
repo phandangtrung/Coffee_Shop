@@ -26,8 +26,7 @@ import {
   doGetListCate_success,
   doGetListCate_error,
 } from "../action/actionCreater";
-{
-}
+
 const { SubMenu } = Menu;
 function Product() {
   const initialData = [];
@@ -51,13 +50,8 @@ function Product() {
       dispatchProduct(doGetList);
       try {
         setloadProduct(true);
-        // const params = { _page: 1, _limit: 10 };
-
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
-        // console.log(response.products);
-        // setProductList(response.products);
-        // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
         dispatchProduct(doGetList_success(response.products));
         console.log(">>>> productlist: ", productList);
         setloadProduct(false);
@@ -93,6 +87,24 @@ function Product() {
   }, []);
   const handleClick = (e) => {
     console.log("click ", e);
+  };
+  const fillterPro = (cateid) => {
+    console.log(">>>cateid", cateid);
+    const fetchCategoryList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      dispatchProduct(doGetList);
+      try {
+        setloadProduct(true);
+        const response = await categoryApi.getProbyid(cateid);
+        console.log("Fetch products succesfully: ", response);
+        dispatchProduct(doGetList_success(response.products));
+        setloadProduct(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+        dispatchProduct(doGetList_error);
+      }
+    };
+    fetchCategoryList();
   };
   function onChange(a, b, c) {
     console.log(a, b, c);
@@ -150,6 +162,7 @@ function Product() {
                   <Menu.Item
                     style={{ textTransform: "uppercase" }}
                     key={category._id}
+                    onClick={() => fillterPro(category._id)}
                   >
                     {category.name}
                   </Menu.Item>
