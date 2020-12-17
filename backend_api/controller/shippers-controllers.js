@@ -14,26 +14,55 @@ const createShipper = async (req, res, next) => {
     const error = new HttpError("Invalid Input! Pls check your data", 400);
     return next(error);
   }
-  const createShipper = {
-    name: req.body.name,
-    phone: req.body.phone,
-    imagesShipper: req.file.path,
-    point: req.body.point,
-    createAt: req.body.createAt,
-  };
-  try {
-    const newShippers = new Shipper(createShipper);
-    await newShippers.save();
-    res.status(200).json({
-      message: "Create success",
-      newShippers,
-    });
-  } catch (error) {
-    if (error.name === "MongoError" && error.code === 11000) {
-      // Duplicate username
-      return res.status(422).send({ message: "Shipper already exist!" });
+
+  let imagesCurrent;
+  if (typeof req.file !== "undefined") {
+    imagesCurrent = req.file.path;
+  } else imagesCurrent = null;
+
+  if (imagesCurrent === null) {
+    const createShipper = {
+      name: req.body.name,
+      phone: req.body.phone,
+      point: req.body.point,
+      createAt: req.body.createAt,
+    };
+    try {
+      const newShippers = new Shipper(createShipper);
+      await newShippers.save();
+      res.status(200).json({
+        message: "Create success",
+        newShippers,
+      });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate username
+        return res.status(422).send({ message: "Shipper already exist!" });
+      }
+      return res.status(422).send(error);
     }
-    return res.status(422).send(error);
+  } else {
+    const createShipper = {
+      name: req.body.name,
+      phone: req.body.phone,
+      imagesShipper: imagesCurrent,
+      point: req.body.point,
+      createAt: req.body.createAt,
+    };
+    try {
+      const newShippers = new Shipper(createShipper);
+      await newShippers.save();
+      res.status(200).json({
+        message: "Create success",
+        newShippers,
+      });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate username
+        return res.status(422).send({ message: "Shipper already exist!" });
+      }
+      return res.status(422).send(error);
+    }
   }
 };
 
@@ -45,15 +74,32 @@ const updateShipperById = async (req, res, next) => {
     const error = new HttpError("Invalid Input! Pls check your data", 400);
     return next(error);
   }
-  const updatedShipper = {
-    phone: req.body.phone,
-    imagesShipper: req.file.path,
-    point: req.body.point,
-    createAt: req.body.createAt,
-  };
-  let shippers;
-  shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
-  res.status(200).json({ shippers: updatedShipper });
+
+  let imagesCurrent;
+  if (typeof req.file !== "undefined") {
+    imagesCurrent = req.file.path;
+  } else imagesCurrent = null;
+
+  if (imagesCurrent === null) {
+    const updatedShipper = {
+      phone: req.body.phone,
+      point: req.body.point,
+      createAt: req.body.createAt,
+    };
+    let shippers;
+    shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
+    res.status(200).json({ shippers: updatedShipper });
+  } else {
+    const updatedShipper = {
+      phone: req.body.phone,
+      imagesShipper: imagesCurrent,
+      point: req.body.point,
+      createAt: req.body.createAt,
+    };
+    let shippers;
+    shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
+    res.status(200).json({ shippers: updatedShipper });
+  }
 };
 
 const deleteShipperById = async (req, res, next) => {

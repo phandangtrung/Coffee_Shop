@@ -32,35 +32,72 @@ const createProduct = async (req, res, next) => {
     const error = new HttpError("Invalid Input! Pls check your data", 400);
     return next(error);
   }
-  const createProduct = {
-    name: req.body.name,
-    size_M: req.body.size_M,
-    size_L: req.body.size_L,
-    prices: req.body.prices,
-    quantity: req.body.quantity,
-    status: req.body.status,
-    reviews: req.body.reviews,
-    createAt: req.body.createAt,
-    description: req.body.description,
-    alias: getAlias(req.body.name),
-    imagesProduct: req.file.path,
-    categoryId: req.body.categoryId,
-  };
-  console.log(createProduct);
-  try {
-    const newProducts = new Product(createProduct);
-    await newProducts.save();
-    console.log(newProducts);
-    res.status(200).json({
-      message: "Create success",
-      newProducts,
-    });
-  } catch (error) {
-    if (error.name === "MongoError" && error.code === 11000) {
-      // Duplicate username
-      return res.status(422).send({ message: "Product already exist!" });
+
+  let imagesCurrent;
+  if (typeof req.file !== "undefined") {
+    imagesCurrent = req.file.path;
+  } else imagesCurrent = null;
+  if (imagesCurrent === null) {
+    const createProduct = {
+      name: req.body.name,
+      size_M: req.body.size_M,
+      size_L: req.body.size_L,
+      prices: req.body.prices,
+      quantity: req.body.quantity,
+      status: req.body.status,
+      reviews: req.body.reviews,
+      createAt: req.body.createAt,
+      description: req.body.description,
+      alias: getAlias(req.body.name),
+      categoryId: req.body.categoryId,
+    };
+    console.log(createProduct);
+    try {
+      const newProducts = new Product(createProduct);
+      await newProducts.save();
+      console.log(newProducts);
+      res.status(200).json({
+        message: "Create success",
+        newProducts,
+      });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate username
+        return res.status(422).send({ message: "Product already exist!" });
+      }
+      return res.status(422).send(error);
     }
-    return res.status(422).send(error);
+  } else {
+    const createProduct = {
+      name: req.body.name,
+      size_M: req.body.size_M,
+      size_L: req.body.size_L,
+      prices: req.body.prices,
+      quantity: req.body.quantity,
+      status: req.body.status,
+      reviews: req.body.reviews,
+      createAt: req.body.createAt,
+      description: req.body.description,
+      alias: getAlias(req.body.name),
+      imagesProduct: imagesCurrent,
+      categoryId: req.body.categoryId,
+    };
+    console.log(createProduct);
+    try {
+      const newProducts = new Product(createProduct);
+      await newProducts.save();
+      console.log(newProducts);
+      res.status(200).json({
+        message: "Create success",
+        newProducts,
+      });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate username
+        return res.status(422).send({ message: "Product already exist!" });
+      }
+      return res.status(422).send(error);
+    }
   }
 };
 
@@ -203,7 +240,6 @@ const getProductByCateId = async (req, res, next) => {
   }
   res.status(200).json({ products });
 };
-
 
 module.exports = {
   getAllProducts,
