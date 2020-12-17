@@ -73,7 +73,6 @@ const updateProductbyId = async (req, res, next) => {
     const error = new HttpError("Invalid Input! Pls check your data", 400);
     return next(error);
   }
-
   let imagesProduct;
   if (typeof req.file !== "undefined") {
     imagesProduct = req.file.path;
@@ -90,9 +89,7 @@ const updateProductbyId = async (req, res, next) => {
       createAt: req.body.createAt,
       description: req.body.description,
       alias: getAlias(req.body.name),
-      //imagesProduct: req.file.path,
     };
-    console.log(products);
     try {
       products = await Product.findByIdAndUpdate(ProId, updatedProduct);
       console.log(products);

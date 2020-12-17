@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Category = require("../models/categories");
+const Product = require("../models/products");
 
 const { validationResult } = require("express-validator");
 
@@ -54,7 +55,7 @@ const updateCategoryById = async (req, res, next) => {
   const updatedCategory = {
     name: req.body.name,
     alias: getAlias(req.body.name),
-    createAt: req.body.createAt
+    createAt: req.body.createAt,
   };
   let categories;
   categories = await Category.findByIdAndUpdate(CateId, updatedCategory);
@@ -131,10 +132,28 @@ const getCategoryById = async (req, res, next) => {
   res.json({ categories: categories.toObject({ getters: true }) });
 };
 
+const deleteProductByCateId = async (req, res, next) => {
+  const CateId = req.params.cid;
+  let categories;
+  try {
+    categories = await Product.remove({ categoryId: CateId });
+    await Category.findByIdAndDelete(CateId);
+  } catch (err) {
+    const error = new HttpError("Something went wrong, can not delete", 500);
+    return next(error);
+  }
+  if (!categories) {
+    const error = new HttpError("Could not find any Category", 404);
+    return next(error);
+  }
+  res.status(200).json({ message: "Deleted Category successfull" });
+};
+
 module.exports = {
   getAllCategory,
   getCategoryById,
   createCategory,
   updateCategoryById,
   deleteCategoryById,
+  deleteProductByCateId,
 };
