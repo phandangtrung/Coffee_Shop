@@ -28,25 +28,31 @@ const createOrder = async (req, res, next) => {
   try {
     const newOrder = new Order(createOrder);
     await newOrder.save();
-    console.log("Con cho rui");
+    console.log("Successfull");
     console.log(newOrder.productlist[0].product_id);
-    console.log(newOrder.productlist.length)
+    console.log(newOrder.productlist.length);
     let i;
-    for( i=0; i<newOrder.productlist.length; i++)
-    {
-      console.log(i)
+    for (i = 0; i < newOrder.productlist.length; i++) {
+      console.log(i);
       productId = newOrder.productlist[i].product_id;
+
       let productInfo;
       productInfo = await Product.findById(productId);
-      console.log(productInfo)
+      console.log(productInfo);
+
       let productQuantityUpdate;
-      productQuantityUpdate = productInfo.quantity - newOrder.productlist[i].quantity;
+      productQuantityUpdate =
+        productInfo.quantity - newOrder.productlist[i].quantity;
       console.log(productQuantityUpdate);
+
       let productUpdate;
       const quantityUpdate = {
         quantity: productQuantityUpdate,
       };
-      productUpdate = await Product.findByIdAndUpdate(productId, quantityUpdate);
+      productUpdate = await Product.findByIdAndUpdate(
+        productId,
+        quantityUpdate
+      );
     }
     res.status(200).json({
       message: "Create success",
