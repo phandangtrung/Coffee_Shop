@@ -13,6 +13,14 @@ class CategoryApi {
     const url = "/api/categories";
     return axiosClient.post(url, category);
   };
+  updatecategory = (category) => {
+    const url = `/api/categories/${category._id}`;
+    return axiosClient.put(url, category.data);
+  };
+  deletecategory = (categoryid) => {
+    const url = `/api/categories/${categoryid}`;
+    return axiosClient.delete(url);
+  };
 }
 const categoryApi = new CategoryApi();
 export default categoryApi;
