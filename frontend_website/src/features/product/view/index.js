@@ -88,6 +88,24 @@ function Product() {
   const handleClick = (e) => {
     console.log("click ", e);
   };
+  const getallProduct = () => {
+    const fetchProductList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      dispatchProduct(doGetList);
+      try {
+        setloadProduct(true);
+        const response = await productApi.getAll();
+        console.log("Fetch products succesfully: ", response);
+        dispatchProduct(doGetList_success(response.products));
+        console.log(">>>> productlist: ", productList);
+        setloadProduct(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+        dispatchProduct(doGetList_error);
+      }
+    };
+    fetchProductList();
+  };
   const fillterPro = (cateid) => {
     console.log(">>>cateid", cateid);
     const fetchCategoryList = async () => {
@@ -154,6 +172,13 @@ function Product() {
             mode="inline"
           >
             <Menu.Item className="category-title">CATEGORIES</Menu.Item>
+            <Menu.Item
+              style={{ textTransform: "uppercase" }}
+              key="getall"
+              onClick={() => getallProduct()}
+            >
+              ALL PRODUCT
+            </Menu.Item>
             {isLoading ? (
               <Skeleton active />
             ) : (
