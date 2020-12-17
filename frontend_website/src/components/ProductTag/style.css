@@ -19,6 +19,11 @@
   height: 36%;
   width: 100%;
 }
+@media only screen and (max-width: 1026px) {
+  .menu-item {
+    padding: 0px;
+  }
+}
 .menu-detail .title-name {
   color: #3b3838;
   font-size: 25px;

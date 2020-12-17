@@ -16,7 +16,7 @@ const Homepage = () => {
 
   return (
     <div>
-      <Carousel autoplay={10000}>
+      <Carousel className="sliderimg" autoplay={10000}>
         {/* <div>
           <img style={contentStyle} alt={"slide4"} src={Images.SLIDE4} />
         </div> */}

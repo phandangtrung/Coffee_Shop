@@ -10,6 +10,24 @@
   padding-bottom: 30px;
   padding-right: 5px;
 }
+@media only screen and (max-width: 1026px) {
+  .product-banner {
+    display: none;
+  }
+  .menu-container {
+    display: none;
+  }
+  .hot-new .item {
+    display: none;
+  }
+  .container {
+    margin: 0px;
+    height: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+}
 .product-banner img {
   width: 100%;
   height: auto;

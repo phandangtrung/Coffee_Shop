@@ -141,7 +141,7 @@ function Product() {
             defaultOpenKeys={["sub1"]}
             mode="inline"
           >
-            <Menu.Item className="category-title">DANH MỤC</Menu.Item>
+            <Menu.Item className="category-title">CATEGORIES</Menu.Item>
             {isLoading ? (
               <Skeleton active />
             ) : (
@@ -170,7 +170,7 @@ function Product() {
               </div>
             ) : (
               productList.data.map((product) => (
-                <Col span={8} key={product._id}>
+                <Col lg={8} xs={24} sm={24} key={product._id}>
                   <ProductTag
                     _id={product._id}
                     name={product.name}
