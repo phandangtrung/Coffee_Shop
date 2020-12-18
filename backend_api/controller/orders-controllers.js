@@ -81,7 +81,7 @@ const updateOrderById = async (req, res, next) => {
   };
   let orders;
   orders = await Order.findByIdAndUpdate(OrderId, updatedOrder);
-  res.status(200).json({ orders: updatedOrder });
+  res.status(200).json({ message: "Order is confirmed", orders: updatedOrder });
 };
 
 const deleteOrderById = async (req, res, next) => {
@@ -104,7 +104,7 @@ const getOrderById = async (req, res, next) => {
   const OrderId = req.params.oid;
   let orders;
   try {
-    orders = await Order.findById(oid);
+    orders = await Order.findById(OrderId);
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find a order.",

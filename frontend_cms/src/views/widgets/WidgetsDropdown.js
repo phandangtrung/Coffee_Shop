@@ -15,11 +15,12 @@ import userApi from "../../api/userApi";
 import categoryApi from "../../api/categoryApi";
 import productApi from "../../api/productApi";
 import Cookies from "js-cookie";
-
+import orderApi from "../../api/orderApi";
 const WidgetsDropdown = () => {
   const [accountList, setaccountList] = useState([]);
   const [cateList, setcateList] = useState([]);
   const [proList, setproList] = useState([]);
+  const [orderList, setorderList] = useState([]);
   useEffect(() => {
     const fetchAccountList = async () => {
       // dispatch({ type: "FETCH_INIT" });
@@ -53,6 +54,16 @@ const WidgetsDropdown = () => {
       }
     };
     fetchproductList();
+    const fetchorderList = async () => {
+      try {
+        const response = await orderApi.getAll();
+        console.log("Fetch order succesfully: ", response);
+        setorderList(response.orders);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+      }
+    };
+    fetchorderList();
   }, []);
   // render
   return (
@@ -131,7 +142,7 @@ const WidgetsDropdown = () => {
       <CCol sm="6" lg="3">
         <CWidgetDropdown
           color="gradient-danger"
-          header="100"
+          header={orderList.length}
           text="Oder"
           footerSlot={
             <ChartBarSimple

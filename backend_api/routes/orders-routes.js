@@ -10,7 +10,7 @@ router.get("/:uid", ordersController.getOrderByUserId);
 
 router.post("/", ordersController.createOrder);
 
-router.put("/:cid", ordersController.updateOrderById);
+router.put("/:oid", ordersController.updateOrderById);
 
 router.delete("/:oid", ordersController.deleteOrderById);
 
