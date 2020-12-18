@@ -1,0 +1,17 @@
+.search-orer__form {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+}
+.search-orer__form .seach_form {
+  width: 50%;
+}
+.search-orer__form .seach_form button {
+  border: 0px;
+}
+.table__form {
+  margin: 30px 10% 100px 15%;
+  height: auto;
+  width: 70%;
+}
