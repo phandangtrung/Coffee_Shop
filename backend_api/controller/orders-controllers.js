@@ -104,7 +104,7 @@ const getOrderById = async (req, res, next) => {
   const OrderId = req.params.oid;
   let orders;
   try {
-    orders = await Order.findById(oid);
+    orders = await Order.findById(OrderId);
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find a order.",
