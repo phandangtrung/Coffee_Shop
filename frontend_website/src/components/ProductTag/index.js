@@ -21,18 +21,15 @@ function ProductTag(props) {
           key: props._id,
           _id: props._id,
           name: props.name,
-          image: `http://localhost:3000/${props.img}`,
           size: "M",
           amount: 1,
           price: props.price,
-          total: props.price,
         });
       } else {
         let check_available = false;
         for (let i = 0; i < cart.length; i++) {
           if (cart[i]._id === props._id) {
             cart[i].amount = cart[i].amount + 1;
-            cart[i].total = cart[i].amount * props.price;
             check_available = true;
           }
         }
@@ -41,11 +38,9 @@ function ProductTag(props) {
             key: props._id,
             _id: props._id,
             name: props.name,
-            image: `http://localhost:3000/${props.img}`,
             size: "M",
             amount: 1,
             price: props.price,
-            total: props.price,
           });
         }
       }
@@ -54,6 +49,7 @@ function ProductTag(props) {
       notification.open({
         message: `${props.name}`,
         description: `${props.name} has been added to your cart`,
+        placement: "bottomRight",
         icon: <ShoppingCartOutlined style={{ color: "# rgb(164, 115, 67)" }} />,
       });
     } catch {
@@ -83,6 +79,7 @@ function ProductTag(props) {
                 pricepro: props.price,
                 despro: props.description,
                 img: props.img,
+                quantity: props.quantity,
               },
             }}
           >
@@ -91,7 +88,11 @@ function ProductTag(props) {
 
           <div className="price">{props.price} VND</div>
           <div className="button-form">
-            <button onClick={addtoCart}>MUA NGAY</button>
+            {props.quantity === 0 ? (
+              <a style={{ fontSize: "20px" }}>Out of stock</a>
+            ) : (
+              <button onClick={addtoCart}>BUY NOW</button>
+            )}
           </div>
         </div>
       </div>
