@@ -18,52 +18,16 @@ import MainChartExample from "../charts/MainChartExample.js";
 import userApi from "../../api/userApi";
 import categoryApi from "../../api/categoryApi";
 import productApi from "../../api/productApi";
+
 import Cookies from "js-cookie";
 const WidgetsDropdown = lazy(() => import("../widgets/WidgetsDropdown.js"));
 const WidgetsBrand = lazy(() => import("../widgets/WidgetsBrand.js"));
 
 const Dashboard = () => {
-  const [accountList, setaccountList] = useState([]);
-  const [cateList, setcateList] = useState([]);
-  const [proList, setproList] = useState([]);
-  useEffect(() => {
-    const fetchAccountList = async () => {
-      // dispatch({ type: "FETCH_INIT" });
-      try {
-        const tokenUser = Cookies.get("tokenUser");
-        const response = await userApi.getallUser(tokenUser);
-        console.log("Fetch products succesfully: ", response);
-        setaccountList(response.users);
-      } catch (error) {
-        console.log("failed to fetch product list: ", error);
-      }
-    };
-    fetchAccountList();
-    const fetchcategoryList = async () => {
-      try {
-        const response = await categoryApi.getAll();
-        console.log("Fetch products succesfully: ", response);
-        setcateList(response.categories);
-      } catch (error) {
-        console.log("failed to fetch product list: ", error);
-      }
-    };
-    fetchcategoryList();
-    const fetchproductList = async () => {
-      try {
-        const response = await productApi.getAll();
-        console.log("Fetch products succesfully: ", response);
-        setproList(response.products);
-      } catch (error) {
-        console.log("failed to fetch product list: ", error);
-      }
-    };
-    fetchproductList();
-  }, []);
   return (
     <>
       <WidgetsDropdown />
-      <CCard>
+      {/* <CCard>
         <CCardBody>
           <CRow>
             <CCol sm="5">
@@ -131,12 +95,12 @@ const Dashboard = () => {
                 className="progress-xs mt-2"
                 precision={1}
                 color="danger"
-                value={40}
+                value={orderList.length}
               />
             </CCol>
           </CRow>
         </CCardFooter>
-      </CCard>
+      </CCard> */}
 
       {/* <WidgetsBrand withCharts /> */}
 
