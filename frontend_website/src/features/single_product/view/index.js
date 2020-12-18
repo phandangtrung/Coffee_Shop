@@ -156,7 +156,7 @@ function SingleProduct({ props }) {
               <div className="description-form">
                 <div className="content">{location.state.despro}</div>
               </div>
-              <Form.Item
+              {/* <Form.Item
                 style={{ paddingTop: "40px" }}
                 className="amount"
                 key="amount"
@@ -170,11 +170,15 @@ function SingleProduct({ props }) {
                   style={{ border: "1px solid rgb(185, 115, 67)" }}
                   defaultValue={1}
                 />
-              </Form.Item>
+              </Form.Item> */}
               <div className="button-form">
-                <Button className="button-buy" htmlType="submit">
-                  MUA NGAY
-                </Button>
+                {location.state.quantity > 0 ? (
+                  <Button className="button-buy" htmlType="submit">
+                    BUY NOW
+                  </Button>
+                ) : (
+                  <a className="amount">Out of stock</a>
+                )}
               </div>
             </Form>
           </Col>

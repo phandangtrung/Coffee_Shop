@@ -68,13 +68,8 @@ function Product() {
       dispatchCategory(doGetList);
       try {
         setIsLoading(true);
-        // const params = { _page: 1, _limit: 10 };
-
         const response = await categoryApi.getAll();
         console.log("Fetch products succesfully: ", response);
-        // console.log(response.products);
-        // setProductList(response.products);
-        // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
         dispatchCategory(doGetList_success(response.categories));
         console.log(">>>>categorylist: ", categoryList);
         setIsLoading(false);
@@ -214,6 +209,7 @@ function Product() {
                     name={product.name}
                     img={product.imagesProduct}
                     price={product.prices}
+                    quantity={product.quantity}
                     description={product.description}
                   />
                 </Col>

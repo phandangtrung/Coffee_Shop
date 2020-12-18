@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./style.css";
 import {
   AutoComplete,
@@ -11,6 +11,7 @@ import {
   Select,
   Table,
   Steps,
+  Spin,
 } from "antd";
 import { Images } from "../../../config/image";
 import {
@@ -22,16 +23,36 @@ import {
   SolutionOutlined,
   LoadingOutlined,
   SmileOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import Mapstore from "../../../components/Maps/Maps";
 import Geocode from "react-geocode";
+import productApi from "../../../api/productApi";
 
 import Modal from "antd/lib/modal/Modal";
 function ShoppingPage(props) {
-  let cart = JSON.parse(localStorage.getItem("cart"));
-  if (cart === null) {
-    cart = [];
-  }
+  useEffect(() => {
+    const fetchProductList = async () => {
+      try {
+        setisloading(true);
+        const response = await productApi.getAll();
+        console.log("Fetch products succesfully: ", response);
+        setproductList(response.products);
+        setisloading(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+      }
+    };
+    fetchProductList();
+    // categoryapi
+    if (cart !== null) {
+      setcart(JSON.parse(localStorage.getItem("cart")));
+    }
+  }, []);
+  const [cart, setcart] = useState([]);
+  const [productList, setproductList] = useState([]);
+  const [isloading, setisloading] = useState(false);
+
   Geocode.setApiKey("AIzaSyB_eKxh8KTsPy6aPPJPROh2yP75dTvg92o");
   const [form] = Form.useForm();
   const [coordinates, setCoordinates] = useState({
@@ -39,13 +60,38 @@ function ShoppingPage(props) {
     lng: 106.771948,
   });
   const [address, setaddress] = useState("");
+  const [loadCart, setloadCart] = useState(false);
   const [position, setPosition] = useState({
     title: "The marker`s title will appear as a tooltip.",
     name: "SOMA",
     position: { lat: 37.778519, lng: -122.40564 },
   });
-
+  const updateAmount = (values) => {
+    console.log(">>amount", values);
+  };
+  const loadmaxpro = (proid) => {
+    const proindex = productList.findIndex((prox) => prox._id === proid);
+    const prooj = productList[proindex]?.quantity;
+    // return productList[proindex]?.quantity;
+    return prooj;
+  };
+  const deleteitem = (proid) => {
+    const newCart = cart.filter((cartitem) => cartitem._id !== proid);
+    setcart(newCart);
+    localStorage.setItem("cart", JSON.stringify(newCart));
+  };
   const columns = [
+    {
+      title: "",
+      dataIndex: "action",
+      key: "action",
+      render: (name, row) => (
+        <CloseOutlined
+          onClick={() => deleteitem(row._id)}
+          style={{ cursor: "pointer" }}
+        />
+      ),
+    },
     {
       title: "NAME",
       dataIndex: "name",
@@ -81,8 +127,14 @@ function ShoppingPage(props) {
       title: "AMOUNT",
       dataIndex: "amount",
       key: "amount",
-      render: (amount) => (
-        <InputNumber className="productname" defaultValue={amount} />
+      render: (amount, row) => (
+        <InputNumber
+          onChange={updateAmount}
+          className="productname"
+          placeholder={amount}
+          min={1}
+          max={loadmaxpro(row._id)}
+        />
       ),
     },
     {
@@ -90,12 +142,6 @@ function ShoppingPage(props) {
       dataIndex: "price",
       key: "price",
       render: (price) => <span className="productname">{price} VND</span>,
-    },
-    {
-      title: "TOTAL",
-      dataIndex: "total",
-      key: "total",
-      render: (total) => <span className="productname">{total} VND</span>,
     },
   ];
 
@@ -152,13 +198,14 @@ function ShoppingPage(props) {
             </div>
 
             <hr />
-            <Table
-              pagination={false}
-              dataSource={cart}
-              columns={columns}
-              rowKey="_id"
-            />
-
+            <Spin spinning={isloading}>
+              <Table
+                pagination={false}
+                dataSource={cart}
+                columns={columns}
+                rowKey="_id"
+              />
+            </Spin>
             <Button className="button-checkout-repon" onClick={showModal}>
               CHECK OUT DT
             </Button>
