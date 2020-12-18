@@ -49,8 +49,8 @@ function ShoppingPage(props) {
     // categoryapi
     if (JSON.parse(localStorage.getItem("cart")) !== null) {
       setcart(JSON.parse(localStorage.getItem("cart")));
+      settotalPrice(calculateTotal(JSON.parse(localStorage.getItem("cart"))));
     }
-    settotalPrice(calculateTotal(JSON.parse(localStorage.getItem("cart"))));
   }, []);
   const [cart, setcart] = useState([]);
   const [productList, setproductList] = useState([]);
@@ -113,6 +113,8 @@ function ShoppingPage(props) {
         const response = await orderApi.createorder(orderdata);
         console.log("Fetch order succesfully: ", response);
         setisloadorder(false);
+        localStorage.removeItem("cart");
+        setcart([]);
         notification.open({
           message: "Order Successfully",
           description: "Thanks you verry much",
