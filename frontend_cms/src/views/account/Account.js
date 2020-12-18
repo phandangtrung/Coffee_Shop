@@ -1,12 +1,5 @@
 import React, { lazy, useState, useEffect } from "react";
-import {
-  CBadge,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CDataTable,
-  CLink,
-} from "@coreui/react";
+import { CCard, CCardHeader } from "@coreui/react";
 import { LockOutlined } from "@ant-design/icons";
 import "./style.css";
 import Cookies from "js-cookie";
@@ -14,21 +7,13 @@ import {
   Table,
   Space,
   Spin,
-  Modal,
-  Row,
-  Col,
-  Input,
   Form,
   notification,
-  Checkbox,
-  Upload,
-  Select,
   Button,
   Popconfirm,
   Tag,
 } from "antd";
 
-import usersData from "../users/UsersData";
 import userApi from "../../api/userApi";
 
 function Account() {
