@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./style.css";
 import {
-  AutoComplete,
   Button,
   Col,
   Form,
@@ -12,7 +11,10 @@ import {
   Table,
   Steps,
   Spin,
+  notification,
 } from "antd";
+import Moment from "react-moment";
+import moment from "moment";
 import { Images } from "../../../config/image";
 import {
   ShoppingCartOutlined,
@@ -28,7 +30,7 @@ import {
 import Mapstore from "../../../components/Maps/Maps";
 import Geocode from "react-geocode";
 import productApi from "../../../api/productApi";
-
+import orderApi from "../../../api/orderApi";
 import Modal from "antd/lib/modal/Modal";
 function ShoppingPage(props) {
   useEffect(() => {
@@ -45,14 +47,15 @@ function ShoppingPage(props) {
     };
     fetchProductList();
     // categoryapi
-    if (cart !== null) {
+    if (JSON.parse(localStorage.getItem("cart")) !== null) {
       setcart(JSON.parse(localStorage.getItem("cart")));
     }
+    settotalPrice(calculateTotal(JSON.parse(localStorage.getItem("cart"))));
   }, []);
   const [cart, setcart] = useState([]);
   const [productList, setproductList] = useState([]);
   const [isloading, setisloading] = useState(false);
-
+  const [totalPrice, settotalPrice] = useState(0);
   Geocode.setApiKey("AIzaSyB_eKxh8KTsPy6aPPJPROh2yP75dTvg92o");
   const [form] = Form.useForm();
   const [coordinates, setCoordinates] = useState({
@@ -61,24 +64,75 @@ function ShoppingPage(props) {
   });
   const [address, setaddress] = useState("");
   const [loadCart, setloadCart] = useState(false);
+  const [isloadorder, setisloadorder] = useState(false);
   const [position, setPosition] = useState({
     title: "The marker`s title will appear as a tooltip.",
     name: "SOMA",
     position: { lat: 37.778519, lng: -122.40564 },
   });
-  const updateAmount = (values) => {
-    console.log(">>amount", values);
+
+  const updateAmount = (proid, e) => {
+    console.log(">>amount", e);
+    console.log(">>proid", proid);
+    let newcart = cart;
+    for (var i in cart) {
+      if (newcart[i].product_id === proid) {
+        newcart[i].quantity = e;
+        break;
+      }
+    }
+    setcart(newcart);
+    localStorage.setItem("cart", JSON.stringify(newcart));
+    settotalPrice(calculateTotal(newcart));
   };
   const loadmaxpro = (proid) => {
-    const proindex = productList.findIndex((prox) => prox._id === proid);
+    const proindex = productList.findIndex((prox) => prox.product_id === proid);
     const prooj = productList[proindex]?.quantity;
     // return productList[proindex]?.quantity;
     return prooj;
   };
   const deleteitem = (proid) => {
-    const newCart = cart.filter((cartitem) => cartitem._id !== proid);
+    const newCart = cart.filter((cartitem) => cartitem.product_id !== proid);
     setcart(newCart);
     localStorage.setItem("cart", JSON.stringify(newCart));
+  };
+  const handleOk = (values) => {
+    console.log("form value", values);
+    const timeorder = moment().format();
+    const orderdata = {
+      ...values,
+      createAt: timeorder,
+      userId: "",
+      totalPrices: totalPrice,
+      productlist: cart,
+    };
+    console.log(">>>data order", orderdata);
+    const fetchOrder = async () => {
+      try {
+        setisloadorder(true);
+        const response = await orderApi.createorder(orderdata);
+        console.log("Fetch order succesfully: ", response);
+        setisloadorder(false);
+        notification.open({
+          message: "Order Successfully",
+          description: "Thanks you verry much",
+          icon: <SmileOutlined style={{ color: "#108ee9" }} />,
+        });
+      } catch (error) {
+        console.log("failed to fetch order: ", error);
+      }
+    };
+    fetchOrder();
+  };
+  const calculateTotal = (cart) => {
+    if (cart.length > 0) {
+      let totalprice = 0;
+      for (var i in cart) {
+        totalprice = totalprice + cart[i].price * cart[i].quantity;
+      }
+      return totalprice;
+    }
+    return 0;
   };
   const columns = [
     {
@@ -87,7 +141,7 @@ function ShoppingPage(props) {
       key: "action",
       render: (name, row) => (
         <CloseOutlined
-          onClick={() => deleteitem(row._id)}
+          onClick={() => deleteitem(row.product_id)}
           style={{ cursor: "pointer" }}
         />
       ),
@@ -124,16 +178,16 @@ function ShoppingPage(props) {
       ),
     },
     {
-      title: "AMOUNT",
-      dataIndex: "amount",
-      key: "amount",
-      render: (amount, row) => (
+      title: "QUANTITY",
+      dataIndex: "quantity",
+      key: "quantity",
+      render: (quantity, row) => (
         <InputNumber
-          onChange={updateAmount}
+          onChange={(e) => updateAmount(row.product_id, e)}
           className="productname"
-          placeholder={amount}
+          placeholder={quantity}
           min={1}
-          max={loadmaxpro(row._id)}
+          max={loadmaxpro(row.product_id)}
         />
       ),
     },
@@ -161,7 +215,6 @@ function ShoppingPage(props) {
     const { latLng } = coord;
     const lat = latLng.lat();
     const lng = latLng.lng();
-
     setPosition({
       title: "",
       name: "",
@@ -172,7 +225,7 @@ function ShoppingPage(props) {
       (response) => {
         const address = response.results[0].formatted_address;
         setaddress(address);
-        form.setFieldsValue({ addressinput: address });
+        form.setFieldsValue({ customerAddress: address });
       },
       (error) => {
         console.error(error);
@@ -215,10 +268,6 @@ function ShoppingPage(props) {
           <div className="order-content">
             <div className="title-form">Order Summary</div>
             <hr />
-            <div className="amount__price">
-              <div className="item-amount">ITEMS 3</div>
-              <div className="price">30000 VND</div>
-            </div>
             <div className="saleoff-form">
               <div className="title">PROMO CODE</div>
               <Form>
@@ -233,7 +282,7 @@ function ShoppingPage(props) {
             <hr />
             <div className="totalcost-form">
               <div>TOTAL COST</div>
-              <div>30000 VND</div>
+              <div>{`${totalPrice} VND`}</div>
             </div>
             <Button className="button-checkout" onClick={showModal}>
               CHECK OUT
@@ -244,83 +293,93 @@ function ShoppingPage(props) {
       <Modal
         closable={false}
         visible={visible}
-        // onOk={handleOk}
         onCancel={handleCancel}
         width={1000}
+        footer={[]}
       >
-        <div className="modal-order">
-          <Form form={form}>
-            <div className="title-modal">COMPLETE ORDER</div>
-            <Form.Item>
-              <div className="maps-form ">
-                <Mapstore
-                  lat={coordinates.lat}
-                  lng={coordinates.lng}
-                  oncheck={oncheck}
-                />
+        <Spin spinning={isloadorder}>
+          <div className="modal-order">
+            <Form form={form} onFinish={handleOk}>
+              <div className="title-modal">COMPLETE ORDER</div>
+              <Form.Item>
+                <div className="maps-form ">
+                  <Mapstore
+                    lat={coordinates.lat}
+                    lng={coordinates.lng}
+                    oncheck={oncheck}
+                  />
+                </div>
+              </Form.Item>
+              <Row>
+                <Col span={24}>
+                  <Form.Item name="customerAddress">
+                    <Input.Search
+                      enterButton="Find on Map"
+                      prefix={<EnvironmentOutlined />}
+                      placeholder="Address"
+                      size="large"
+                      onSearch={handleSearch}
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={12} style={{ paddingRight: "5px" }}>
+                  <Form.Item name="customerName">
+                    <Input
+                      prefix={<UserOutlined />}
+                      className="input-modal"
+                      placeholder="Name of consignee"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={12} style={{ paddingLeft: "5px" }}>
+                  <Form.Item name="customerPhone">
+                    <Input
+                      prefix={<PhoneOutlined />}
+                      className="input-modal"
+                      placeholder="Phone"
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row>
+                <Col span={24}>
+                  <Form.Item>
+                    <Input className="input-modal" placeholder="Note" />
+                  </Form.Item>
+                </Col>
+              </Row>
+              <div style={{ display: "flex", justifyContent: "center" }}>
+                <Steps
+                  style={{
+                    width: "80%",
+                  }}
+                >
+                  <Step
+                    status="finish"
+                    title="Select Product"
+                    icon={<UserOutlined />}
+                  />
+                  <Step
+                    status="process"
+                    title="Fill order"
+                    icon={<SolutionOutlined />}
+                  />
+                  <Step status="wait" title="Done" icon={<SmileOutlined />} />
+                </Steps>
               </div>
-            </Form.Item>
-            <Row>
-              <Col span={24}>
-                <Form.Item name="addressinput">
-                  <Input.Search
-                    enterButton="Find on Map"
-                    prefix={<EnvironmentOutlined />}
-                    placeholder="Address"
-                    size="large"
-                    onSearch={handleSearch}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={12} style={{ paddingRight: "5px" }}>
-                <Form.Item>
-                  <Input
-                    prefix={<UserOutlined />}
-                    className="input-modal"
-                    placeholder="Name of consignee"
-                  />
-                </Form.Item>
-              </Col>
-              <Col span={12} style={{ paddingLeft: "5px" }}>
-                <Form.Item>
-                  <Input
-                    prefix={<PhoneOutlined />}
-                    className="input-modal"
-                    placeholder="Phone"
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-            <Row>
-              <Col span={24}>
-                <Form.Item>
-                  <Input className="input-modal" placeholder="Note" />
-                </Form.Item>
-              </Col>
-            </Row>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              <Steps
-                style={{
-                  width: "80%",
-                }}
+
+              <Button
+                style={{ border: "0px", float: "right" }}
+                type="primary"
+                htmlType="submit"
               >
-                <Step
-                  status="finish"
-                  title="Select Product"
-                  icon={<UserOutlined />}
-                />
-                <Step
-                  status="process"
-                  title="Fill order"
-                  icon={<SolutionOutlined />}
-                />
-                <Step status="wait" title="Done" icon={<SmileOutlined />} />
-              </Steps>
-            </div>
-          </Form>
-        </div>
+                Submit
+              </Button>
+            </Form>
+          </div>
+        </Spin>
       </Modal>
     </>
   );

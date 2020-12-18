@@ -19,27 +19,27 @@ function ProductTag(props) {
         cart = [];
         cart.push({
           key: props._id,
-          _id: props._id,
+          product_id: props._id,
           name: props.name,
           size: "M",
-          amount: 1,
+          quantity: 1,
           price: props.price,
         });
       } else {
         let check_available = false;
         for (let i = 0; i < cart.length; i++) {
           if (cart[i]._id === props._id) {
-            cart[i].amount = cart[i].amount + 1;
+            cart[i].quantity = cart[i].quantity + 1;
             check_available = true;
           }
         }
         if (check_available !== true) {
           cart.push({
             key: props._id,
-            _id: props._id,
+            product_id: props._id,
             name: props.name,
             size: "M",
-            amount: 1,
+            quantity: 1,
             price: props.price,
           });
         }

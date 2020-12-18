@@ -102,7 +102,6 @@ const createProduct = async (req, res, next) => {
 };
 
 const updateProductbyId = async (req, res, next) => {
-  let products;
   const errors = validationResult(req);
   const ProId = req.params.pid;
   if (!errors.isEmpty()) {
@@ -126,6 +125,7 @@ const updateProductbyId = async (req, res, next) => {
       description: req.body.description,
     };
     try {
+      let products;
       products = await Product.findByIdAndUpdate(ProId, updatedProduct);
       console.log(products);
       return res.status(200).json({
@@ -148,6 +148,7 @@ const updateProductbyId = async (req, res, next) => {
       imagesProduct: imagesCurrent,
     };
     try {
+      let products;
       products = await Product.findByIdAndUpdate(ProId, updatedProduct);
       console.log(products);
       return res.status(200).json({
