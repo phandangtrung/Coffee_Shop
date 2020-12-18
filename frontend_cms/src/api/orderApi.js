@@ -5,13 +5,9 @@ class OrderApi {
     const url = "/api/orders";
     return axiosClient.get(url);
   };
-  getbyID = (categoryid) => {
-    const url = `/api/categories/${categoryid}`;
-    return axiosClient.get(url);
-  };
-  createcategory = (category) => {
-    const url = "/api/categories";
-    return axiosClient.post(url, category);
+  conformorder = (params) => {
+    const url = `/api/orders/${params.orderid}`;
+    return axiosClient.get(url, params.data);
   };
 }
 const orderApi = new OrderApi();
