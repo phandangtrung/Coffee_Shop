@@ -27,20 +27,12 @@ const createShipper = async (req, res, next) => {
       point: req.body.point,
       createAt: req.body.createAt,
     };
-    try {
-      const newShippers = new Shipper(createShipper);
-      await newShippers.save();
-      res.status(200).json({
-        message: "Create success",
-        newShippers,
-      });
-    } catch (error) {
-      if (error.name === "MongoError" && error.code === 11000) {
-        // Duplicate username
-        return res.status(422).send({ message: "Shipper already exist!" });
-      }
-      return res.status(422).send(error);
-    }
+    const newShippers = new Shipper(createShipper);
+    await newShippers.save();
+    res.status(200).json({
+      message: "Create success",
+      newShippers,
+    });
   } else {
     const createShipper = {
       name: req.body.name,
@@ -57,10 +49,6 @@ const createShipper = async (req, res, next) => {
         newShippers,
       });
     } catch (error) {
-      if (error.name === "MongoError" && error.code === 11000) {
-        // Duplicate username
-        return res.status(422).send({ message: "Shipper already exist!" });
-      }
       return res.status(422).send(error);
     }
   }
@@ -88,7 +76,8 @@ const updateShipperById = async (req, res, next) => {
     };
     let shippers;
     shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
-    res.status(200).json({ shippers: updatedShipper });
+    console.log(shippers);
+    res.status(200).json({ message: "Update Successfully" });
   } else {
     const updatedShipper = {
       phone: req.body.phone,
@@ -98,7 +87,8 @@ const updateShipperById = async (req, res, next) => {
     };
     let shippers;
     shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
-    res.status(200).json({ shippers: updatedShipper });
+    console.log(shippers);
+    res.status(200).json({ message: "Update Successfully" });
   }
 };
 
