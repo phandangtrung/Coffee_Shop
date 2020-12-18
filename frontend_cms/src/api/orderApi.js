@@ -7,7 +7,7 @@ class OrderApi {
   };
   conformorder = (params) => {
     const url = `/api/orders/${params.orderid}`;
-    return axiosClient.get(url, params.data);
+    return axiosClient.put(url, params.data);
   };
 }
 const orderApi = new OrderApi();

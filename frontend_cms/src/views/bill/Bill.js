@@ -15,7 +15,6 @@ import {
   Modal,
   Row,
   Col,
-  Input,
   Form,
   notification,
   Button,
@@ -37,7 +36,7 @@ function Bill() {
   const [isvisible, SetVisible] = useState(false);
   const [form] = Form.useForm();
   useEffect(() => {
-    const fetchCategoryList = async () => {
+    const fetchOrderList = async () => {
       try {
         setIsLoading(true);
 
@@ -49,11 +48,42 @@ function Bill() {
         console.log("failed to fetch order list: ", error);
       }
     };
-    fetchCategoryList();
+    fetchOrderList();
   }, []);
   const [userId, setuserId] = useState("Guess");
   const [address, setaddress] = useState("");
   const [detaildata, setdetaildata] = useState([]);
+  const onConformorder = (record) => {
+    const params = {
+      orderid: record._id,
+      data: { status: true },
+    };
+    const fetchConformOrder = async () => {
+      try {
+        const response = await orderApi.conformorder(params);
+        console.log("Fetch update status succesfully: ", response);
+        const fetchOrderList = async () => {
+          try {
+            setIsLoading(true);
+            const response = await orderApi.getAll();
+            console.log("Fetch order succesfully: ", response);
+            settabledata(response.orders);
+            setIsLoading(false);
+          } catch (error) {
+            console.log("failed to fetch order list: ", error);
+          }
+        };
+        fetchOrderList();
+        notification.info({
+          message: `Confirm Successfully`,
+          placement: "bottomRight",
+        });
+      } catch (error) {
+        console.log("failed to fetch update status : ", error);
+      }
+    };
+    fetchConformOrder();
+  };
   const onViewdetail = (record) => {
     SetVisible(!isvisible);
     // form.setFieldsValue(record);
@@ -169,7 +199,11 @@ function Bill() {
             Detail
           </Button>
 
-          <Button type="primary" danger>
+          <Button
+            onClick={() => onConformorder(record)}
+            type="primary"
+            style={{ backgroundColor: "#87d068", border: "0px" }}
+          >
             Conform
           </Button>
         </Space>
