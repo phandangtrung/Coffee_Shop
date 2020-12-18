@@ -81,7 +81,7 @@ const updateOrderById = async (req, res, next) => {
   };
   let orders;
   orders = await Order.findByIdAndUpdate(OrderId, updatedOrder);
-  res.status(200).json({ orders: updatedOrder });
+  res.status(200).json({ message: "Order is confirmed", orders: updatedOrder });
 };
 
 const deleteOrderById = async (req, res, next) => {
