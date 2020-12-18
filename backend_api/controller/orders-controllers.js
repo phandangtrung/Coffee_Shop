@@ -19,6 +19,7 @@ const createOrder = async (req, res, next) => {
     customerPhone: req.body.customerPhone,
     totalPrices: req.body.totalPrices,
     status: req.body.status,
+    note: req.body.status,
     createAt: req.body.createAt,
     doneAt: req.body.doneAt,
     productlist: req.body.productlist,

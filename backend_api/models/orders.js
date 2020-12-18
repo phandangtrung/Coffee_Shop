@@ -6,6 +6,7 @@ const ordersSchema = new mongoose.Schema({
   customerAddress: { type: String, require: false },
   totalPrices: { type: Number, require: false },
   status: { type: Boolean, default: false },
+  note: { type: String, required: false },
   createAt: { type: Date, require: false },
   doneAt: { type: Date, require: false },
   productlist: { type: Array, require: false },
