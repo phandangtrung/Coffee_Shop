@@ -48,7 +48,9 @@ const LeftMenu = (props) => {
             <Link to="/product">Product</Link>
           </div>
         </Menu.Item>
-
+        <Menu.Item key="order">
+          <Link to="/searchorder">Search Order</Link>
+        </Menu.Item>
         <Menu.Item key="menu">
           <Link to="/intro">Menu</Link>
         </Menu.Item>

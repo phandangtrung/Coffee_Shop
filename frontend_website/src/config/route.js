@@ -8,6 +8,7 @@ import IntroPage from "../features/IntroPage/view";
 import AddressPage from "../features/addresspage/view";
 import signupsucess from "../features/signupsucess/signupsucess";
 import MyProfile from "../features/myprofile/view";
+import Searchorder from "../features/searchorder/view/index";
 export const Menu = [
   {
     path: "/",
@@ -54,6 +55,11 @@ export const Menu = [
     path: "/myprofile",
     exact: true,
     component: MyProfile,
+  },
+  {
+    path: "/searchorder",
+    exact: true,
+    component: Searchorder,
   },
   {
     path: "*",
