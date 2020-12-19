@@ -9,6 +9,7 @@ import {
   Spin,
   Skeleton,
   Input,
+  Alert,
 } from "antd";
 import { CaretUpOutlined } from "@ant-design/icons";
 import "./style.css";
@@ -34,6 +35,7 @@ function Product() {
   const initialData = [];
   const [isLoading, setIsLoading] = useState(false);
   const [isloadProduct, setloadProduct] = useState(false);
+  const [isalter, setisalter] = useState(false);
   const [productList, setProductList] = useState([]);
   const [fakeproductList, setfakeProductList] = useState([]);
   const [categoryList, dispatchCategory] = useReducer(dataFetchCategory, {
@@ -81,13 +83,15 @@ function Product() {
   };
 
   const onSearch = (values) => {
+    setisalter(false);
     if (values === "") {
       setProductList(fakeproductList);
     } else {
       const filteredProduct = fakeproductList.filter((product) => {
         return product.name.toLowerCase().indexOf(values.toLowerCase()) !== -1;
       });
-      setProductList(filteredProduct);
+      if (filteredProduct.length > 0) setProductList(filteredProduct);
+      else setisalter(true);
     }
   };
   const getallProduct = () => {
@@ -195,8 +199,22 @@ function Product() {
           <Search
             placeholder="Search product"
             onSearch={onSearch}
-            style={{ width: "60%", marginBottom: "20px" }}
+            style={{ width: "70%" }}
           />
+          <div className="altersearch__form">
+            {isalter === true ? (
+              <Alert
+                className="altersearch"
+                message="Could not find any Products"
+                type="warning"
+                showIcon
+                closable
+              />
+            ) : (
+              ""
+            )}
+          </div>
+
           <Row>
             {isloadProduct ? (
               <div style={{ width: "100%", textAlign: "center" }}>
