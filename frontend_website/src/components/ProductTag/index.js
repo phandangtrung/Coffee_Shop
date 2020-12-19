@@ -3,6 +3,7 @@ import "./style.css";
 import { Images } from "../../config/image";
 import { Empty, notification } from "antd";
 import { Link } from "react-router-dom";
+import CurrencyFormat from "react-currency-format";
 import {
   ShoppingCartOutlined,
   ExclamationCircleFilled,
@@ -86,7 +87,14 @@ function ProductTag(props) {
             <div className="title-name">{props.name}</div>
           </Link>
 
-          <div className="price">{props.price} VND</div>
+          <div className="price">
+            <CurrencyFormat
+              value={props.price}
+              displayType={"text"}
+              thousandSeparator={true}
+            />{" "}
+            VND
+          </div>
           <div className="button-form">
             {props.quantity === 0 ? (
               <a style={{ fontSize: "20px" }}>Out of stock</a>
