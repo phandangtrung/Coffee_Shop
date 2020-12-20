@@ -32,5 +32,6 @@ router.use(isAdmin);
 router.get("/", usersController.getAllUsers);
 router.get("/:uid", usersController.getUserById);
 router.put("/lock/:uid", usersController.lockUser);
+router.put("/unlock/:uid", usersController.unlockUser);
 
 module.exports = router;

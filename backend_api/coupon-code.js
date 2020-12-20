@@ -15,7 +15,7 @@ symbolsArr.forEach(function(c, i) {
     symbolsObj[c] = i;
 });
 
-const defaults = {
+let defaults = {
     parts   : 3,
     partLen : 4,
 };
@@ -26,10 +26,10 @@ const defaults = {
 module.exports.generate = function(opts) {
     opts = xtend({}, defaults, opts);
 
-    const parts = [];
-    const part;
-    const i;
-    const j;
+    let parts = [];
+    let part;
+    let i;
+    let j;
 
     // if we have a plaintext, generate a code from that
     if ( opts.plaintext ) {
@@ -82,8 +82,8 @@ module.exports.validate = function(code, opts) {
     }
 
     // validate each part
-    const part, str, check, data;
-    for ( const i = 0; i < parts.length; i++ ) {
+    let part, str, check, data;
+    for ( let i = 0; i < parts.length; i++ ) {
         part = parts[i];
         // check this part has 4 chars
         if ( part.length !== opts.partLen ) {
@@ -124,7 +124,7 @@ function checkDigitAlg1(data, check) {
 }
 
 function hasBadWord(code) {
-    const i;
+    let i;
     code = code.toUpperCase();
     for( i = 0; i < badWordsList.length; i++ ) {
         if (code.indexOf(badWordsList[i]) > -1)
