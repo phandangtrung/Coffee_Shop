@@ -31,7 +31,6 @@ function Account() {
         };
         const response = await userApi.lockUser(params);
         console.log("Fetch user succesfully: ", response);
-        settabledata(response.users);
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch user lock: ", error);

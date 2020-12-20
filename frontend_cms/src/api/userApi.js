@@ -15,11 +15,7 @@ class UserApi {
   };
   lockUser = (params) => {
     const url = `/api/users/lock/${params._id}`;
-    return axiosClient.put(url, {
-      headers: {
-        Authorization: `Bearer ${params.token}`,
-      },
-    });
+    return axiosClient.put(url);
   };
 }
 const userApi = new UserApi();
