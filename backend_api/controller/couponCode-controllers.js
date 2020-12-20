@@ -7,11 +7,11 @@ const createCouponCode = async (req, res, next) => {
     discount: req.body.discount,
     couponCode: code,
   };
-  const newDicount = new CouponCode(createCouponCode);
-  await newDicount.save();
+  const newDiscount = new CouponCode(createCouponCode);
+  await newDiscount.save();
   res.status(200).json({
     message: "Create Success",
-    newDicount,
+    newDiscount,
   });
 };
 
