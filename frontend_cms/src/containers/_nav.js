@@ -27,6 +27,12 @@ export default [
   },
   {
     _tag: "CSidebarNavItem",
+    name: "Coupon",
+    to: "/coupon",
+    icon: "cil-tags",
+  },
+  {
+    _tag: "CSidebarNavItem",
     name: "Product",
     to: "/product",
     icon: "cil-puzzle",
