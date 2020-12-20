@@ -298,6 +298,30 @@ const lockUser = async (req, res, next) => {
   });
 };
 
+const unlockUser = async (req, res, next) => {
+  let users;
+  const Userid = req.params.uid;
+  //console.log(Userid);
+  const userunLock = {
+    isLock: false,
+  };
+  try {
+    users = await User.findByIdAndUpdate(Userid, userunLock);
+    console.log(users);
+  } catch (err) {
+    const error = new HttpError("Something went wrong, can not lock", 500);
+    return next(error);
+  }
+  if (!users) {
+    const error = new HttpError("Could not lock this user", 404);
+    return next(error);
+  }
+  res.status(200).json({
+    message: "lock user successful",
+    users: userunLock,
+  });
+};
+
 const admin = async (req, res, next) => {
   const createdAdmin = {
     fName: "Admin",
@@ -374,6 +398,7 @@ module.exports = {
   login,
   getConfirmation,
   lockUser,
+  unlockUser,
   getMyUser,
   updateMyUser,
   getAllUsers,
