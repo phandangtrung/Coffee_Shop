@@ -275,13 +275,13 @@ const updateMyUser = async (req, res, next) => {
 };
 
 const lockUser = async (req, res, next) => {
-  let users;
   const Userid = req.params.uid;
   //console.log(Userid);
   const userLock = {
     isLock: true,
   };
   try {
+    let users;
     users = await User.findByIdAndUpdate(Userid, userLock);
     console.log(users);
   } catch (err) {
