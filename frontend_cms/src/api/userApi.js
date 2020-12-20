@@ -21,6 +21,14 @@ class UserApi {
       },
     });
   };
+  unlockUser = (params) => {
+    const url = `/api/users/unlock/${params.id}`;
+    return axiosClient.put(url, params, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
+      },
+    });
+  };
 }
 const userApi = new UserApi();
 export default userApi;
