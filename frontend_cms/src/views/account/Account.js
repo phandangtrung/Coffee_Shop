@@ -26,10 +26,26 @@ function Account() {
         setIsLoading(true);
         const tokenUser = Cookies.get("tokenUser");
         const params = {
-          _id: record._id,
+          id: record._id,
           token: tokenUser,
         };
         const response = await userApi.lockUser(params);
+        const fetchCategoryList = async () => {
+          // dispatch({ type: "FETCH_INIT" });
+          try {
+            setIsLoading(true);
+            const tokenUser = Cookies.get("tokenUser");
+            // const params = { _page: 1, _limit: 10 };
+
+            const response = await userApi.getallUser(tokenUser);
+            console.log("Fetch products succesfully: ", response);
+            settabledata(response.users);
+            setIsLoading(false);
+          } catch (error) {
+            console.log("failed to fetch product list: ", error);
+          }
+        };
+        fetchCategoryList();
         console.log("Fetch user succesfully: ", response);
         setIsLoading(false);
       } catch (error) {
