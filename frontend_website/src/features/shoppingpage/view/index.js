@@ -17,6 +17,7 @@ import {
 import Moment from "react-moment";
 import moment from "moment";
 import { Images } from "../../../config/image";
+import CurrencyFormat from "react-currency-format";
 import {
   ShoppingCartOutlined,
   EnvironmentOutlined,
@@ -206,7 +207,16 @@ function ShoppingPage(props) {
       title: "PRICE",
       dataIndex: "price",
       key: "price",
-      render: (price) => <span className="productname">{price} VND</span>,
+      render: (price) => (
+        <span className="productname">
+          <CurrencyFormat
+            value={price}
+            displayType={"text"}
+            thousandSeparator={true}
+          />
+          {""} VND
+        </span>
+      ),
     },
   ];
 
@@ -262,7 +272,10 @@ function ShoppingPage(props) {
           setalteraplly(
             `Bạn đã nhập mã  ${getbycoupon[0].note} ${getbycoupon[0].discount}%`
           );
-        } else setalteraplly("Mã không hợp lệ");
+        } else {
+          setalteraplly("Mã không hợp lệ");
+          settotalPrice(faketotal);
+        }
       } catch (error) {
         console.log("failed to fetch order: ", error);
       }
@@ -334,7 +347,14 @@ function ShoppingPage(props) {
             <hr />
             <div className="totalcost-form">
               <div>TOTAL COST</div>
-              <div>{`${totalPrice} VND`}</div>
+              <div>
+                <CurrencyFormat
+                  value={totalPrice}
+                  displayType={"text"}
+                  thousandSeparator={true}
+                />
+                {""} VND
+              </div>
             </div>
             <Button className="button-checkout" onClick={showModal}>
               CHECK OUT
