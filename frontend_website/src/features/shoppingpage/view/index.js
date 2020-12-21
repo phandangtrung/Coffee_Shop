@@ -12,6 +12,7 @@ import {
   Steps,
   Spin,
   notification,
+  Typography,
 } from "antd";
 import Moment from "react-moment";
 import moment from "moment";
@@ -31,8 +32,10 @@ import Mapstore from "../../../components/Maps/Maps";
 import Geocode from "react-geocode";
 import productApi from "../../../api/productApi";
 import orderApi from "../../../api/orderApi";
+import couponApi from "../../../api/couponApi";
 import Modal from "antd/lib/modal/Modal";
 function ShoppingPage(props) {
+  const { Text, Link } = Typography;
   useEffect(() => {
     const fetchProductList = async () => {
       try {
@@ -50,6 +53,7 @@ function ShoppingPage(props) {
     if (JSON.parse(localStorage.getItem("cart")) !== null) {
       setcart(JSON.parse(localStorage.getItem("cart")));
       settotalPrice(calculateTotal(JSON.parse(localStorage.getItem("cart"))));
+      setfaketotal(calculateTotal(JSON.parse(localStorage.getItem("cart"))));
     }
   }, []);
   const [cart, setcart] = useState([]);
@@ -84,6 +88,11 @@ function ShoppingPage(props) {
     setcart(newcart);
     localStorage.setItem("cart", JSON.stringify(newcart));
     settotalPrice(calculateTotal(newcart));
+    form.setFieldsValue({
+      couponCode: "",
+    });
+    setalteraplly(null);
+    setfaketotal(calculateTotal(newcart));
   };
   const loadmaxpro = (proid) => {
     const proindex = productList.findIndex((prox) => prox.product_id === proid);
@@ -234,6 +243,32 @@ function ShoppingPage(props) {
       }
     );
   };
+  const [alteraplly, setalteraplly] = useState(null);
+  const [faketotal, setfaketotal] = useState(0);
+  const applycode = (values) => {
+    console.log(">>values", values);
+    const fetchCoupon = async () => {
+      try {
+        const response = await couponApi.getAll();
+        console.log("Fetch order succesfully: ", response);
+        const getbycoupon = response.couponcode.filter(
+          (rp) => rp.couponCode === values.couponCode.toUpperCase()
+        );
+        console.log(">>getbycoupon", getbycoupon);
+        if (getbycoupon.length > 0) {
+          const perse = Number(getbycoupon[0].discount);
+          const totlapr = faketotal - faketotal * (perse / 100);
+          settotalPrice(totlapr);
+          setalteraplly(
+            `Bạn đã nhập mã  ${getbycoupon[0].note} ${getbycoupon[0].discount}%`
+          );
+        } else setalteraplly("Mã không hợp lệ");
+      } catch (error) {
+        console.log("failed to fetch order: ", error);
+      }
+    };
+    fetchCoupon();
+  };
   const [visible, setVisible] = useState(false);
   const showModal = () => {
     setVisible(true);
@@ -272,11 +307,26 @@ function ShoppingPage(props) {
             <hr />
             <div className="saleoff-form">
               <div className="title">PROMO CODE</div>
-              <Form>
-                <Form.Item name="code">
+              <Form form={form} onFinish={applycode}>
+                <Form.Item
+                  name="couponCode"
+                  extra={
+                    alteraplly !== null ? (
+                      <Text type="warning">{alteraplly}</Text>
+                    ) : (
+                      ""
+                    )
+                  }
+                >
                   <Input />
                 </Form.Item>
-                <Button className="button-apply" type="dashed" danger>
+
+                <Button
+                  htmlType="submit"
+                  className="button-apply"
+                  type="dashed"
+                  danger
+                >
                   APPLY
                 </Button>
               </Form>
