@@ -62,7 +62,7 @@ function Coupon() {
       title: "Discount",
       dataIndex: "discount",
       key: "discount",
-      render: (text) => <a>{text} %</a>,
+      render: (text) => <a>{text}%</a>,
     },
     {
       title: "Note",
@@ -143,7 +143,7 @@ function Coupon() {
   return (
     <>
       <CCard>
-        <CCardHeader className="CCardHeader-title ">Comment</CCardHeader>
+        <CCardHeader className="CCardHeader-title ">Coupon Code</CCardHeader>
         <CButton
           style={{
             width: "200px",

@@ -291,14 +291,10 @@ function Product() {
 
             try {
               setloadingmodal(true);
-
-              // const params = { _page: 1, _limit: 10 };
               const response = await productApi.updateproduct(dataapi);
               console.log("Fetch update products succesfully: ", response);
-              setstate({ ...state, fileList: [] });
-              // settabledata([...tabledata, response.newProducts]);
+              loaddatapro();
               setloadingmodal(false);
-
               notification.info({
                 message: `Update Successfully`,
                 icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
@@ -363,7 +359,7 @@ function Product() {
       data: initialData,
     }
   );
-  useEffect(() => {
+  const loaddatapro = () => {
     setIsLoading(true);
 
     const fetchProductList = async () => {
@@ -395,6 +391,9 @@ function Product() {
       }
     };
     fetchCategoryList();
+  };
+  useEffect(() => {
+    loaddatapro();
   }, []);
   const handleClick = () => {
     setdetail(null);
