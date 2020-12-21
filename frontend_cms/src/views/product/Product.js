@@ -43,6 +43,7 @@ import { doGetList_success as doGetList_successCategory } from "../category/acti
 import categoryApi from "../../api/categoryApi";
 
 function Product() {
+  const { Search } = Input;
   const locallink = "http://localhost:3000";
   const columns = [
     {
@@ -137,7 +138,6 @@ function Product() {
       (dataget) => cateid === dataget._id
     );
     const finalname = cateobj[0]?.name;
-    console.log(">>>finalname", finalname);
     return <div>{finalname}</div>;
   };
   //uploadimage
@@ -337,7 +337,19 @@ function Product() {
   const initialData = [];
   const [isLoading, setIsLoading] = useState(false);
   const [isvisible, SetVisible] = useState(false);
+  const [fakeproductList, setfakeProductList] = useState([]);
   // const [productList, setProductList] = useState([]);
+  const onSearch = (values) => {
+    if (values === "") {
+      settabledata(fakeproductList);
+    } else {
+      const filteredProduct = fakeproductList.filter((product) => {
+        return product.name.toLowerCase().indexOf(values.toLowerCase()) !== -1;
+      });
+      console.log(">>>filteredProduct", filteredProduct);
+      if (filteredProduct.length > 0) settabledata(filteredProduct);
+    }
+  };
   const [productList, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
     isError: false,
@@ -360,6 +372,7 @@ function Product() {
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
         dispatch(doGetList_success(response.products));
+        setfakeProductList(response.products);
         settabledata(response.products);
         setIsLoading(false);
       } catch (error) {
@@ -391,19 +404,34 @@ function Product() {
     <>
       <CCard>
         <CCardHeader className="CCardHeader-title ">Product</CCardHeader>
-        <CButton
-          style={{
-            width: "200px",
-            height: "50px",
-            margin: "20px",
-          }}
-          shape="pill"
-          color="info"
-          onClick={handleClick}
-        >
-          {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
-          Add Product
-        </CButton>
+        <Row>
+          <Col lg={14}>
+            <CButton
+              style={{
+                width: "200px",
+                height: "50px",
+                margin: "20px 0px 20px 20px",
+              }}
+              shape="pill"
+              color="info"
+              onClick={handleClick}
+            >
+              {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
+              Add Product
+            </CButton>
+          </Col>
+          <Col lg={8}>
+            <Search
+              style={{
+                width: "100%",
+                height: "50px",
+                margin: "30px",
+              }}
+              placeholder="Search product by name"
+              onSearch={onSearch}
+            />
+          </Col>
+        </Row>
       </CCard>
       {isLoading ? (
         <div style={{ textAlign: "center" }}>
