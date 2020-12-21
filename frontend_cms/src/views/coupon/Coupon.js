@@ -28,7 +28,7 @@ import {
 } from "antd";
 
 import commentApi from "../../api/commentApi";
-import couponApi from "../../api/coupon";
+import couponApi from "../../api/couponApi";
 
 function Coupon() {
   const [form] = Form.useForm();
@@ -37,18 +37,18 @@ function Coupon() {
   const [loadingmodal, setloadingmodal] = useState(false);
   const deleteComment = (record) => {
     console.log("record: ", record);
-    const fetchDeleteComment = async () => {
+    const fetchDeleteCoupon = async () => {
       try {
         setIsLoading(true);
-        const response = await commentApi.deletecomment(record._id);
+        const response = await couponApi.delete(record._id);
         console.log("Fetch user succesfully: ", response);
-        settabledata(tabledata.filter((cmmt) => cmmt._id !== record._id));
+        settabledata(tabledata.filter((coupon) => coupon._id !== record._id));
         setIsLoading(false);
       } catch (error) {
         console.log("failed to delete comment: ", error);
       }
     };
-    fetchDeleteComment();
+    fetchDeleteCoupon();
   };
 
   const columns = [
@@ -97,7 +97,6 @@ function Coupon() {
           const response = await couponApi.create(values);
           console.log("Fetch Coupon succesfully: ", response);
           const fetchCouponList = async () => {
-            // dispatch({ type: "FETCH_INIT" });
             try {
               setIsLoading(true);
               const response = await couponApi.getAll();
@@ -156,7 +155,6 @@ function Coupon() {
           color="info"
           onClick={toggle}
         >
-          {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
           Add Coupon
         </CButton>
         <CCardBody>

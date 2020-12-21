@@ -9,6 +9,10 @@ class CouponApi {
     const url = "/api/couponCode";
     return axiosClient.post(url, params);
   };
+  delete = (cpid) => {
+    const url = `/api/couponCode/${cpid}`;
+    return axiosClient.delete(url);
+  };
 }
 const couponApi = new CouponApi();
 export default couponApi;

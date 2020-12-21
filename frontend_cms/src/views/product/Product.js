@@ -69,7 +69,9 @@ function Product() {
       title: "Category",
       dataIndex: "categoryId",
       key: "categoryId",
-      render: (category) => <p>{category}</p>,
+      width: 100,
+      // render: (category) => <p>{category}</p>,
+      render: (category) => getCatenamebyid(category),
     },
     {
       title: "Description",
@@ -83,11 +85,13 @@ function Product() {
       key: "prices",
       width: 150,
       render: (text) => <p>{text} VND</p>,
+      sorter: (a, b) => a.prices - b.prices,
     },
     {
       title: "Create at",
       dataIndex: "createAt",
       key: "createAt",
+
       render: (time) => (
         <p>
           <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
@@ -97,6 +101,7 @@ function Product() {
     {
       title: "Action",
       key: "action",
+      width: 50,
       render: (text, record) => (
         <Space size="middle">
           <Button onClick={() => updateProduct(record)} type="primary">
@@ -127,6 +132,14 @@ function Product() {
   const [detail, setdetail] = useState(null);
   const [imgfile, setimgfile] = useState(null);
   const [tabledata, settabledata] = useState([]);
+  const getCatenamebyid = (cateid) => {
+    const cateobj = categoryList.data.filter(
+      (dataget) => cateid === dataget._id
+    );
+    const finalname = cateobj[0]?.name;
+    console.log(">>>finalname", finalname);
+    return <div>{finalname}</div>;
+  };
   //uploadimage
   const [sizecheck, setSizecheck] = useState({ size_M: true, size_L: false });
   const [loadingmodal, setloadingmodal] = useState(false);
@@ -339,10 +352,11 @@ function Product() {
     }
   );
   useEffect(() => {
+    setIsLoading(true);
+
     const fetchProductList = async () => {
       dispatch(doGetList);
       try {
-        setIsLoading(true);
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
         dispatch(doGetList_success(response.products));
@@ -353,7 +367,7 @@ function Product() {
         dispatch(doGetList_error);
       }
     };
-    fetchProductList();
+
     const fetchCategoryList = async () => {
       // dispatch({ type: "FETCH_INIT" });
       dispatchCategory(doGetListCategory);
@@ -361,6 +375,7 @@ function Product() {
         const response = await categoryApi.getAll();
         console.log("Fetch products succesfully: ", response);
         dispatchCategory(doGetList_successCategory(response.categories));
+        fetchProductList();
       } catch (error) {
         console.log("failed to fetch product list: ", error);
         dispatchCategory(doGetList_errorCategory);
