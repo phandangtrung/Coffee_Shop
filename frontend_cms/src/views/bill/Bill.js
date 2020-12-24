@@ -53,14 +53,15 @@ function Bill() {
   const [userId, setuserId] = useState("Guess");
   const [address, setaddress] = useState("");
   const [detaildata, setdetaildata] = useState([]);
-  const onConformorder = (record) => {
+  const onConfirmorder = (record) => {
+    var CurrentDate = moment().toISOString();
     const params = {
       orderid: record._id,
-      data: { status: true },
+      data: { status: true, doneAt: CurrentDate },
     };
-    const fetchConformOrder = async () => {
+    const fetchConfirmOrder = async () => {
       try {
-        const response = await orderApi.conformorder(params);
+        const response = await orderApi.confirmorder(params);
         console.log("Fetch update status succesfully: ", response);
         const fetchOrderList = async () => {
           try {
@@ -82,7 +83,7 @@ function Bill() {
         console.log("failed to fetch update status : ", error);
       }
     };
-    fetchConformOrder();
+    fetchConfirmOrder();
   };
   const onViewdetail = (record) => {
     SetVisible(!isvisible);
@@ -200,11 +201,11 @@ function Bill() {
           </Button>
 
           <Button
-            onClick={() => onConformorder(record)}
+            onClick={() => onConfirmorder(record)}
             type="primary"
             style={{ backgroundColor: "#87d068", border: "0px" }}
           >
-            Conform
+            Confirm
           </Button>
         </Space>
       ),
