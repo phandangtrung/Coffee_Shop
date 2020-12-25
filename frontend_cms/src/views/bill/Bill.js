@@ -19,6 +19,7 @@ import {
   notification,
   Button,
   Tag,
+  DatePicker,
 } from "antd";
 import {
   CheckCircleOutlined,
@@ -33,6 +34,7 @@ import orderApi from "../../api/orderApi";
 function Bill() {
   const [isLoading, setIsLoading] = useState(false);
   const [tabledata, settabledata] = useState([]);
+  const [fakedata, setfakedata] = useState([]);
   const [isvisible, SetVisible] = useState(false);
   const [form] = Form.useForm();
   useEffect(() => {
@@ -43,6 +45,7 @@ function Bill() {
         const response = await orderApi.getAll();
         console.log("Fetch order succesfully: ", response);
         settabledata(response.orders);
+        setfakedata(response.orders);
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch order list: ", error);
@@ -171,9 +174,11 @@ function Bill() {
           {time === undefined ? (
             <Tag color="#f50">UNFINISHED</Tag>
           ) : (
-            <p>
-              <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
-            </p>
+            <>
+              <Tag color="#87d068">
+                <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
+              </Tag>
+            </>
           )}
         </>
       ),
@@ -199,18 +204,39 @@ function Bill() {
           <Button onClick={() => onViewdetail(record)} type="primary">
             Detail
           </Button>
-
-          <Button
-            onClick={() => onConfirmorder(record)}
-            type="primary"
-            style={{ backgroundColor: "#87d068", border: "0px" }}
-          >
-            Confirm
-          </Button>
+          {record.status === true ? (
+            <Button
+              onClick={() => onConfirmorder(record)}
+              type="primary"
+              disabled
+            >
+              Confirm
+            </Button>
+          ) : (
+            <Button
+              onClick={() => onConfirmorder(record)}
+              type="primary"
+              style={{ backgroundColor: "#87d068", border: "0px" }}
+            >
+              Confirm
+            </Button>
+          )}
         </Space>
       ),
     },
   ];
+  const onChange = (date, dateString) => {
+    console.log(">>>dateString", dateString);
+    if (dateString === "") {
+      settabledata(fakedata);
+    } else {
+      const newdatafilter = fakedata.filter(
+        (fd) => fd.createAt.substring(0, 10) === dateString
+      );
+      settabledata(newdatafilter);
+      console.log(">>newdatafilter", newdatafilter);
+    }
+  };
   const toggle = () => {
     SetVisible(!isvisible);
   };
@@ -220,6 +246,9 @@ function Bill() {
         <CCardHeader className="CCardHeader-title ">Bill</CCardHeader>
 
         <CCardBody>
+          <span style={{ float: "right", paddingBottom: "20px" }}>
+            Filter by day <DatePicker onChange={onChange} />
+          </span>
           {isLoading ? (
             <div style={{ textAlign: "center" }}>
               <Spin size="large" />
@@ -234,11 +263,7 @@ function Bill() {
           onCancel={toggle}
           style={{ marginTop: "5%" }}
           width={800}
-          footer={[
-            <Button key="submit" type="primary">
-              Conform
-            </Button>,
-          ]}
+          footer={[]}
         >
           <Form form={form} size={"large"}>
             <Row style={{ paddingBottom: "20px" }}>
@@ -250,6 +275,11 @@ function Bill() {
               </Col>
             </Row>
             <Row>
+              <Col span={12}>
+                <a>Shipper: {userId}</a>
+              </Col>
+            </Row>
+            <Row style={{ paddingBottom: "20px" }}>
               <Col span={24}>
                 <Table
                   columns={columnsDetail}

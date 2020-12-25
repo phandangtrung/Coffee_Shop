@@ -22,6 +22,7 @@ import {
   UploadOutlined,
   CheckCircleOutlined,
   DeleteOutlined,
+  FilterOutlined,
 } from "@ant-design/icons";
 // import ImgCrop from "antd-img-crop";
 import "./style.css";
@@ -399,6 +400,7 @@ function Product() {
     setdetail(null);
     SetVisible(!isvisible);
   };
+  const { Option } = Select;
   return (
     <>
       <CCard>
