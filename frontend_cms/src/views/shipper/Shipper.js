@@ -46,6 +46,35 @@ function Shipper() {
   const props = {
     onChange: uploadimg,
   };
+  const fetchShipperList = async () => {
+    // dispatch({ type: "FETCH_INIT" });
+    try {
+      setIsLoading(true);
+      const response = await shippersApi.getAll();
+      console.log("Fetch shipper succesfully: ", response);
+      settabledata(response.shippers);
+      setIsLoading(false);
+    } catch (error) {
+      console.log("failed to fetch shipper list: ", error);
+    }
+  };
+  const releaseShipper = (shid) => {
+    const fetchUpdateShipper = async () => {
+      try {
+        setIsLoading(true);
+        var form_data = new FormData();
+        form_data.append("status", false);
+        const params = { shid: shid, data: form_data };
+        const response = await shippersApi.updateShipper(params);
+        console.log("Fetch update shipper succesfully: ", response);
+        fetchShipperList();
+      } catch (error) {
+        console.log("failed to fetch update shipper list: ", error);
+      }
+    };
+    fetchUpdateShipper();
+  };
+
   const columns = [
     {
       title: "Name",
@@ -97,6 +126,7 @@ function Shipper() {
       render: (text, record) => (
         <Space size="middle">
           <Button type="primary">Edit</Button>
+
           <Popconfirm
             title="Are you sure？"
             icon={<DeleteOutlined style={{ color: "red" }} />}
@@ -106,6 +136,13 @@ function Shipper() {
               Delete
             </Button>
           </Popconfirm>
+          {record.status === true ? (
+            <Button onClick={() => releaseShipper(record._id)} type="ghost">
+              Release
+            </Button>
+          ) : (
+            ""
+          )}
         </Space>
       ),
     },
@@ -213,19 +250,7 @@ function Shipper() {
       });
   };
   useEffect(() => {
-    const fetchCategoryList = async () => {
-      // dispatch({ type: "FETCH_INIT" });
-      try {
-        setIsLoading(true);
-        const response = await shippersApi.getAll();
-        console.log("Fetch products succesfully: ", response);
-        settabledata(response.shippers);
-        setIsLoading(false);
-      } catch (error) {
-        console.log("failed to fetch product list: ", error);
-      }
-    };
-    fetchCategoryList();
+    fetchShipperList();
   }, []);
   return (
     <>
