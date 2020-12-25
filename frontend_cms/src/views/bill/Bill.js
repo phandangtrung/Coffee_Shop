@@ -190,7 +190,7 @@ function Bill() {
       width: 200,
       render: (time) => (
         <p>
-          <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
+          <Moment format="YYYY/MM/DD hh:mm">{time}</Moment>
         </p>
       ),
     },
