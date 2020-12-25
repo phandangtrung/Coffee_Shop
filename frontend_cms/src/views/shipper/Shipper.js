@@ -100,7 +100,7 @@ function Shipper() {
           <Popconfirm
             title="Are you sure？"
             icon={<DeleteOutlined style={{ color: "red" }} />}
-            onConfirm={() => deleteProduct(record)}
+            onConfirm={() => deleteShipper(record)}
           >
             <Button type="primary" danger>
               Delete
@@ -119,9 +119,9 @@ function Shipper() {
     previewImage: "",
     fileList: [],
   });
-  const deleteProduct = (record) => {
+  const deleteShipper = (record) => {
     console.log(">>>record", record);
-    const fetchCreateProduct = async () => {
+    const fetchDelteShiper = async () => {
       try {
         setloadingmodal(true);
 
@@ -143,7 +143,7 @@ function Shipper() {
         // dispatch(doCreate_error);
       }
     };
-    fetchCreateProduct();
+    fetchDelteShiper();
   };
   const handlePreview = (file) => {
     setstate({

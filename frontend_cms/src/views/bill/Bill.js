@@ -55,19 +55,33 @@ function Bill() {
       console.log("failed to fetch order list: ", error);
     }
   };
+  const fetchUpdateShipper = async (shid) => {
+    try {
+      var form_data = new FormData();
+      form_data.append("status", true);
+      const params = { shid: shid, data: form_data };
+      const response = await shippersApi.updateShipper(params);
+      console.log("Fetch update shipper succesfully: ", response);
+    } catch (error) {
+      console.log("failed to fetch update shipper list: ", error);
+    }
+  };
 
   const onConfirmorder = (record) => {
     var CurrentDate = moment().toISOString();
-    const params = {
-      orderid: record._id,
-      data: { status: true, doneAt: CurrentDate },
-    };
+
+    let randomshipper = "";
 
     const fetchConfirmOrder = async () => {
+      const params = {
+        orderid: record._id,
+        data: { status: true, doneAt: CurrentDate },
+        shipperId: randomshipper,
+      };
       try {
         const response = await orderApi.confirmorder(params);
         console.log("Fetch update status succesfully: ", response);
-
+        fetchUpdateShipper(randomshipper);
         fetchOrderList();
         notification.info({
           message: `Confirm Successfully`,
@@ -79,13 +93,18 @@ function Bill() {
     };
     const fetchShipperList = async () => {
       try {
+        setIsLoading(true);
         const response = await shippersApi.getAll();
         console.log("Fetch shipper succesfully: ", response);
-        const shipperList = response.shippers.filter(
+        const shipperfreeList = response.shippers.filter(
           (spf) => spf.status === false
         );
-        console.log(">>shipper free", shipperList);
-        // fetchConfirmOrder();
+
+        randomshipper =
+          shipperfreeList[Math.floor(Math.random() * shipperfreeList.length)]
+            ._id;
+        console.log(">>randomshipper", randomshipper);
+        fetchConfirmOrder();
       } catch (error) {
         console.log("failed to fetch shipper list: ", error);
       }

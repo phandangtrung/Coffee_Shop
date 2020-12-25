@@ -10,6 +10,10 @@ class ShippersApi {
     const url = "/api/shippers";
     return axiosClient.post(url, params, config);
   };
+  updateShipper = (params) => {
+    const url = `/api/shippers/${params.shid}`;
+    return axiosClient.put(url, params.data, config);
+  };
   deleteShipper = (params) => {
     const url = `/api/shippers/${params}`;
     return axiosClient.delete(url);
