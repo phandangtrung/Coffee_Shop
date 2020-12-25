@@ -21,6 +21,7 @@ import {
   Select,
   Button,
   Popconfirm,
+  Tag,
 } from "antd";
 
 import {
@@ -75,6 +76,18 @@ function Shipper() {
           <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
         </p>
       ),
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: 200,
+      render: (status) =>
+        status === false ? (
+          <Tag color="#87d068">FREE</Tag>
+        ) : (
+          <Tag color="volcano">BUSY</Tag>
+        ),
     },
 
     {

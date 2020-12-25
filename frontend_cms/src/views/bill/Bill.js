@@ -31,6 +31,7 @@ import CIcon from "@coreui/icons-react";
 import moment from "moment";
 import Moment from "react-moment";
 import orderApi from "../../api/orderApi";
+import shippersApi from "../../api/shippersApi";
 function Bill() {
   const [isLoading, setIsLoading] = useState(false);
   const [tabledata, settabledata] = useState([]);
@@ -38,45 +39,35 @@ function Bill() {
   const [isvisible, SetVisible] = useState(false);
   const [form] = Form.useForm();
   useEffect(() => {
-    const fetchOrderList = async () => {
-      try {
-        setIsLoading(true);
-
-        const response = await orderApi.getAll();
-        console.log("Fetch order succesfully: ", response);
-        settabledata(response.orders);
-        setfakedata(response.orders);
-        setIsLoading(false);
-      } catch (error) {
-        console.log("failed to fetch order list: ", error);
-      }
-    };
     fetchOrderList();
   }, []);
   const [userId, setuserId] = useState("Guess");
   const [address, setaddress] = useState("");
   const [detaildata, setdetaildata] = useState([]);
+  const fetchOrderList = async () => {
+    try {
+      setIsLoading(true);
+      const response = await orderApi.getAll();
+      console.log("Fetch order succesfully: ", response);
+      settabledata(response.orders);
+      setIsLoading(false);
+    } catch (error) {
+      console.log("failed to fetch order list: ", error);
+    }
+  };
+
   const onConfirmorder = (record) => {
     var CurrentDate = moment().toISOString();
     const params = {
       orderid: record._id,
       data: { status: true, doneAt: CurrentDate },
     };
+
     const fetchConfirmOrder = async () => {
       try {
         const response = await orderApi.confirmorder(params);
         console.log("Fetch update status succesfully: ", response);
-        const fetchOrderList = async () => {
-          try {
-            setIsLoading(true);
-            const response = await orderApi.getAll();
-            console.log("Fetch order succesfully: ", response);
-            settabledata(response.orders);
-            setIsLoading(false);
-          } catch (error) {
-            console.log("failed to fetch order list: ", error);
-          }
-        };
+
         fetchOrderList();
         notification.info({
           message: `Confirm Successfully`,
@@ -86,7 +77,20 @@ function Bill() {
         console.log("failed to fetch update status : ", error);
       }
     };
-    fetchConfirmOrder();
+    const fetchShipperList = async () => {
+      try {
+        const response = await shippersApi.getAll();
+        console.log("Fetch shipper succesfully: ", response);
+        const shipperList = response.shippers.filter(
+          (spf) => spf.status === false
+        );
+        console.log(">>shipper free", shipperList);
+        // fetchConfirmOrder();
+      } catch (error) {
+        console.log("failed to fetch shipper list: ", error);
+      }
+    };
+    fetchShipperList();
   };
   const onViewdetail = (record) => {
     SetVisible(!isvisible);
