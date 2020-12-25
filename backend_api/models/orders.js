@@ -11,6 +11,7 @@ const ordersSchema = new mongoose.Schema({
   doneAt: { type: Date, require: false },
   productlist: { type: Array, require: false },
   userId: { type: String, required: false },
+  shipperId: { type: String, required: false },
 });
 
 module.exports = mongoose.model("Order", ordersSchema);
