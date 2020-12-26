@@ -99,12 +99,17 @@ function Bill() {
         const shipperfreeList = response.shippers.filter(
           (spf) => spf.status === false
         );
-
-        randomshipper =
-          shipperfreeList[Math.floor(Math.random() * shipperfreeList.length)]
-            ._id;
-        console.log(">>randomshipper", randomshipper);
-        fetchConfirmOrder();
+        if (shipperfreeList.length > 0) {
+          randomshipper =
+            shipperfreeList[Math.floor(Math.random() * shipperfreeList.length)]
+              ._id;
+          console.log(">>randomshipper", randomshipper);
+          fetchConfirmOrder();
+        } else
+          notification.info({
+            message: `All delivery staff are currently busy`,
+            placement: "bottomRight",
+          });
       } catch (error) {
         console.log("failed to fetch shipper list: ", error);
       }
