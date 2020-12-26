@@ -39,6 +39,7 @@ import Moment from "react-moment";
 function Shipper() {
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
+  const [detail, setdetail] = useState(null);
   const uploadimg = (info) => {
     console.log(">>>>info: ", info);
     console.log(fileList);
@@ -74,7 +75,11 @@ function Shipper() {
     };
     fetchUpdateShipper();
   };
-
+  const updateShipper = (record) => {
+    setdetail(record);
+    form.setFieldsValue(record);
+    SetVisible(!isvisible);
+  };
   const columns = [
     {
       title: "Name",
@@ -125,7 +130,9 @@ function Shipper() {
       width: 200,
       render: (text, record) => (
         <Space size="middle">
-          <Button type="primary">Edit</Button>
+          <Button type="primary" onClick={() => updateShipper(record)}>
+            Edit
+          </Button>
 
           <Popconfirm
             title="Are you sure？"
@@ -190,6 +197,7 @@ function Shipper() {
     });
   };
   const toggle = () => {
+    setdetail(null);
     SetVisible(!isvisible);
   };
   const [imgfile, setimgfile] = useState(null);
@@ -203,51 +211,54 @@ function Shipper() {
     console.log(">>originFileObj", imgfile);
   };
   const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        form.resetFields();
-        // onCreate(values);
-        console.log(">>>value", values);
-        var CurrentDate = moment().toISOString();
-        const data = {
-          ...values,
-          imagesShipper: imgfile,
-          createAt: CurrentDate,
-        };
-        console.log("data >>>", data);
-        var form_data = new FormData();
+    if (detail === null) {
+      form
+        .validateFields()
+        .then((values) => {
+          form.resetFields();
+          // onCreate(values);
+          console.log(">>>value", values);
+          var CurrentDate = moment().toISOString();
+          const data = {
+            ...values,
+            imagesShipper: imgfile,
+            createAt: CurrentDate,
+          };
+          console.log("data >>>", data);
+          var form_data = new FormData();
 
-        for (var key in data) {
-          form_data.append(key, data[key]);
-        }
-        const fetchCreateProduct = async () => {
-          try {
-            setloadingmodal(true);
-
-            // const params = { _page: 1, _limit: 10 };
-            const response = await shippersApi.createShipper(form_data);
-            console.log("Fetch shipper succesfully: ", response);
-            console.log(">>>response.shipper", response.newShippers);
-            setstate({ ...state, fileList: [] });
-            settabledata([...tabledata, response.newShippers]);
-            setloadingmodal(false);
-            setimgfile(null);
-            notification.info({
-              message: `Created Successfully`,
-              icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
-              placement: "bottomRight",
-            });
-          } catch (error) {
-            console.log("failed to fetch product list: ", error);
-            // dispatch(doCreate_error);
+          for (var key in data) {
+            form_data.append(key, data[key]);
           }
-        };
-        fetchCreateProduct();
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
+          const fetchCreateProduct = async () => {
+            try {
+              setloadingmodal(true);
+
+              // const params = { _page: 1, _limit: 10 };
+              const response = await shippersApi.createShipper(form_data);
+              console.log("Fetch shipper succesfully: ", response);
+              console.log(">>>response.shipper", response.newShippers);
+              setstate({ ...state, fileList: [] });
+              settabledata([...tabledata, response.newShippers]);
+              setloadingmodal(false);
+              setimgfile(null);
+              notification.info({
+                message: `Created Successfully`,
+                icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+                placement: "bottomRight",
+              });
+            } catch (error) {
+              console.log("failed to fetch product list: ", error);
+              // dispatch(doCreate_error);
+            }
+          };
+          fetchCreateProduct();
+        })
+        .catch((info) => {
+          console.log("Validate Failed:", info);
+        });
+    } else {
+    }
   };
   useEffect(() => {
     fetchShipperList();
@@ -281,7 +292,7 @@ function Shipper() {
         </CCardBody>
       </CCard>
       <Modal
-        title="Add Shipper"
+        title={detail ? "UPDATE SHIPPER" : "ADD SHIPPER"}
         visible={isvisible}
         onOk={handleOk}
         onCancel={toggle}
