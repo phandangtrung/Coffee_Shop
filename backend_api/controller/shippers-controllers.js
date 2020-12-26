@@ -8,13 +8,6 @@ const { validationResult } = require("express-validator");
 const HttpError = require("../error-handle/http-error");
 
 const createShipper = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    console.log(errors);
-    const error = new HttpError("Invalid Input! Pls check your data", 400);
-    return next(error);
-  }
-
   let imagesCurrent;
   if (typeof req.file !== "undefined") {
     imagesCurrent = req.file.path;
@@ -49,7 +42,7 @@ const createShipper = async (req, res, next) => {
         newShippers,
       });
     } catch (error) {
-      return res.status(422).send(error);
+      // return res.status(422).send(error);
     }
   }
 };
@@ -70,6 +63,7 @@ const updateShipperById = async (req, res, next) => {
 
   if (imagesCurrent === null) {
     const updatedShipper = {
+      name: req.body.name,
       phone: req.body.phone,
       point: req.body.point,
       createAt: req.body.createAt,
@@ -80,6 +74,7 @@ const updateShipperById = async (req, res, next) => {
     res.status(200).json({ message: "Update Successfully" });
   } else {
     const updatedShipper = {
+      name: req.body.name,
       phone: req.body.phone,
       imagesShipper: imagesCurrent,
       point: req.body.point,

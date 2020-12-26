@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const shippersSchema = new mongoose.Schema({
-  name: { type: String, require: false, unique: false },
+  name: { type: String, required: false, index: { unique: false } },
   imagesShipper: { type: String, required: false },
   phone: { type: String, require: false },
   point: { type: Number, require: false },
