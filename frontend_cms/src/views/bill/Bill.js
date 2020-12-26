@@ -42,6 +42,7 @@ function Bill() {
     fetchOrderList();
   }, []);
   const [userId, setuserId] = useState("Guess");
+  const [ShId, setShId] = useState("None");
   const [address, setaddress] = useState("");
   const [detaildata, setdetaildata] = useState([]);
   const fetchOrderList = async () => {
@@ -75,8 +76,7 @@ function Bill() {
     const fetchConfirmOrder = async () => {
       const params = {
         orderid: record._id,
-        data: { status: true, doneAt: CurrentDate },
-        shipperId: randomshipper,
+        data: { status: true, doneAt: CurrentDate, shipperId: randomshipper },
       };
       try {
         const response = await orderApi.confirmorder(params);
@@ -116,6 +116,22 @@ function Bill() {
     // form.setFieldsValue(record);
     if (record.userId !== "") setuserId(record.userId);
     else setuserId("Guess");
+    const fetchShipperList = async () => {
+      try {
+        const response = await shippersApi.getAll();
+        console.log("Fetch shipper succesfully: ", response);
+        const shipperfreeList = response.shippers.filter(
+          (spf) => spf._id === record.shipperId
+        );
+        console.log(">>>shipperfreeList", shipperfreeList);
+        if (shipperfreeList !== []) setShId(shipperfreeList[0].name);
+        else setShId("None");
+      } catch (error) {
+        setShId("None");
+        console.log("failed to fetch shipper list: ", error);
+      }
+    };
+    fetchShipperList();
     setaddress(record.customerAddress);
     setdetaildata(record.productlist);
   };
@@ -299,7 +315,7 @@ function Bill() {
             </Row>
             <Row>
               <Col span={12}>
-                <a>Shipper: {userId}</a>
+                <a>Shipper: {ShId}</a>
               </Col>
             </Row>
             <Row style={{ paddingBottom: "20px" }}>
