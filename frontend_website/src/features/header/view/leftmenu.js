@@ -51,6 +51,9 @@ const LeftMenu = (props) => {
         <Menu.Item key="order">
           <Link to="/searchorder">Search Order</Link>
         </Menu.Item>
+        <Menu.Item key="coupon">
+          <Link to="/coupon">Coupon</Link>
+        </Menu.Item>
         <Menu.Item key="menu">
           <Link to="/intro">Menu</Link>
         </Menu.Item>
