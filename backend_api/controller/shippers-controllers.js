@@ -8,6 +8,12 @@ const { validationResult } = require("express-validator");
 const HttpError = require("../error-handle/http-error");
 
 const createShipper = async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    console.log(errors);
+    const error = new HttpError("Invalid Input! Pls check your data", 400);
+    return next(error);
+  }
   let imagesCurrent;
   if (typeof req.file !== "undefined") {
     imagesCurrent = req.file.path;
@@ -16,19 +22,29 @@ const createShipper = async (req, res, next) => {
   if (imagesCurrent === null) {
     const createShipper = {
       name: req.body.name,
+      identityCard: req.body.identityCard,
       phone: req.body.phone,
       point: req.body.point,
       createAt: req.body.createAt,
     };
-    const newShippers = new Shipper(createShipper);
-    await newShippers.save();
-    res.status(200).json({
-      message: "Create success",
-      newShippers,
-    });
+    try {
+      const newShippers = new Shipper(createShipper);
+      await newShippers.save();
+      res.status(200).json({
+        message: "Create success",
+        newShippers,
+      });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate identityCard
+        return res.status(422).send({ message: "Shipper already exist!" });
+      }
+      return res.status(422).send(error);
+    }
   } else {
     const createShipper = {
       name: req.body.name,
+      identityCard: req.body.identityCard,
       phone: req.body.phone,
       imagesShipper: imagesCurrent,
       point: req.body.point,
@@ -42,7 +58,11 @@ const createShipper = async (req, res, next) => {
         newShippers,
       });
     } catch (error) {
-      // return res.status(422).send(error);
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate identityCard
+        return res.status(422).send({ message: "Shipper already exist!" });
+      }
+      return res.status(422).send(error);
     }
   }
 };
@@ -64,17 +84,27 @@ const updateShipperById = async (req, res, next) => {
   if (imagesCurrent === null) {
     const updatedShipper = {
       name: req.body.name,
+      identityCard: req.body.identityCard,
       phone: req.body.phone,
       point: req.body.point,
       createAt: req.body.createAt,
     };
-    let shippers;
-    shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
-    console.log(shippers);
-    res.status(200).json({ message: "Update Successfully" });
+    try {
+      let shippers;
+      shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
+      console.log(shippers);
+      res.status(200).json({ message: "Update Successfully" });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate identityCard
+        return res.status(422).send({ message: "Shipper already exist!" });
+      }
+      return res.status(422).send(error);
+    }
   } else {
     const updatedShipper = {
       name: req.body.name,
+      identityCard: req.body.identityCard,
       phone: req.body.phone,
       imagesShipper: imagesCurrent,
       point: req.body.point,
@@ -84,6 +114,18 @@ const updateShipperById = async (req, res, next) => {
     shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
     console.log(shippers);
     res.status(200).json({ message: "Update Successfully" });
+    try {
+      let shippers;
+      shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
+      console.log(shippers);
+      res.status(200).json({ message: "Update Successfully" });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate identityCard
+        return res.status(422).send({ message: "Shipper already exist!" });
+      }
+      return res.status(422).send(error);
+    }
   }
 };
 
