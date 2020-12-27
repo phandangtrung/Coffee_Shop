@@ -307,12 +307,28 @@ function Shipper() {
           >
             <Row style={{ display: "flex", justifyContent: "space-between" }}>
               <Col span={24}>
-                <Form.Item name="name">
+                <Form.Item
+                  name="name"
+                  rules={[{ required: true, message: "Please input Name!" }]}
+                >
                   <Input placeholder="Name" />
                 </Form.Item>
               </Col>
               <Col span={24}>
-                <Form.Item name="phone">
+                <Form.Item
+                  name="identityCard"
+                  rules={[
+                    { required: true, message: "Please input Identity Card!" },
+                  ]}
+                >
+                  <Input placeholder="Identity Card" />
+                </Form.Item>
+              </Col>
+              <Col span={24}>
+                <Form.Item
+                  name="phone"
+                  rules={[{ required: true, message: "Please input Phone!" }]}
+                >
                   <Input placeholder="Phone" />
                 </Form.Item>
               </Col>
