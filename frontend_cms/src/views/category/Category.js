@@ -40,8 +40,34 @@ function Category() {
   const [form] = Form.useForm();
   const [isvisible, SetVisible] = useState(false);
   const [loadingmodal, setloadingmodal] = useState(false);
-  const deleteProduct = () => {};
-  const updateProduct = () => {};
+  const [detail, setdetail] = useState(null);
+  const [stateidCategory, setidCategory] = useState(null);
+  const deleteCategory = (record) => {
+    const fetchDeleteProduct = async () => {
+      try {
+        setIsLoading(true);
+        const response = await categoryApi.deletecategory(record._id);
+        console.log("Fetch category succesfully: ", response);
+        notification.info({
+          message: `Deleted Successfully`,
+          icon: <DeleteOutlined style={{ color: "#FF0000" }} />,
+          description: `You have deleted ${record.name}`,
+          placement: "bottomRight",
+        });
+        settabledata(tabledata.filter((item) => item._id !== record._id));
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+      }
+    };
+    fetchDeleteProduct();
+  };
+  const updateCategory = (record) => {
+    setdetail(record);
+    form.setFieldsValue(record);
+    SetVisible(!isvisible);
+    setidCategory(record._id);
+  };
   const columns = [
     {
       title: "Name",
@@ -72,13 +98,13 @@ function Category() {
       width: 200,
       render: (text, record) => (
         <Space size="middle">
-          <Button onClick={() => updateProduct(record)} type="primary">
+          <Button onClick={() => updateCategory(record)} type="primary">
             Edit
           </Button>
           <Popconfirm
             title="Are you sure？"
             icon={<DeleteOutlined style={{ color: "red" }} />}
-            onConfirm={() => deleteProduct(record)}
+            onConfirm={() => deleteCategory(record)}
           >
             <Button type="primary" danger>
               Delete
@@ -89,7 +115,9 @@ function Category() {
     },
   ];
   const toggle = () => {
+    setdetail(null);
     SetVisible(!isvisible);
+    form.resetFields();
   };
   const [categoryList, dispatchCategory] = useReducer(dataFetchReducer, {
     isLoading: false,
@@ -98,46 +126,86 @@ function Category() {
   });
   const [tabledata, settabledata] = useState([]);
   const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        form.resetFields();
-        // onCreate(values);
-        console.log(">>>value", values);
-        var CurrentDate = moment().toISOString();
+    if (detail === null) {
+      form
+        .validateFields()
+        .then((values) => {
+          form.resetFields();
+          console.log(">>>value", values);
+          var CurrentDate = moment().toISOString();
 
-        const fetchCreateProduct = async () => {
-          // dispatch({ type: "FETCH_INIT" });
+          const fetchCreateProduct = async () => {
+            // dispatch({ type: "FETCH_INIT" });
+            try {
+              setloadingmodal(true);
+
+              const data = {
+                ...values,
+                createAt: CurrentDate,
+              };
+              // const params = { _page: 1, _limit: 10 };
+              const response = await categoryApi.createcategory(data);
+              console.log("Fetch category succesfully: ", response);
+              console.log(">>>response.newCategories", response.newCategories);
+              settabledata([...tabledata, response.newCategories]);
+              console.log("tabledata: ", tabledata);
+              setloadingmodal(false);
+
+              notification.info({
+                message: `Created Successfully`,
+                icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+                placement: "bottomRight",
+              });
+            } catch (error) {
+              console.log("failed to fetch product list: ", error);
+              // dispatch(doCreate_error);
+            }
+          };
+          fetchCreateProduct();
+        })
+        .catch((info) => {
+          console.log("Validate Failed:", info);
+        });
+    } else {
+      form.validateFields().then((values) => {
+        const fetchUpdateCategory = async () => {
           try {
+            var CurrentDate = moment().toISOString();
+
+            const database = { ...values, createAt: CurrentDate };
+            const datacate = { _id: stateidCategory, data: database };
             setloadingmodal(true);
-
-            const data = {
-              ...values,
-              createAt: CurrentDate,
-            };
-            // const params = { _page: 1, _limit: 10 };
-            const response = await categoryApi.createcategory(data);
-            console.log("Fetch category succesfully: ", response);
-            console.log(">>>response.newCategories", response.newCategories);
-            settabledata([...tabledata, response.newCategories]);
-            console.log("tabledata: ", tabledata);
+            const response = await categoryApi.updatecategory(datacate);
+            console.log("Fetch update products succesfully: ", response);
             setloadingmodal(false);
+            const fetchCategoryList = async () => {
+              dispatchCategory(doGetList);
+              try {
+                setIsLoading(true);
 
+                const response = await categoryApi.getAll();
+                console.log("Fetch products succesfully: ", response);
+                dispatchCategory(doGetList_success(response.categories));
+                settabledata(response.categories);
+                setIsLoading(false);
+              } catch (error) {
+                console.log("failed to fetch product list: ", error);
+                dispatchCategory(doGetList_error);
+              }
+            };
+            fetchCategoryList();
             notification.info({
-              message: `Created Successfully`,
+              message: `Update Successfully`,
               icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
               placement: "bottomRight",
             });
           } catch (error) {
             console.log("failed to fetch product list: ", error);
-            // dispatch(doCreate_error);
           }
         };
-        fetchCreateProduct();
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
+        fetchUpdateCategory();
       });
+    }
   };
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -194,7 +262,7 @@ function Category() {
       </CCard>
 
       <Modal
-        title="Add Category"
+        title={detail ? "UPDATE CATEGORY" : "ADD CATEGORY"}
         visible={isvisible}
         onOk={handleOk}
         onCancel={toggle}

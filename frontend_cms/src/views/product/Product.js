@@ -43,6 +43,7 @@ import { doGetList_success as doGetList_successCategory } from "../category/acti
 import categoryApi from "../../api/categoryApi";
 
 function Product() {
+  const { Search } = Input;
   const locallink = "http://localhost:3000";
   const columns = [
     {
@@ -53,8 +54,8 @@ function Product() {
     },
     {
       title: "Image",
-      dataIndex: "images",
-      key: "images",
+      dataIndex: "imagesProduct",
+      key: "imagesProduct",
       width: 200,
       render: (images) => (
         <img style={{ width: "100%" }} src={`${locallink}/${images}`} />
@@ -69,7 +70,9 @@ function Product() {
       title: "Category",
       dataIndex: "categoryId",
       key: "categoryId",
-      render: (category) => <p>{category}</p>,
+      width: 100,
+      // render: (category) => <p>{category}</p>,
+      render: (category) => getCatenamebyid(category),
     },
     {
       title: "Description",
@@ -83,11 +86,13 @@ function Product() {
       key: "prices",
       width: 150,
       render: (text) => <p>{text} VND</p>,
+      sorter: (a, b) => a.prices - b.prices,
     },
     {
       title: "Create at",
       dataIndex: "createAt",
       key: "createAt",
+
       render: (time) => (
         <p>
           <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
@@ -97,6 +102,7 @@ function Product() {
     {
       title: "Action",
       key: "action",
+      width: 50,
       render: (text, record) => (
         <Space size="middle">
           <Button onClick={() => updateProduct(record)} type="primary">
@@ -123,25 +129,30 @@ function Product() {
     previewVisible: false,
     previewImage: "",
     fileList: [],
-    // [{
-    //   uid: -1,
-    //   name: 'xxx.png',
-    //   status: 'done',
-    //   url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    // }],
   });
   const [detail, setdetail] = useState(null);
-  const [imgfile, setimgfile] = useState({});
+  const [imgfile, setimgfile] = useState(null);
   const [tabledata, settabledata] = useState([]);
+  const getCatenamebyid = (cateid) => {
+    const cateobj = categoryList.data.filter(
+      (dataget) => cateid === dataget._id
+    );
+    const finalname = cateobj[0]?.name;
+    return <div>{finalname}</div>;
+  };
   //uploadimage
   const [sizecheck, setSizecheck] = useState({ size_M: true, size_L: false });
   const [loadingmodal, setloadingmodal] = useState(false);
+  const [checkaddimg, setcheck] = useState(false);
   const toggle = () => {
     SetVisible(!isvisible);
+    form.resetFields();
+    setstate({ ...state, fileList: [] });
   };
   const handleChange = (fileList) => {
     setstate(fileList);
     setimgfile(fileList.file.originFileObj);
+    setcheck(true);
     console.log(">>state", state);
     console.log(">>fileList", fileList);
     console.log(">>originFileObj", imgfile);
@@ -156,9 +167,6 @@ function Product() {
   const deleteProduct = (record) => {
     console.log("Delete: ", record._id);
     const fetchDeleteProduct = async () => {
-      // dispatch({ type: "FETCH_INIT" });
-
-      // dispatch(doDelete(data));
       try {
         setIsLoading(true);
         const response = await productApi.deleteproduct(record._id);
@@ -177,11 +185,17 @@ function Product() {
     };
     fetchDeleteProduct();
   };
+  const [idProdupdate, setidProdupdate] = useState(null);
   const updateProduct = (record) => {
     setdetail(record);
     form.setFieldsValue(record);
+    setstate({
+      ...state,
+      fileList: [{ url: `http://localhost:3000/${record.imagesProduct}` }],
+    });
     SetVisible(!isvisible);
     console.log(">>>record ", record);
+    setidProdupdate(record._id);
   };
   const uploadimg = (info) => {
     console.log(">>>>info: ", info);
@@ -191,61 +205,111 @@ function Product() {
     onChange: uploadimg,
   };
   const handleOk = (values) => {
-    form
-      .validateFields()
-      .then((values) => {
-        form.resetFields();
-        // onCreate(values);
-        console.log(">>>value", values);
-        var CurrentDate = moment().toISOString();
+    if (detail === null) {
+      form
+        .validateFields()
+        .then((values) => {
+          form.resetFields();
+          // onCreate(values);
+          console.log(">>>value", values);
+          var CurrentDate = moment().toISOString();
 
-        const data = {
-          ...values,
-          images: imgfile,
-          createAt: CurrentDate,
-          ...sizecheck,
-        };
-        console.log("data >>>", data);
-        var form_data = new FormData();
+          const data = {
+            ...values,
+            imagesProduct: imgfile,
+            createAt: CurrentDate,
+            ...sizecheck,
+          };
+          console.log("data >>>", data);
+          var form_data = new FormData();
 
-        for (var key in data) {
-          form_data.append(key, data[key]);
-        }
-        const fetchCreateProduct = async () => {
-          // dispatch({ type: "FETCH_INIT" });
-
-          dispatch(doCreate(data));
-          try {
-            setloadingmodal(true);
-
-            // const params = { _page: 1, _limit: 10 };
-            const response = await productApi.createproduct(form_data);
-            console.log("Fetch products succesfully: ", response);
-            // console.log(response.products);
-            // setProductList(response.products);
-            // dispatch({ type: "FETCH_SUCCESS", payload: response.products });
-            // dispatch(doCreate_success(response));
-            setstate({ ...state, fileList: [] });
-            settabledata([...tabledata, response.newProducts]);
-            setloadingmodal(false);
-
-            notification.info({
-              message: `Created Successfully`,
-              icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
-              placement: "bottomRight",
-            });
-
-            // console.log(">>>> productlist: ", productList);
-          } catch (error) {
-            console.log("failed to fetch product list: ", error);
-            // dispatch(doCreate_error);
+          for (var key in data) {
+            form_data.append(key, data[key]);
           }
-        };
-        fetchCreateProduct();
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
+          const fetchCreateProduct = async () => {
+            // dispatch({ type: "FETCH_INIT" });
+
+            dispatch(doCreate(data));
+            try {
+              setloadingmodal(true);
+              const response = await productApi.createproduct(form_data);
+              console.log("Fetch products succesfully: ", response);
+              setstate({ ...state, fileList: [] });
+              settabledata([...tabledata, response.newProducts]);
+              setimgfile(null);
+              setcheck(false);
+              setloadingmodal(false);
+              notification.info({
+                message: `Created Successfully`,
+                icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+                placement: "bottomRight",
+              });
+            } catch (error) {
+              console.log("failed to fetch product list: ", error);
+            }
+          };
+          fetchCreateProduct();
+        })
+        .catch((info) => {
+          console.log("Validate Failed:", info);
+        });
+    } else {
+      console.log(">>>Update");
+      form
+        .validateFields()
+        .then((values) => {
+          // onCreate(values);
+          console.log(">>>value", values);
+          var CurrentDate = moment().toISOString();
+          let data = {};
+          if (checkaddimg === false) {
+            data = {
+              ...values,
+              _id: idProdupdate,
+              createAt: CurrentDate,
+              ...sizecheck,
+            };
+          } else {
+            data = {
+              ...values,
+              _id: idProdupdate,
+              imagesProduct: imgfile,
+              createAt: CurrentDate,
+              ...sizecheck,
+            };
+          }
+          console.log(">>data product image ", data);
+
+          var form_data = new FormData();
+
+          for (var key in data) {
+            form_data.append(key, data[key]);
+          }
+          const dataapi = { _id: data._id, formdata: form_data };
+          const fetchUpdateProduct = async () => {
+            // dispatch({ type: "FETCH_INIT" });
+
+            try {
+              setloadingmodal(true);
+              const response = await productApi.updateproduct(dataapi);
+              console.log("Fetch update products succesfully: ", response);
+              loaddatapro();
+              setloadingmodal(false);
+              notification.info({
+                message: `Update Successfully`,
+                icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+                placement: "bottomRight",
+              });
+            } catch (error) {
+              console.log("failed to fetch product list: ", error);
+            }
+          };
+          fetchUpdateProduct();
+        })
+        .catch((info) => {
+          console.log("Validate Failed:", info);
+        });
+    }
   };
   function onChangemcb(e) {
     setSizecheck({ ...sizecheck, size_M: e.target.checked });
@@ -254,10 +318,34 @@ function Product() {
   function onChangelcb(e) {
     setSizecheck({ ...sizecheck, size_L: e.target.checked });
   }
+  // const fetchCategorybyID = async (categoryID) => {
+  //   try {
+  //     // setIsLoading(true);
+  //     const response = await categoryApi.getbyID(categoryID);
+  //     console.log("Fetch categoryby ID succesfully: ", response);
+  //     return response.categories.name;
+  //     // settabledata(response.products);
+  //     // setIsLoading(false);
+  //   } catch (error) {
+  //     console.log("failed to fetch category list: ", error);
+  //   }
+  // };
   const initialData = [];
   const [isLoading, setIsLoading] = useState(false);
   const [isvisible, SetVisible] = useState(false);
+  const [fakeproductList, setfakeProductList] = useState([]);
   // const [productList, setProductList] = useState([]);
+  const onSearch = (values) => {
+    if (values === "") {
+      settabledata(fakeproductList);
+    } else {
+      const filteredProduct = fakeproductList.filter((product) => {
+        return product.name.toLowerCase().indexOf(values.toLowerCase()) !== -1;
+      });
+      console.log(">>>filteredProduct", filteredProduct);
+      if (filteredProduct.length > 0) settabledata(filteredProduct);
+    }
+  };
   const [productList, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
     isError: false,
@@ -271,14 +359,16 @@ function Product() {
       data: initialData,
     }
   );
-  useEffect(() => {
+  const loaddatapro = () => {
+    setIsLoading(true);
+
     const fetchProductList = async () => {
       dispatch(doGetList);
       try {
-        setIsLoading(true);
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
         dispatch(doGetList_success(response.products));
+        setfakeProductList(response.products);
         settabledata(response.products);
         setIsLoading(false);
       } catch (error) {
@@ -286,22 +376,24 @@ function Product() {
         dispatch(doGetList_error);
       }
     };
-    fetchProductList();
+
     const fetchCategoryList = async () => {
       // dispatch({ type: "FETCH_INIT" });
       dispatchCategory(doGetListCategory);
       try {
-        setIsLoading(true);
         const response = await categoryApi.getAll();
         console.log("Fetch products succesfully: ", response);
         dispatchCategory(doGetList_successCategory(response.categories));
-        setIsLoading(false);
+        fetchProductList();
       } catch (error) {
         console.log("failed to fetch product list: ", error);
         dispatchCategory(doGetList_errorCategory);
       }
     };
     fetchCategoryList();
+  };
+  useEffect(() => {
+    loaddatapro();
   }, []);
   const handleClick = () => {
     setdetail(null);
@@ -311,19 +403,34 @@ function Product() {
     <>
       <CCard>
         <CCardHeader className="CCardHeader-title ">Product</CCardHeader>
-        <CButton
-          style={{
-            width: "200px",
-            height: "50px",
-            margin: "20px",
-          }}
-          shape="pill"
-          color="info"
-          onClick={handleClick}
-        >
-          {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
-          Add Product
-        </CButton>
+        <Row>
+          <Col lg={14}>
+            <CButton
+              style={{
+                width: "200px",
+                height: "50px",
+                margin: "20px 0px 20px 20px",
+              }}
+              shape="pill"
+              color="info"
+              onClick={handleClick}
+            >
+              {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
+              Add Product
+            </CButton>
+          </Col>
+          <Col lg={8}>
+            <Search
+              style={{
+                width: "100%",
+                height: "50px",
+                margin: "30px",
+              }}
+              placeholder="Search product by name"
+              onSearch={onSearch}
+            />
+          </Col>
+        </Row>
       </CCard>
       {isLoading ? (
         <div style={{ textAlign: "center" }}>
@@ -379,12 +486,12 @@ function Product() {
               </Col>
             </Row>
             <Row style={{ display: "flex", justifyContent: "space-between" }}>
-              <Col span={12} style={{ paddingTop: "15px" }}>
+              {/* <Col span={12} style={{ paddingTop: "15px" }}>
                 <Form.Item name="alias">
                   <Input placeholder="Alias" />
                 </Form.Item>
-              </Col>
-              <Col span={6} style={{ paddingTop: "15px" }}>
+              </Col> */}
+              <Col span={12} style={{ paddingTop: "15px" }}>
                 <Form.Item
                   name="categoryId"
                   rules={[
@@ -414,13 +521,14 @@ function Product() {
                   </Select>
                 </Form.Item>
               </Col>
-              <Col span={5}>
+              <Col span={1}></Col>
+              <Col span={11}>
                 Size
                 <div
                   style={{
                     display: "flex",
                     justifyContent: "space-between",
-                    width: "50%",
+                    width: "30%",
                   }}
                 >
                   <Form.Item>

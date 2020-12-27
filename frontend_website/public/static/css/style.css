@@ -1,0 +1,99 @@
+.coffee-intro_form {
+  padding-top: 60px;
+  padding-left: 150px;
+  width: 100%;
+  height: 400px;
+  background-color: burlywood;
+}
+.coffee-intro_form img {
+  width: 90%;
+  height: auto;
+}
+.coffee-intro_form .text-form {
+  height: 100%;
+  text-align: start;
+}
+.coffee-intro_form .text-form .big_title {
+  color: white;
+  font-size: 70px;
+  font-family: "Nerko One", cursive;
+}
+.coffee-intro_form .text-form .text-content {
+  color: white;
+  font-size: 20px;
+  font-family: "Josefin Sans", sans-serif;
+}
+.fastcoffee-intro_form {
+  width: 100%;
+  padding-top: 60px;
+  height: 400px;
+  background-color: white;
+}
+.fastcoffee-intro_form img {
+  width: 40%;
+  height: auto;
+}
+.fastcoffee-intro_form .text-form {
+  height: 100%;
+  text-align: start;
+}
+.fastcoffee-intro_form .text-form .big_title {
+  color: rgb(185, 115, 67);
+  font-size: 70px;
+  font-family: "Nerko One", cursive;
+}
+.fastcoffee-intro_form .text-form .text-content {
+  color: rgb(185, 115, 67);
+  font-size: 20px;
+  font-family: "Josefin Sans", sans-serif;
+}
+.bagcoffee-intro_form {
+  padding-left: 150px;
+  width: 100%;
+  /* padding-top: 60px; */
+  height: 400px;
+  background-color: dimgrey;
+}
+.bagcoffee-intro_form img {
+  width: 100%;
+  height: auto;
+}
+.bagcoffee-intro_form .text-form {
+  padding-top: 60px;
+  height: 100%;
+  text-align: start;
+}
+.bagcoffee-intro_form .text-form .big_title {
+  color: white;
+  font-size: 70px;
+  font-family: "Nerko One", cursive;
+}
+.bagcoffee-intro_form .text-form .text-content {
+  color: white;
+  font-size: 20px;
+  font-family: "Josefin Sans", sans-serif;
+}
+.breadcoffee-intro_form {
+  padding-top: 60px;
+  width: 100%;
+  height: 400px;
+}
+
+.breadcoffee-intro_form img {
+  width: 90%;
+  height: auto;
+}
+.breadcoffee-intro_form .text-form {
+  height: 100%;
+  text-align: start;
+}
+.breadcoffee-intro_form .text-form .big_title {
+  color: white;
+  font-size: 70px;
+  font-family: "Nerko One", cursive;
+}
+.breadcoffee-intro_form .text-form .text-content {
+  color: white;
+  font-size: 20px;
+  font-family: "Josefin Sans", sans-serif;
+}

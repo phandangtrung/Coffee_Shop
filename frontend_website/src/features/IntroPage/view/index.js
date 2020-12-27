@@ -6,7 +6,7 @@ function index() {
   return (
     <>
       <Row className="coffee-intro_form">
-        <Col span={12} className="text-form">
+        <Col lg={12} sm={8} className="text-form">
           <div className="big_title ">CÀ PHÊ</div>
           <div className="text-content">
             Sự kết hợp hoàn hảo giữa hạt cà phê Robusta & Arabica thượng hạng
@@ -15,15 +15,15 @@ function index() {
             những dòng sản phẩm Cà phê mang hương vị đậm đà và tinh tế.
           </div>
         </Col>
-        <Col span={10}>
-          <img src={Images.COCFTP} />
+        <Col lg={10} sm={12}>
+          <img style={{ width: "100%" }} src={Images.COCFTP} />
         </Col>
       </Row>
       <Row className="fastcoffee-intro_form">
-        <Col span={10}>
+        <Col lg={10}>
           <img src={Images.CFFTP} />
         </Col>
-        <Col span={12} className="text-form">
+        <Col lg={12} className="text-form">
           <div className="big_title ">TAKE-AWAY</div>
           <div className="text-content">
             Thuận tiện cho số đông những người cần cà phê mỗi sáng nhưng lại eo
@@ -34,7 +34,7 @@ function index() {
         </Col>
       </Row>
       <Row className="bagcoffee-intro_form">
-        <Col span={12} className="text-form">
+        <Col lg={12} className="text-form">
           <div className="big_title ">CÀ PHÊ TÚI</div>
           <div className="text-content">
             Cà phê sạch được hiểu đơn giản là loại cà phê được tạo ra từ 100% cà
@@ -44,7 +44,7 @@ function index() {
             mạnh rằng cà phê sạch thật sự “tốt” cho sức khỏe...
           </div>
         </Col>
-        <Col span={10}>
+        <Col lg={10}>
           <img src={Images.CBTP} />
         </Col>
       </Row>
@@ -52,10 +52,10 @@ function index() {
         className="breadcoffee-intro_form"
         style={{ backgroundImage: `url(${Images.BBG})` }}
       >
-        <Col span={10}>
+        <Col lg={10}>
           <img src={Images.BCFF} />
         </Col>
-        <Col span={12} className="text-form">
+        <Col lg={12} className="text-form">
           <div className="big_title ">BÁNH MÌ</div>
           <div className="text-content">
             Bạn đã quá quen thuộc với Bánh mì Việt Nam. Hãy nếm thử một miếng

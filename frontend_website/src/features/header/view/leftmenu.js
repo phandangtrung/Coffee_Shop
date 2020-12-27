@@ -36,7 +36,7 @@ const LeftMenu = (props) => {
         mode={md ? "horizontal" : "inline"}
         className="rightmenu-containner menutitle"
         onClick={props.handleClickMenu}
-        selectedKeys={[props.current.current]}
+        // selectedKeys={[props.current.current]}
       >
         <Menu.Item name="home" key="home">
           <div clasname="titlemenu">
@@ -48,15 +48,15 @@ const LeftMenu = (props) => {
             <Link to="/product">Product</Link>
           </div>
         </Menu.Item>
-
+        <Menu.Item key="order">
+          <Link to="/searchorder">Search Order</Link>
+        </Menu.Item>
         <Menu.Item key="menu">
-          <a href="" clasname="titlemenu">
-            Menu
-          </a>
+          <Link to="/intro">Menu</Link>
         </Menu.Item>
-        <Menu.Item key="alipay">
+        {/* <Menu.Item key="alipay">
           <a onClick={showModal}>Contact Us</a>
-        </Menu.Item>
+        </Menu.Item> */}
       </Menu>
       <Modal
         title="Basic Modal"

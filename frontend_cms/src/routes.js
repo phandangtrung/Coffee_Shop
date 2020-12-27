@@ -47,8 +47,10 @@ const Dashboard = React.lazy(() => import("./views/dashboard/Dashboard"));
 const Category = React.lazy(() => import("./views/category/Category"));
 const Account = React.lazy(() => import("./views/account/Account"));
 const Product = React.lazy(() => import("./views/product/Product"));
-const Bill = React.lazy(() => import("./views/bill/Bill"));
+const Order = React.lazy(() => import("./views/bill/Bill"));
 const Shipper = React.lazy(() => import("./views/shipper/Shipper"));
+const Comment = React.lazy(() => import("./views/comment/Comment"));
+const Coupon = React.lazy(() => import("./views/coupon/Coupon"));
 const CoreUIIcons = React.lazy(() =>
   import("./views/icons/coreui-icons/CoreUIIcons")
 );
@@ -69,9 +71,11 @@ const routes = [
   { path: "/", exact: true, name: "Home" },
   { path: "/category", name: "Category", component: Category },
   { path: "/account", name: "Account", component: Account },
+  { path: "/comment", name: "Comment", component: Comment },
   { path: "/product", name: "Product", component: Product },
-  { path: "/bill", name: "Bill", component: Bill },
+  { path: "/order", name: "Order", component: Order },
   { path: "/shipper", name: "Shipper", component: Shipper },
+  { path: "/coupon", name: "Coupon", component: Coupon },
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/theme", name: "Theme", component: Colors, exact: true },
   { path: "/theme/colors", name: "Colors", component: Colors },

@@ -1,88 +1,207 @@
-import React, { lazy } from "react";
-import {
-  CBadge,
-  CCard,
-  CCardBody,
-  CCardHeader,
-  CDataTable,
-  CLink,
-} from "@coreui/react";
+import React, { lazy, useState, useEffect } from "react";
+import { CCard, CCardHeader } from "@coreui/react";
+import { LockOutlined } from "@ant-design/icons";
 import "./style.css";
-import CIcon from "@coreui/icons-react";
+import Cookies from "js-cookie";
+import {
+  Table,
+  Space,
+  Spin,
+  Form,
+  notification,
+  Button,
+  Popconfirm,
+  Tag,
+} from "antd";
 
-import usersData from "../users/UsersData";
-const fields = [
-  // { key: "id", label: "INDEX", _style: { width: "5%" } },
-  { key: "fname", label: "FULL NAME", _style: { width: "15%" } },
-  { key: "username", label: "USERNAME", _style: { width: "15%" } },
-  { key: "address", label: "ADDRESS", _style: { width: "23%" } },
-  { key: "gmail", label: "GMAIL", _style: { width: "20%" } },
-  { key: "phone", label: "PHONE", _style: { width: "17%" } },
-  { key: "action", label: "ACTION", _style: { width: "10%" } },
-  // { key: "registered", _style: { width: "40%" } },
-  // "role",
-  // "status",
-];
-const getBadge = (status) => {
-  switch (status) {
-    case "Active":
-      return "success";
-    case "Inactive":
-      return "secondary";
-    case "Pending":
-      return "warning";
-    case "Banned":
-      return "danger";
-    default:
-      return "primary";
-  }
-};
+import userApi from "../../api/userApi";
+
 function Account() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [tabledata, settabledata] = useState([]);
+  const lockUser = (record) => {
+    console.log("record: ", record);
+    const fetchLockUser = async () => {
+      try {
+        setIsLoading(true);
+        const tokenUser = Cookies.get("tokenUser");
+        const params = {
+          id: record._id,
+          token: tokenUser,
+        };
+        const response = await userApi.lockUser(params);
+        const fetchgetuserList = async () => {
+          // dispatch({ type: "FETCH_INIT" });
+          try {
+            setIsLoading(true);
+            const tokenUser = Cookies.get("tokenUser");
+            // const params = { _page: 1, _limit: 10 };
+
+            const response = await userApi.getallUser(tokenUser);
+            console.log("Fetch products succesfully: ", response);
+            settabledata(response.users);
+            setIsLoading(false);
+          } catch (error) {
+            console.log("failed to fetch product list: ", error);
+          }
+        };
+        fetchgetuserList();
+        console.log("Fetch user succesfully: ", response);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch user lock: ", error);
+      }
+    };
+    fetchLockUser();
+  };
+  const unlockUser = (record) => {
+    console.log("record: ", record);
+    const fetchLockUser = async () => {
+      try {
+        setIsLoading(true);
+        const tokenUser = Cookies.get("tokenUser");
+        const params = {
+          id: record._id,
+          token: tokenUser,
+        };
+        const response = await userApi.unlockUser(params);
+        const fetchgetuserList = async () => {
+          try {
+            setIsLoading(true);
+            const tokenUser = Cookies.get("tokenUser");
+            const response = await userApi.getallUser(tokenUser);
+            console.log("Fetch products succesfully: ", response);
+            settabledata(response.users);
+            setIsLoading(false);
+          } catch (error) {
+            console.log("failed to fetch product list: ", error);
+          }
+        };
+        fetchgetuserList();
+        console.log("Fetch user succesfully: ", response);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch user lock: ", error);
+      }
+    };
+    fetchLockUser();
+  };
+  const columns = [
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Full Name",
+      dataIndex: "fName",
+      key: "fName",
+      // render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "isAdmin",
+      dataIndex: "isAdmin",
+      key: "isAdmin",
+      render: (text) => (
+        <>
+          {text === false ? (
+            <Tag color="#87d068">USER</Tag>
+          ) : (
+            <Tag color="#f50">ADMIN</Tag>
+          )}
+        </>
+      ),
+    },
+    {
+      title: "Status",
+      dataIndex: "isLock",
+      key: "isLock",
+      render: (text) => (
+        <>
+          {text === true ? (
+            <Tag color="#f50">BLOCKED</Tag>
+          ) : (
+            <Tag color="#87d068">ACTIVE</Tag>
+          )}
+        </>
+      ),
+    },
+    {
+      title: "isConfirm",
+      dataIndex: "isConfirm",
+      key: "isConfirm",
+      render: (text) => (
+        <>
+          {text === false ? (
+            <Tag color="#f50">UNVERIFIED</Tag>
+          ) : (
+            <Tag color="#87d068">VERIFIED</Tag>
+          )}
+        </>
+      ),
+    },
+
+    {
+      title: "Action",
+      key: "action",
+      width: 200,
+      render: (text, record) => (
+        <Space size="middle">
+          {record.isLock === false ? (
+            <Popconfirm
+              title="Are you sure？"
+              icon={<LockOutlined style={{ color: "red" }} />}
+              onConfirm={() => lockUser(record)}
+            >
+              <Button style={{ width: "110px" }} type="primary" danger>
+                <span>Lock User </span>
+              </Button>
+            </Popconfirm>
+          ) : (
+            <Popconfirm
+              title="Are you sure？"
+              icon={<LockOutlined style={{ color: "red" }} />}
+              onConfirm={() => unlockUser(record)}
+            >
+              <Button style={{ width: "110px" }} type="primary">
+                <span>UnLock User</span>
+              </Button>
+            </Popconfirm>
+          )}
+        </Space>
+      ),
+    },
+  ];
+  useEffect(() => {
+    const fetchCategoryList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      try {
+        setIsLoading(true);
+        const tokenUser = Cookies.get("tokenUser");
+        // const params = { _page: 1, _limit: 10 };
+
+        const response = await userApi.getallUser(tokenUser);
+        console.log("Fetch products succesfully: ", response);
+        settabledata(response.users);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+      }
+    };
+    fetchCategoryList();
+  }, []);
   return (
     <>
       <CCard>
         <CCardHeader className="CCardHeader-title ">Account</CCardHeader>
-        <CCardBody>
-          <CDataTable
-            items={usersData}
-            fields={fields}
-            striped
-            itemsPerPage={8}
-            pagination
-            scopedSlots={{
-              index: (item) => <td>{item.id}</td>,
-              status: (item) => (
-                <td>
-                  <CBadge color={getBadge(item.status)}>{item.status}</CBadge>
-                </td>
-              ),
-              action: () => (
-                <td style={{ display: "flex", justifyContent: "start" }}>
-                  <div
-                    style={{
-                      display: "flex",
-                      width: "80%",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <CLink className="c-subheader-nav-link" href="#">
-                      <CIcon name="cil-pencil" alt="Edit" />
-                      {/* &nbsp;Edit */}
-                    </CLink>
-                    <CLink className="c-subheader-nav-link" href="#">
-                      <CIcon
-                        style={{ color: "red" }}
-                        name="cil-trash"
-                        alt="Delete"
-                      />
-                      {/* &nbsp;Edit */}
-                    </CLink>
-                  </div>
-                </td>
-              ),
-            }}
-          />
-        </CCardBody>
+        {isLoading ? (
+          <div style={{ textAlign: "center" }}>
+            <Spin size="large" />
+          </div>
+        ) : (
+          <Table columns={columns} dataSource={tabledata} rowKey="_id" />
+        )}
       </CCard>
     </>
   );

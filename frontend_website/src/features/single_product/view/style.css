@@ -9,10 +9,10 @@
 }
 .sproduct-form .title {
   text-align: start;
-  width: 60%;
+  width: 45%;
   color: black;
   font-size: 40px;
-  font-family: "Concert One", cursive;
+  font-family: "Bangers", cursive;
   border-bottom: 4px solid rgb(185, 115, 67);
 }
 .sproduct-form .price {
@@ -57,6 +57,7 @@
   text-align: start;
   font-size: 25px;
   font-family: "Lobster", cursive;
+  padding-bottom: 50px;
 }
 .sproduct-form .description-form .title {
   font-size: 25px;

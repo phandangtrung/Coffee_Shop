@@ -4,7 +4,7 @@
   padding: 0px 20px 15px 0px;
 }
 .menu-image {
-  height: 65%;
+  height: 61%;
   width: 100%;
 }
 .menu-image img {
@@ -12,11 +12,17 @@
   width: 100%;
 }
 .menu-detail {
-  font-family: "Concert One", cursive;
+  font-family: "Bangers", cursive;
   background-color: #f2f0eb;
+  padding-top: 5px;
 
-  height: 35%;
+  height: 36%;
   width: 100%;
+}
+@media only screen and (max-width: 1026px) {
+  .menu-item {
+    padding: 0px;
+  }
 }
 .menu-detail .title-name {
   color: #3b3838;

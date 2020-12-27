@@ -1,13 +1,14 @@
 import React, { useState, useEffect, useReducer } from "react";
 import dataFetchReducer from "./reducer/index";
 import userApi from "../../../api/userApi";
+import Cookies from "js-cookie";
 import axios from "axios";
 import {
   doGetList,
   doGetList_error,
   doGetList_success,
 } from "./action/actionCreater.js";
-import { Link } from "react-router-dom";
+import { Link, Redirect, useHistory } from "react-router-dom";
 import {
   CButton,
   CCard,
@@ -23,40 +24,54 @@ import {
   CRow,
   CImg,
 } from "@coreui/react";
-import { Input, Form, Checkbox, Button } from "antd";
-import { UserOutlined, LockOutlined } from "@ant-design/icons";
+import { Input, Form, Checkbox, Button, notification } from "antd";
+import {
+  UserOutlined,
+  LockOutlined,
+  InfoCircleFilled,
+} from "@ant-design/icons";
+import { fakeAuth } from "../../../fakeAuth";
 import CIcon from "@coreui/icons-react";
 const setUserSession = (token, user) => {
   sessionStorage.setItem("token", token);
   sessionStorage.setItem("user", JSON.stringify(user));
 };
 const Login = (props) => {
+  const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [state, setstate] = useState({ email: " ", password: "" });
+  const [Directstate, setDirectstate] = useState({ redirectToReferrer: false });
+  // const [state, setstate] = useState({ email: " ", password: "" });
   const onLogin = (values) => {
     console.log(values);
-    setstate({ email: values.email, password: values.password });
+    // setstate({ email: values.email, password: values.password });
     // props.history.push("/dashboard");
+    const fetchCreateProduct = async () => {
+      try {
+        const response = await userApi.postUser(values);
+        console.log("Login succesfully: ", response);
+        fakeAuth.authenticate(() => {
+          setDirectstate(() => ({
+            redirectToReferrer: true,
+          }));
+        });
+        Cookies.set("tokenUser", response.token);
+        setTimeout(() => {
+          Cookies.remove("tokenUser");
+        }, 600000);
+        // console.log("token: ", response.token);
+      } catch (error) {
+        console.log("failed to fetch login: ", error);
+        notification.open({
+          message: "Login Fail",
+          description: "Your email or password is incorrect",
+          icon: <InfoCircleFilled style={{ color: "red" }} />,
+        });
+      }
+    };
+    fetchCreateProduct();
     setError(null);
     setLoading(true);
-    axios
-      .post("http://localhost:3000/api/users/login/admin", {
-        email: state.email,
-        password: state.password,
-      })
-      .then((response) => {
-        console.log(">>>>reponse: ", response);
-        setLoading(false);
-        setUserSession(response.data.token, response.data.user);
-        props.history.push("/dashboard");
-      })
-      .catch((error) => {
-        setLoading(false);
-        if (error.response.status === 401)
-          setError(error.response.data.message);
-        else setError("Something went wrong. Please try again later.");
-      });
   };
   const [isLoading, setIsLoading] = useState(false);
   const [productList, dispatch] = useReducer(dataFetchReducer, {
@@ -64,7 +79,11 @@ const Login = (props) => {
     isError: false,
     data: [],
   });
-
+  const { from } = props.location.state || { from: { pathname: "/" } };
+  const { redirectToReferrer } = Directstate;
+  if (redirectToReferrer === true) {
+    return <Redirect to={from} />;
+  }
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
@@ -79,10 +98,14 @@ const Login = (props) => {
                     justifyContent: "center",
                   }}
                 >
-                  <Form onFinish={onLogin}>
+                  <Form form={form} onFinish={onLogin}>
                     <h1>ADMIN LOGIN</h1>
                     <p className="text-muted">Sign In to admin account</p>
-                    <Form.Item name="email" className="mb-3">
+                    <Form.Item
+                      name="email"
+                      className="mb-3"
+                      rules={[{ required: true }]}
+                    >
                       <Input
                         prefix={<UserOutlined />}
                         type="text"
@@ -90,7 +113,11 @@ const Login = (props) => {
                         autoComplete="username"
                       />
                     </Form.Item>
-                    <Form.Item name="password" className="mb-3">
+                    <Form.Item
+                      name="password"
+                      className="mb-3"
+                      rules={[{ required: true }]}
+                    >
                       <Input
                         prefix={<LockOutlined />}
                         type="password"

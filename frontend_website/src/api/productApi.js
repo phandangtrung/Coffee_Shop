@@ -5,6 +5,10 @@ class ProductApi {
     const url = "/api/products";
     return axiosClient.get(url);
   };
+  getbyId = (proid) => {
+    const url = `/api/products/${proid}`;
+    return axiosClient.get(url);
+  };
 }
 const productApi = new ProductApi();
 export default productApi;

@@ -3,6 +3,7 @@ import "./style.css";
 import { Images } from "../../config/image";
 import { Empty, notification } from "antd";
 import { Link } from "react-router-dom";
+import CurrencyFormat from "react-currency-format";
 import {
   ShoppingCartOutlined,
   ExclamationCircleFilled,
@@ -19,33 +20,28 @@ function ProductTag(props) {
         cart = [];
         cart.push({
           key: props._id,
-          _id: props._id,
+          product_id: props._id,
           name: props.name,
-          image: Images.COCF,
           size: "M",
-          amount: 1,
+          quantity: 1,
           price: props.price,
-          total: props.price,
         });
       } else {
         let check_available = false;
         for (let i = 0; i < cart.length; i++) {
           if (cart[i]._id === props._id) {
-            cart[i].amount = cart[i].amount + 1;
-            cart[i].total = cart[i].amount * props.price;
+            cart[i].quantity = cart[i].quantity + 1;
             check_available = true;
           }
         }
         if (check_available !== true) {
           cart.push({
             key: props._id,
-            _id: props._id,
+            product_id: props._id,
             name: props.name,
-            image: Images.COCF,
             size: "M",
-            amount: 1,
+            quantity: 1,
             price: props.price,
-            total: props.price,
           });
         }
       }
@@ -54,6 +50,7 @@ function ProductTag(props) {
       notification.open({
         message: `${props.name}`,
         description: `${props.name} has been added to your cart`,
+        placement: "bottomRight",
         icon: <ShoppingCartOutlined style={{ color: "# rgb(164, 115, 67)" }} />,
       });
     } catch {
@@ -68,7 +65,7 @@ function ProductTag(props) {
     <div>
       <div className="menu-item">
         <div className="menu-image">
-          <img alt="picture" src={Images.COCF} />
+          <img alt="picture" src={`http://localhost:3000/${props.img}`} />
         </div>
         <div className="menu-detail">
           <Link
@@ -82,15 +79,28 @@ function ProductTag(props) {
                 namepro: props.name,
                 pricepro: props.price,
                 despro: props.description,
+                img: props.img,
+                quantity: props.quantity,
               },
             }}
           >
             <div className="title-name">{props.name}</div>
           </Link>
 
-          <div className="price">{props.price} VND</div>
+          <div className="price">
+            <CurrencyFormat
+              value={props.price}
+              displayType={"text"}
+              thousandSeparator={true}
+            />{" "}
+            VND
+          </div>
           <div className="button-form">
-            <button onClick={addtoCart}>MUA NGAY</button>
+            {props.quantity === 0 ? (
+              <a style={{ fontSize: "20px" }}>Out of stock</a>
+            ) : (
+              <button onClick={addtoCart}>BUY NOW</button>
+            )}
           </div>
         </div>
       </div>
