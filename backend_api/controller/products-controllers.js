@@ -70,6 +70,7 @@ const createProduct = async (req, res, next) => {
   } else {
     const createProduct = {
       name: req.body.name,
+      alias: getAlias(req.body.name),
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
@@ -78,7 +79,6 @@ const createProduct = async (req, res, next) => {
       reviews: req.body.reviews,
       createAt: req.body.createAt,
       description: req.body.description,
-      alias: getAlias(req.body.name),
       imagesProduct: imagesCurrent,
       categoryId: req.body.categoryId,
     };
@@ -115,6 +115,8 @@ const updateProductbyId = async (req, res, next) => {
   } else imagesCurrent = null;
   if (imagesCurrent === null) {
     const updatedProduct = {
+      name: req.body.name,
+      alias: getAlias(req.body.name),
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
@@ -133,10 +135,16 @@ const updateProductbyId = async (req, res, next) => {
         products: updatedProduct,
       });
     } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate username
+        return res.status(422).send({ message: "Product already exist!" });
+      }
       return res.status(422).send(error);
     }
   } else {
     const updatedProduct = {
+      name: req.body.name,
+      alias: getAlias(req.body.name),
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
@@ -156,6 +164,10 @@ const updateProductbyId = async (req, res, next) => {
         products: updatedProduct,
       });
     } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate username
+        return res.status(422).send({ message: "Product already exist!" });
+      }
       return res.status(422).send(error);
     }
   }

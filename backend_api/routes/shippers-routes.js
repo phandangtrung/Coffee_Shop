@@ -12,7 +12,6 @@ router.get("/:sid", shippersController.getshipperById);
 router.post(
   "/",
   fileUploadShipper.single("imagesShipper"),
-  [check("name").not().isEmpty()],
   shippersController.createShipper
 );
 
