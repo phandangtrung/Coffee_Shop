@@ -29,8 +29,10 @@ import productApi from "../../api/productApi";
 function Comment() {
   const [isLoading, setIsLoading] = useState(false);
   const [tabledata, settabledata] = useState([]);
+  const [proList, setproList] = useState([]);
   const deleteComment = (record) => {
     console.log("record: ", record);
+
     const fetchDeleteComment = async () => {
       try {
         setIsLoading(true);
@@ -43,6 +45,12 @@ function Comment() {
       }
     };
     fetchDeleteComment();
+  };
+  const getPronamebyid = (proid) => {
+    const probj = proList.filter((dataget) => proid === dataget._id);
+    const finalname = probj[0]?.name;
+    if (finalname === undefined) return <div>Deleted</div>;
+    else return <div>{finalname}</div>;
   };
 
   const columns = [
@@ -62,7 +70,7 @@ function Comment() {
       title: "Product",
       dataIndex: "productId",
       key: "productId",
-      render: (proid) => <a>{proid}</a>,
+      render: (proid) => getPronamebyid(proid),
     },
     {
       title: "Rating",
@@ -90,16 +98,26 @@ function Comment() {
     },
   ];
   useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await productApi.getAll();
+        console.log("Fetch product succesfully: ", response);
+        setproList(response.products);
+      } catch (error) {
+        console.log("failed to delete comment: ", error);
+      }
+    };
     const fetchCategoryList = async () => {
       // dispatch({ type: "FETCH_INIT" });
       try {
         setIsLoading(true);
         const response = await commentApi.getall();
-        console.log("Fetch products succesfully: ", response);
+        console.log("Fetch comment succesfully: ", response);
+        fetchProduct();
         settabledata(response.comments);
         setIsLoading(false);
       } catch (error) {
-        console.log("failed to fetch product list: ", error);
+        console.log("failed to fetch comment list: ", error);
       }
     };
     fetchCategoryList();

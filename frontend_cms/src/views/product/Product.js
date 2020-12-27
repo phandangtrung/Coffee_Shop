@@ -22,6 +22,7 @@ import {
   UploadOutlined,
   CheckCircleOutlined,
   DeleteOutlined,
+  FilterOutlined,
 } from "@ant-design/icons";
 // import ImgCrop from "antd-img-crop";
 import "./style.css";
@@ -43,6 +44,7 @@ import { doGetList_success as doGetList_successCategory } from "../category/acti
 import categoryApi from "../../api/categoryApi";
 
 function Product() {
+  const { Search } = Input;
   const locallink = "http://localhost:3000";
   const columns = [
     {
@@ -69,7 +71,9 @@ function Product() {
       title: "Category",
       dataIndex: "categoryId",
       key: "categoryId",
-      render: (category) => <p>{category}</p>,
+      width: 100,
+      // render: (category) => <p>{category}</p>,
+      render: (category) => getCatenamebyid(category),
     },
     {
       title: "Description",
@@ -83,11 +87,13 @@ function Product() {
       key: "prices",
       width: 150,
       render: (text) => <p>{text} VND</p>,
+      sorter: (a, b) => a.prices - b.prices,
     },
     {
       title: "Create at",
       dataIndex: "createAt",
       key: "createAt",
+
       render: (time) => (
         <p>
           <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
@@ -97,6 +103,7 @@ function Product() {
     {
       title: "Action",
       key: "action",
+      width: 50,
       render: (text, record) => (
         <Space size="middle">
           <Button onClick={() => updateProduct(record)} type="primary">
@@ -127,6 +134,13 @@ function Product() {
   const [detail, setdetail] = useState(null);
   const [imgfile, setimgfile] = useState(null);
   const [tabledata, settabledata] = useState([]);
+  const getCatenamebyid = (cateid) => {
+    const cateobj = categoryList.data.filter(
+      (dataget) => cateid === dataget._id
+    );
+    const finalname = cateobj[0]?.name;
+    return <div>{finalname}</div>;
+  };
   //uploadimage
   const [sizecheck, setSizecheck] = useState({ size_M: true, size_L: false });
   const [loadingmodal, setloadingmodal] = useState(false);
@@ -278,14 +292,10 @@ function Product() {
 
             try {
               setloadingmodal(true);
-
-              // const params = { _page: 1, _limit: 10 };
               const response = await productApi.updateproduct(dataapi);
               console.log("Fetch update products succesfully: ", response);
-              setstate({ ...state, fileList: [] });
-              // settabledata([...tabledata, response.newProducts]);
+              loaddatapro();
               setloadingmodal(false);
-
               notification.info({
                 message: `Update Successfully`,
                 icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
@@ -324,7 +334,19 @@ function Product() {
   const initialData = [];
   const [isLoading, setIsLoading] = useState(false);
   const [isvisible, SetVisible] = useState(false);
+  const [fakeproductList, setfakeProductList] = useState([]);
   // const [productList, setProductList] = useState([]);
+  const onSearch = (values) => {
+    if (values === "") {
+      settabledata(fakeproductList);
+    } else {
+      const filteredProduct = fakeproductList.filter((product) => {
+        return product.name.toLowerCase().indexOf(values.toLowerCase()) !== -1;
+      });
+      console.log(">>>filteredProduct", filteredProduct);
+      if (filteredProduct.length > 0) settabledata(filteredProduct);
+    }
+  };
   const [productList, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
     isError: false,
@@ -338,14 +360,16 @@ function Product() {
       data: initialData,
     }
   );
-  useEffect(() => {
+  const loaddatapro = () => {
+    setIsLoading(true);
+
     const fetchProductList = async () => {
       dispatch(doGetList);
       try {
-        setIsLoading(true);
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
         dispatch(doGetList_success(response.products));
+        setfakeProductList(response.products);
         settabledata(response.products);
         setIsLoading(false);
       } catch (error) {
@@ -353,7 +377,7 @@ function Product() {
         dispatch(doGetList_error);
       }
     };
-    fetchProductList();
+
     const fetchCategoryList = async () => {
       // dispatch({ type: "FETCH_INIT" });
       dispatchCategory(doGetListCategory);
@@ -361,34 +385,54 @@ function Product() {
         const response = await categoryApi.getAll();
         console.log("Fetch products succesfully: ", response);
         dispatchCategory(doGetList_successCategory(response.categories));
+        fetchProductList();
       } catch (error) {
         console.log("failed to fetch product list: ", error);
         dispatchCategory(doGetList_errorCategory);
       }
     };
     fetchCategoryList();
+  };
+  useEffect(() => {
+    loaddatapro();
   }, []);
   const handleClick = () => {
     setdetail(null);
     SetVisible(!isvisible);
   };
+  const { Option } = Select;
   return (
     <>
       <CCard>
         <CCardHeader className="CCardHeader-title ">Product</CCardHeader>
-        <CButton
-          style={{
-            width: "200px",
-            height: "50px",
-            margin: "20px",
-          }}
-          shape="pill"
-          color="info"
-          onClick={handleClick}
-        >
-          {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
-          Add Product
-        </CButton>
+        <Row>
+          <Col lg={14}>
+            <CButton
+              style={{
+                width: "200px",
+                height: "50px",
+                margin: "20px 0px 20px 20px",
+              }}
+              shape="pill"
+              color="info"
+              onClick={handleClick}
+            >
+              {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
+              Add Product
+            </CButton>
+          </Col>
+          <Col lg={8}>
+            <Search
+              style={{
+                width: "100%",
+                height: "50px",
+                margin: "30px",
+              }}
+              placeholder="Search product by name"
+              onSearch={onSearch}
+            />
+          </Col>
+        </Row>
       </CCard>
       {isLoading ? (
         <div style={{ textAlign: "center" }}>

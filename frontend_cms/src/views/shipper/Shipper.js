@@ -21,6 +21,7 @@ import {
   Select,
   Button,
   Popconfirm,
+  Tag,
 } from "antd";
 
 import {
@@ -38,12 +39,46 @@ import Moment from "react-moment";
 function Shipper() {
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
+  const [detail, setdetail] = useState(null);
   const uploadimg = (info) => {
     console.log(">>>>info: ", info);
     console.log(fileList);
   };
   const props = {
     onChange: uploadimg,
+  };
+  const fetchShipperList = async () => {
+    // dispatch({ type: "FETCH_INIT" });
+    try {
+      setIsLoading(true);
+      const response = await shippersApi.getAll();
+      console.log("Fetch shipper succesfully: ", response);
+      settabledata(response.shippers);
+      setIsLoading(false);
+    } catch (error) {
+      console.log("failed to fetch shipper list: ", error);
+    }
+  };
+  const releaseShipper = (shid) => {
+    const fetchUpdateShipper = async () => {
+      try {
+        setIsLoading(true);
+        var form_data = new FormData();
+        form_data.append("status", false);
+        const params = { shid: shid, data: form_data };
+        const response = await shippersApi.updateShipper(params);
+        console.log("Fetch update shipper succesfully: ", response);
+        fetchShipperList();
+      } catch (error) {
+        console.log("failed to fetch update shipper list: ", error);
+      }
+    };
+    fetchUpdateShipper();
+  };
+  const updateShipper = (record) => {
+    setdetail(record);
+    form.setFieldsValue(record);
+    SetVisible(!isvisible);
   };
   const columns = [
     {
@@ -76,6 +111,18 @@ function Shipper() {
         </p>
       ),
     },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      width: 200,
+      render: (status) =>
+        status === false ? (
+          <Tag color="#87d068">FREE</Tag>
+        ) : (
+          <Tag color="volcano">BUSY</Tag>
+        ),
+    },
 
     {
       title: "Action",
@@ -83,16 +130,26 @@ function Shipper() {
       width: 200,
       render: (text, record) => (
         <Space size="middle">
-          <Button type="primary">Edit</Button>
+          <Button type="primary" onClick={() => updateShipper(record)}>
+            Edit
+          </Button>
+
           <Popconfirm
             title="Are you sure？"
             icon={<DeleteOutlined style={{ color: "red" }} />}
-            onConfirm={() => deleteProduct(record)}
+            onConfirm={() => deleteShipper(record)}
           >
             <Button type="primary" danger>
               Delete
             </Button>
           </Popconfirm>
+          {record.status === true ? (
+            <Button onClick={() => releaseShipper(record._id)} type="ghost">
+              Release
+            </Button>
+          ) : (
+            ""
+          )}
         </Space>
       ),
     },
@@ -106,9 +163,9 @@ function Shipper() {
     previewImage: "",
     fileList: [],
   });
-  const deleteProduct = (record) => {
+  const deleteShipper = (record) => {
     console.log(">>>record", record);
-    const fetchCreateProduct = async () => {
+    const fetchDelteShiper = async () => {
       try {
         setloadingmodal(true);
 
@@ -130,7 +187,7 @@ function Shipper() {
         // dispatch(doCreate_error);
       }
     };
-    fetchCreateProduct();
+    fetchDelteShiper();
   };
   const handlePreview = (file) => {
     setstate({
@@ -140,6 +197,7 @@ function Shipper() {
     });
   };
   const toggle = () => {
+    setdetail(null);
     SetVisible(!isvisible);
   };
   const [imgfile, setimgfile] = useState(null);
@@ -153,66 +211,57 @@ function Shipper() {
     console.log(">>originFileObj", imgfile);
   };
   const handleOk = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        form.resetFields();
-        // onCreate(values);
-        console.log(">>>value", values);
-        var CurrentDate = moment().toISOString();
-        const data = {
-          ...values,
-          imagesShipper: imgfile,
-          createAt: CurrentDate,
-        };
-        console.log("data >>>", data);
-        var form_data = new FormData();
+    if (detail === null) {
+      form
+        .validateFields()
+        .then((values) => {
+          form.resetFields();
+          // onCreate(values);
+          console.log(">>>value", values);
+          var CurrentDate = moment().toISOString();
+          const data = {
+            ...values,
+            imagesShipper: imgfile,
+            createAt: CurrentDate,
+          };
+          console.log("data >>>", data);
+          var form_data = new FormData();
 
-        for (var key in data) {
-          form_data.append(key, data[key]);
-        }
-        const fetchCreateProduct = async () => {
-          try {
-            setloadingmodal(true);
-
-            // const params = { _page: 1, _limit: 10 };
-            const response = await shippersApi.createShipper(form_data);
-            console.log("Fetch shipper succesfully: ", response);
-            console.log(">>>response.shipper", response.newShippers);
-            setstate({ ...state, fileList: [] });
-            settabledata([...tabledata, response.newShippers]);
-            setloadingmodal(false);
-            setimgfile(null);
-            notification.info({
-              message: `Created Successfully`,
-              icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
-              placement: "bottomRight",
-            });
-          } catch (error) {
-            console.log("failed to fetch product list: ", error);
-            // dispatch(doCreate_error);
+          for (var key in data) {
+            form_data.append(key, data[key]);
           }
-        };
-        fetchCreateProduct();
-      })
-      .catch((info) => {
-        console.log("Validate Failed:", info);
-      });
+          const fetchCreateProduct = async () => {
+            try {
+              setloadingmodal(true);
+
+              // const params = { _page: 1, _limit: 10 };
+              const response = await shippersApi.createShipper(form_data);
+              console.log("Fetch shipper succesfully: ", response);
+              console.log(">>>response.shipper", response.newShippers);
+              setstate({ ...state, fileList: [] });
+              settabledata([...tabledata, response.newShippers]);
+              setloadingmodal(false);
+              setimgfile(null);
+              notification.info({
+                message: `Created Successfully`,
+                icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+                placement: "bottomRight",
+              });
+            } catch (error) {
+              console.log("failed to fetch product list: ", error);
+              // dispatch(doCreate_error);
+            }
+          };
+          fetchCreateProduct();
+        })
+        .catch((info) => {
+          console.log("Validate Failed:", info);
+        });
+    } else {
+    }
   };
   useEffect(() => {
-    const fetchCategoryList = async () => {
-      // dispatch({ type: "FETCH_INIT" });
-      try {
-        setIsLoading(true);
-        const response = await shippersApi.getAll();
-        console.log("Fetch products succesfully: ", response);
-        settabledata(response.shippers);
-        setIsLoading(false);
-      } catch (error) {
-        console.log("failed to fetch product list: ", error);
-      }
-    };
-    fetchCategoryList();
+    fetchShipperList();
   }, []);
   return (
     <>
@@ -243,7 +292,7 @@ function Shipper() {
         </CCardBody>
       </CCard>
       <Modal
-        title="Add Shipper"
+        title={detail ? "UPDATE SHIPPER" : "ADD SHIPPER"}
         visible={isvisible}
         onOk={handleOk}
         onCancel={toggle}

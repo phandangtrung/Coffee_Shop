@@ -26,6 +26,7 @@ const createShipper = async (req, res, next) => {
       phone: req.body.phone,
       point: req.body.point,
       createAt: req.body.createAt,
+      status: req.body.status,
     };
     const newShippers = new Shipper(createShipper);
     await newShippers.save();
@@ -40,6 +41,7 @@ const createShipper = async (req, res, next) => {
       imagesShipper: imagesCurrent,
       point: req.body.point,
       createAt: req.body.createAt,
+      status: req.body.status,
     };
     try {
       const newShippers = new Shipper(createShipper);
@@ -73,6 +75,7 @@ const updateShipperById = async (req, res, next) => {
       phone: req.body.phone,
       point: req.body.point,
       createAt: req.body.createAt,
+      status: req.body.status,
     };
     let shippers;
     shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);
@@ -84,6 +87,7 @@ const updateShipperById = async (req, res, next) => {
       imagesShipper: imagesCurrent,
       point: req.body.point,
       createAt: req.body.createAt,
+      status: req.body.status,
     };
     let shippers;
     shippers = await Shipper.findByIdAndUpdate(ShipId, updatedShipper);

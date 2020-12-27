@@ -115,7 +115,9 @@ function Category() {
     },
   ];
   const toggle = () => {
+    setdetail(null);
     SetVisible(!isvisible);
+    form.resetFields();
   };
   const [categoryList, dispatchCategory] = useReducer(dataFetchReducer, {
     isLoading: false,
@@ -129,7 +131,6 @@ function Category() {
         .validateFields()
         .then((values) => {
           form.resetFields();
-          // onCreate(values);
           console.log(">>>value", values);
           var CurrentDate = moment().toISOString();
 

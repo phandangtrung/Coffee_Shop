@@ -19,6 +19,7 @@ import {
   Popconfirm,
 } from "antd";
 import Cookies from "js-cookie";
+import CurrencyFormat from "react-currency-format";
 import commentApi from "../../../api/commentApi";
 import {
   SmileOutlined,
@@ -150,27 +151,20 @@ function SingleProduct({ props }) {
           </Col>
           <Col span={12}>
             <div className="title">{location.state.namepro}</div>
-            <div className="price">{location.state.pricepro} VND</div>
+            <div className="price">
+              <CurrencyFormat
+                value={location.state.pricepro}
+                displayType={"text"}
+                thousandSeparator={true}
+              />{" "}
+              VND
+            </div>
 
             <Form onFinish={handleSubmit}>
               <div className="description-form">
                 <div className="content">{location.state.despro}</div>
               </div>
-              {/* <Form.Item
-                style={{ paddingTop: "40px" }}
-                className="amount"
-                key="amount"
-              >
-                <span style={{ marginRight: "20px" }}>Số lượng: </span>
-                <InputNumber
-                  min={1}
-                  max={10}
-                  onChange={onChange}
-                  size="large"
-                  style={{ border: "1px solid rgb(185, 115, 67)" }}
-                  defaultValue={1}
-                />
-              </Form.Item> */}
+
               <div className="button-form">
                 {location.state.quantity > 0 ? (
                   <Button className="button-buy" htmlType="submit">

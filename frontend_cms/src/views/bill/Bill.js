@@ -19,6 +19,7 @@ import {
   notification,
   Button,
   Tag,
+  DatePicker,
 } from "antd";
 import {
   CheckCircleOutlined,
@@ -30,49 +31,57 @@ import CIcon from "@coreui/icons-react";
 import moment from "moment";
 import Moment from "react-moment";
 import orderApi from "../../api/orderApi";
+import shippersApi from "../../api/shippersApi";
 function Bill() {
   const [isLoading, setIsLoading] = useState(false);
   const [tabledata, settabledata] = useState([]);
+  const [fakedata, setfakedata] = useState([]);
   const [isvisible, SetVisible] = useState(false);
   const [form] = Form.useForm();
   useEffect(() => {
-    const fetchOrderList = async () => {
-      try {
-        setIsLoading(true);
-
-        const response = await orderApi.getAll();
-        console.log("Fetch order succesfully: ", response);
-        settabledata(response.orders);
-        setIsLoading(false);
-      } catch (error) {
-        console.log("failed to fetch order list: ", error);
-      }
-    };
     fetchOrderList();
   }, []);
   const [userId, setuserId] = useState("Guess");
+  const [ShId, setShId] = useState("None");
   const [address, setaddress] = useState("");
   const [detaildata, setdetaildata] = useState([]);
-  const onConformorder = (record) => {
-    const params = {
-      orderid: record._id,
-      data: { status: true },
-    };
-    const fetchConformOrder = async () => {
+  const fetchOrderList = async () => {
+    try {
+      setIsLoading(true);
+      const response = await orderApi.getAll();
+      console.log("Fetch order succesfully: ", response);
+      settabledata(response.orders);
+      setIsLoading(false);
+    } catch (error) {
+      console.log("failed to fetch order list: ", error);
+    }
+  };
+  const fetchUpdateShipper = async (shid) => {
+    try {
+      var form_data = new FormData();
+      form_data.append("status", true);
+      const params = { shid: shid, data: form_data };
+      const response = await shippersApi.updateShipper(params);
+      console.log("Fetch update shipper succesfully: ", response);
+    } catch (error) {
+      console.log("failed to fetch update shipper list: ", error);
+    }
+  };
+
+  const onConfirmorder = (record) => {
+    var CurrentDate = moment().toISOString();
+
+    let randomshipper = "";
+
+    const fetchConfirmOrder = async () => {
+      const params = {
+        orderid: record._id,
+        data: { status: true, doneAt: CurrentDate, shipperId: randomshipper },
+      };
       try {
-        const response = await orderApi.conformorder(params);
+        const response = await orderApi.confirmorder(params);
         console.log("Fetch update status succesfully: ", response);
-        const fetchOrderList = async () => {
-          try {
-            setIsLoading(true);
-            const response = await orderApi.getAll();
-            console.log("Fetch order succesfully: ", response);
-            settabledata(response.orders);
-            setIsLoading(false);
-          } catch (error) {
-            console.log("failed to fetch order list: ", error);
-          }
-        };
+        fetchUpdateShipper(randomshipper);
         fetchOrderList();
         notification.info({
           message: `Confirm Successfully`,
@@ -82,13 +91,52 @@ function Bill() {
         console.log("failed to fetch update status : ", error);
       }
     };
-    fetchConformOrder();
+    const fetchShipperList = async () => {
+      try {
+        setIsLoading(true);
+        const response = await shippersApi.getAll();
+        console.log("Fetch shipper succesfully: ", response);
+        const shipperfreeList = response.shippers.filter(
+          (spf) => spf.status === false
+        );
+        if (shipperfreeList.length > 0) {
+          randomshipper =
+            shipperfreeList[Math.floor(Math.random() * shipperfreeList.length)]
+              ._id;
+          console.log(">>randomshipper", randomshipper);
+          fetchConfirmOrder();
+        } else
+          notification.info({
+            message: `All delivery staff are currently busy`,
+            placement: "bottomRight",
+          });
+      } catch (error) {
+        console.log("failed to fetch shipper list: ", error);
+      }
+    };
+    fetchShipperList();
   };
   const onViewdetail = (record) => {
     SetVisible(!isvisible);
     // form.setFieldsValue(record);
     if (record.userId !== "") setuserId(record.userId);
     else setuserId("Guess");
+    const fetchShipperList = async () => {
+      try {
+        const response = await shippersApi.getAll();
+        console.log("Fetch shipper succesfully: ", response);
+        const shipperfreeList = response.shippers.filter(
+          (spf) => spf._id === record.shipperId
+        );
+        console.log(">>>shipperfreeList", shipperfreeList);
+        if (shipperfreeList !== []) setShId(shipperfreeList[0].name);
+        else setShId("None");
+      } catch (error) {
+        setShId("None");
+        console.log("failed to fetch shipper list: ", error);
+      }
+    };
+    fetchShipperList();
     setaddress(record.customerAddress);
     setdetaildata(record.productlist);
   };
@@ -170,9 +218,11 @@ function Bill() {
           {time === undefined ? (
             <Tag color="#f50">UNFINISHED</Tag>
           ) : (
-            <p>
-              <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
-            </p>
+            <>
+              <Tag color="#87d068">
+                <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
+              </Tag>
+            </>
           )}
         </>
       ),
@@ -184,7 +234,7 @@ function Bill() {
       width: 200,
       render: (time) => (
         <p>
-          <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
+          <Moment format="YYYY/MM/DD hh:mm">{time}</Moment>
         </p>
       ),
     },
@@ -198,18 +248,39 @@ function Bill() {
           <Button onClick={() => onViewdetail(record)} type="primary">
             Detail
           </Button>
-
-          <Button
-            onClick={() => onConformorder(record)}
-            type="primary"
-            style={{ backgroundColor: "#87d068", border: "0px" }}
-          >
-            Conform
-          </Button>
+          {record.status === true ? (
+            <Button
+              onClick={() => onConfirmorder(record)}
+              type="primary"
+              disabled
+            >
+              Confirm
+            </Button>
+          ) : (
+            <Button
+              onClick={() => onConfirmorder(record)}
+              type="primary"
+              style={{ backgroundColor: "#87d068", border: "0px" }}
+            >
+              Confirm
+            </Button>
+          )}
         </Space>
       ),
     },
   ];
+  const onChange = (date, dateString) => {
+    console.log(">>>dateString", dateString);
+    if (dateString === "") {
+      settabledata(fakedata);
+    } else {
+      const newdatafilter = fakedata.filter(
+        (fd) => fd.createAt.substring(0, 10) === dateString
+      );
+      settabledata(newdatafilter);
+      console.log(">>newdatafilter", newdatafilter);
+    }
+  };
   const toggle = () => {
     SetVisible(!isvisible);
   };
@@ -219,6 +290,9 @@ function Bill() {
         <CCardHeader className="CCardHeader-title ">Bill</CCardHeader>
 
         <CCardBody>
+          <span style={{ float: "right", paddingBottom: "20px" }}>
+            Filter by day <DatePicker onChange={onChange} />
+          </span>
           {isLoading ? (
             <div style={{ textAlign: "center" }}>
               <Spin size="large" />
@@ -233,11 +307,7 @@ function Bill() {
           onCancel={toggle}
           style={{ marginTop: "5%" }}
           width={800}
-          footer={[
-            <Button key="submit" type="primary">
-              Conform
-            </Button>,
-          ]}
+          footer={[]}
         >
           <Form form={form} size={"large"}>
             <Row style={{ paddingBottom: "20px" }}>
@@ -249,6 +319,11 @@ function Bill() {
               </Col>
             </Row>
             <Row>
+              <Col span={12}>
+                <a>Shipper: {ShId}</a>
+              </Col>
+            </Row>
+            <Row style={{ paddingBottom: "20px" }}>
               <Col span={24}>
                 <Table
                   columns={columnsDetail}

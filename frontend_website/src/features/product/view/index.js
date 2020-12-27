@@ -8,6 +8,8 @@ import {
   Pagination,
   Spin,
   Skeleton,
+  Input,
+  Alert,
 } from "antd";
 import { CaretUpOutlined } from "@ant-design/icons";
 import "./style.css";
@@ -26,38 +28,34 @@ import {
   doGetListCate_success,
   doGetListCate_error,
 } from "../action/actionCreater";
+import { set } from "js-cookie";
 
 const { SubMenu } = Menu;
 function Product() {
   const initialData = [];
   const [isLoading, setIsLoading] = useState(false);
   const [isloadProduct, setloadProduct] = useState(false);
-  const [productList, dispatchProduct] = useReducer(dataFetchReducer, {
-    isLoading: false,
-    isError: false,
-    data: [],
-  });
+  const [isalter, setisalter] = useState(false);
+  const [productList, setProductList] = useState([]);
+  const [fakeproductList, setfakeProductList] = useState([]);
   const [categoryList, dispatchCategory] = useReducer(dataFetchCategory, {
     isLoading: false,
     isError: false,
     data: [],
   });
-
+  const { Search } = Input;
   useEffect(() => {
-    // productapi
     const fetchProductList = async () => {
-      // dispatch({ type: "FETCH_INIT" });
-      dispatchProduct(doGetList);
       try {
         setloadProduct(true);
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
-        dispatchProduct(doGetList_success(response.products));
+        setProductList(response.products);
+        setfakeProductList(response.products);
         console.log(">>>> productlist: ", productList);
         setloadProduct(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
-        dispatchProduct(doGetList_error);
       }
     };
     fetchProductList();
@@ -83,41 +81,43 @@ function Product() {
   const handleClick = (e) => {
     console.log("click ", e);
   };
+
+  const onSearch = (values) => {
+    setisalter(false);
+    if (values === "") {
+      setProductList(fakeproductList);
+    } else {
+      const filteredProduct = fakeproductList.filter((product) => {
+        return product.name.toLowerCase().indexOf(values.toLowerCase()) !== -1;
+      });
+      if (filteredProduct.length > 0) setProductList(filteredProduct);
+      else setisalter(true);
+    }
+  };
   const getallProduct = () => {
     const fetchProductList = async () => {
       // dispatch({ type: "FETCH_INIT" });
-      dispatchProduct(doGetList);
       try {
         setloadProduct(true);
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
-        dispatchProduct(doGetList_success(response.products));
+        // dispatchProduct(doGetList_success(response.products));
+        setProductList(response.products);
         console.log(">>>> productlist: ", productList);
         setloadProduct(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
-        dispatchProduct(doGetList_error);
       }
     };
     fetchProductList();
   };
   const fillterPro = (cateid) => {
     console.log(">>>cateid", cateid);
-    const fetchCategoryList = async () => {
-      // dispatch({ type: "FETCH_INIT" });
-      dispatchProduct(doGetList);
-      try {
-        setloadProduct(true);
-        const response = await categoryApi.getProbyid(cateid);
-        console.log("Fetch products succesfully: ", response);
-        dispatchProduct(doGetList_success(response.products));
-        setloadProduct(false);
-      } catch (error) {
-        console.log("failed to fetch product list: ", error);
-        dispatchProduct(doGetList_error);
-      }
-    };
-    fetchCategoryList();
+    const newprolist = fakeproductList.filter(
+      (pro) => pro.categoryId === cateid
+    );
+    console.log(">>>newproList", newprolist);
+    setProductList(newprolist);
   };
   function onChange(a, b, c) {
     console.log(a, b, c);
@@ -196,13 +196,32 @@ function Product() {
           <div className="product-banner">
             <img alt="product_banner" src={Images.SBANNER} />
           </div>
+          <Search
+            placeholder="Search product"
+            onSearch={onSearch}
+            style={{ width: "70%" }}
+          />
+          <div className="altersearch__form">
+            {isalter === true ? (
+              <Alert
+                className="altersearch"
+                message="Could not find any Products"
+                type="warning"
+                showIcon
+                closable
+              />
+            ) : (
+              ""
+            )}
+          </div>
+
           <Row>
             {isloadProduct ? (
               <div style={{ width: "100%", textAlign: "center" }}>
                 <Spin size="large" />
               </div>
             ) : (
-              productList.data.map((product) => (
+              productList.map((product) => (
                 <Col lg={8} xs={24} sm={24} key={product._id}>
                   <ProductTag
                     _id={product._id}

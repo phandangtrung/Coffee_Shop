@@ -16,6 +16,7 @@
     "moment": "^2.29.1",
     "query-string": "^6.13.7",
     "react": "^16.13.1",
+    "react-currency-format": "^1.0.0",
     "react-dom": "^16.13.1",
     "react-geocode": "^0.2.2",
     "react-google-places-suggest": "^3.9.2",

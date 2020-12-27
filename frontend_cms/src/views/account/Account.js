@@ -26,12 +26,59 @@ function Account() {
         setIsLoading(true);
         const tokenUser = Cookies.get("tokenUser");
         const params = {
-          _id: record._id,
+          id: record._id,
           token: tokenUser,
         };
         const response = await userApi.lockUser(params);
+        const fetchgetuserList = async () => {
+          // dispatch({ type: "FETCH_INIT" });
+          try {
+            setIsLoading(true);
+            const tokenUser = Cookies.get("tokenUser");
+            // const params = { _page: 1, _limit: 10 };
+
+            const response = await userApi.getallUser(tokenUser);
+            console.log("Fetch products succesfully: ", response);
+            settabledata(response.users);
+            setIsLoading(false);
+          } catch (error) {
+            console.log("failed to fetch product list: ", error);
+          }
+        };
+        fetchgetuserList();
         console.log("Fetch user succesfully: ", response);
-        settabledata(response.users);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch user lock: ", error);
+      }
+    };
+    fetchLockUser();
+  };
+  const unlockUser = (record) => {
+    console.log("record: ", record);
+    const fetchLockUser = async () => {
+      try {
+        setIsLoading(true);
+        const tokenUser = Cookies.get("tokenUser");
+        const params = {
+          id: record._id,
+          token: tokenUser,
+        };
+        const response = await userApi.unlockUser(params);
+        const fetchgetuserList = async () => {
+          try {
+            setIsLoading(true);
+            const tokenUser = Cookies.get("tokenUser");
+            const response = await userApi.getallUser(tokenUser);
+            console.log("Fetch products succesfully: ", response);
+            settabledata(response.users);
+            setIsLoading(false);
+          } catch (error) {
+            console.log("failed to fetch product list: ", error);
+          }
+        };
+        fetchgetuserList();
+        console.log("Fetch user succesfully: ", response);
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch user lock: ", error);
@@ -101,20 +148,26 @@ function Account() {
       width: 200,
       render: (text, record) => (
         <Space size="middle">
-          {record.isLock === false && record.isConfirm === true ? (
+          {record.isLock === false ? (
             <Popconfirm
               title="Are you sure？"
               icon={<LockOutlined style={{ color: "red" }} />}
               onConfirm={() => lockUser(record)}
             >
-              <Button type="primary" danger>
-                <span>Lock User</span>
+              <Button style={{ width: "110px" }} type="primary" danger>
+                <span>Lock User </span>
               </Button>
             </Popconfirm>
           ) : (
-            <Button disabled type="primary" danger>
-              <span>Lock User</span>
-            </Button>
+            <Popconfirm
+              title="Are you sure？"
+              icon={<LockOutlined style={{ color: "red" }} />}
+              onConfirm={() => unlockUser(record)}
+            >
+              <Button style={{ width: "110px" }} type="primary">
+                <span>UnLock User</span>
+              </Button>
+            </Popconfirm>
           )}
         </Space>
       ),
