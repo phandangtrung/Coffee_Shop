@@ -57,12 +57,21 @@ const updateCategoryById = async (req, res, next) => {
     alias: getAlias(req.body.name),
     createAt: req.body.createAt,
   };
-  let categories;
-  categories = await Category.findByIdAndUpdate(CateId, updatedCategory);
-  res.status(200).json({
-    message: "update success",
-    categories: updatedCategory,
-  });
+
+  try {
+    let categories;
+    categories = await Category.findByIdAndUpdate(CateId, updatedCategory);
+    res.status(200).json({
+      message: "update success",
+      categories: updatedCategory,
+    });
+  } catch (error) {
+    if (error.name === "MongoError" && error.code === 11000) {
+      // Duplicate username
+      return res.status(422).send({ message: "Category already exist!" });
+    }
+    return res.status(422).send(error);
+  }
 };
 
 const deleteCategoryById = async (req, res, next) => {
