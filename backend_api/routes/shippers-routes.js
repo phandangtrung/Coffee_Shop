@@ -12,12 +12,14 @@ router.get("/:sid", shippersController.getshipperById);
 router.post(
   "/",
   fileUploadShipper.single("imagesShipper"),
+  [check("identityCard").not().isEmpty()],
   shippersController.createShipper
 );
 
 router.put(
   "/:sid",
   fileUploadShipper.single("imagesShipper"),
+  [check("identityCard").not().isEmpty()],
   shippersController.updateShipperById
 );
 
