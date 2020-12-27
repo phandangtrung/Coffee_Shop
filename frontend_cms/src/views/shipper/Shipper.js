@@ -28,6 +28,7 @@ import {
   CheckCircleOutlined,
   DeleteOutlined,
   UploadOutlined,
+  ExclamationCircleFilled,
 } from "@ant-design/icons";
 import "./style.css";
 import CIcon from "@coreui/icons-react";
@@ -77,6 +78,14 @@ function Shipper() {
   };
   const updateShipper = (record) => {
     setdetail(record);
+    console.log(">>", record);
+    if (record.status === null)
+      setidShupdate({ id: record._id, status: false });
+    else setidShupdate({ id: record._id, status: record.status });
+    setstate({
+      ...state,
+      fileList: [{ url: `http://localhost:3000/${record.imagesShipper}` }],
+    });
     form.setFieldsValue(record);
     SetVisible(!isvisible);
   };
@@ -99,6 +108,18 @@ function Shipper() {
           src={`http://localhost:3000/${img}`}
         />
       ),
+    },
+    {
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
+      width: 200,
+    },
+    {
+      title: "Identity Card",
+      dataIndex: "identityCard",
+      key: "identityCard",
+      width: 200,
     },
     {
       title: "Create at",
@@ -202,6 +223,7 @@ function Shipper() {
   };
   const [imgfile, setimgfile] = useState(null);
   const [checkaddimg, setcheck] = useState(false);
+  const [idShupdate, setidShupdate] = useState({ id: "", status: false });
   const handleChange = (fileList) => {
     setstate(fileList);
     setimgfile(fileList.file.originFileObj);
@@ -215,7 +237,6 @@ function Shipper() {
       form
         .validateFields()
         .then((values) => {
-          form.resetFields();
           // onCreate(values);
           console.log(">>>value", values);
           var CurrentDate = moment().toISOString();
@@ -241,13 +262,21 @@ function Shipper() {
               setstate({ ...state, fileList: [] });
               settabledata([...tabledata, response.newShippers]);
               setloadingmodal(false);
+              setcheck(false);
               setimgfile(null);
+              form.resetFields();
               notification.info({
                 message: `Created Successfully`,
                 icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
                 placement: "bottomRight",
               });
             } catch (error) {
+              setloadingmodal(false);
+              notification.info({
+                message: `Created Fail`,
+                icon: <ExclamationCircleFilled style={{ color: "red" }} />,
+                placement: "bottomRight",
+              });
               console.log("failed to fetch product list: ", error);
               // dispatch(doCreate_error);
             }
@@ -258,6 +287,65 @@ function Shipper() {
           console.log("Validate Failed:", info);
         });
     } else {
+      form.validateFields().then((values) => {
+        var CurrentDate = moment().toISOString();
+        let data = {};
+        if (checkaddimg === false) {
+          data = {
+            ...values,
+            _id: idShupdate.id,
+            status: idShupdate.status,
+            createAt: CurrentDate,
+          };
+        } else {
+          data = {
+            ...values,
+            _id: idShupdate.id,
+            status: idShupdate.status,
+            imagesShipper: imgfile,
+            createAt: CurrentDate,
+          };
+        }
+
+        console.log("data >>>", data);
+        var form_data = new FormData();
+
+        for (var key in data) {
+          form_data.append(key, data[key]);
+        }
+        const params = { shid: data._id, data: form_data };
+        const fetchCreateProduct = async () => {
+          try {
+            setloadingmodal(true);
+
+            // const params = { _page: 1, _limit: 10 };
+            const response = await shippersApi.updateShipper(params);
+            console.log("Fetch shipper succesfully: ", response);
+            // console.log(">>>response.shipper", response.newShippers);
+            setstate({ ...state, fileList: [] });
+
+            setloadingmodal(false);
+            setimgfile(null);
+            form.resetFields();
+            fetchShipperList();
+            notification.info({
+              message: `Update Successfully`,
+              icon: <CheckCircleOutlined style={{ color: "#33CC33" }} />,
+              placement: "bottomRight",
+            });
+          } catch (error) {
+            setloadingmodal(false);
+            notification.info({
+              message: `Update Fail`,
+              icon: <ExclamationCircleFilled style={{ color: "red" }} />,
+              placement: "bottomRight",
+            });
+            console.log("failed to fetch product list: ", error);
+            // dispatch(doCreate_error);
+          }
+        };
+        fetchCreateProduct();
+      });
     }
   };
   useEffect(() => {
