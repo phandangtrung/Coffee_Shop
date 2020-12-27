@@ -9,6 +9,7 @@ import AddressPage from "../features/addresspage/view";
 import signupsucess from "../features/signupsucess/signupsucess";
 import MyProfile from "../features/myprofile/view";
 import Searchorder from "../features/searchorder/view/index";
+import CouponPage from "../features/coupon/view/index";
 export const Menu = [
   {
     path: "/",
@@ -60,6 +61,11 @@ export const Menu = [
     path: "/searchorder",
     exact: true,
     component: Searchorder,
+  },
+  {
+    path: "/coupon",
+    exact: true,
+    component: CouponPage,
   },
   {
     path: "*",

@@ -18,4 +18,5 @@ export const Images = {
   BCFF: IMAGE_URL + "/static/img/breadcoffee_tranpa.png",
   BBG: IMAGE_URL + "/static/img/BANHMI-bg_2.jpg",
   ADS: IMAGE_URL + "/static/img/ads.png",
+  CPIM: IMAGE_URL + "/static/img/coupon_img.jpg",
 };
