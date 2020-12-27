@@ -143,6 +143,8 @@ const updateProductbyId = async (req, res, next) => {
     }
   } else {
     const updatedProduct = {
+      name: req.body.name,
+      alias: getAlias(req.body.name),
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
