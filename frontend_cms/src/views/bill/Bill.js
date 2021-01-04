@@ -51,6 +51,7 @@ function Bill() {
       const response = await orderApi.getAll();
       console.log("Fetch order succesfully: ", response);
       settabledata(response.orders);
+      setfakedata(response.orders);
       setIsLoading(false);
     } catch (error) {
       console.log("failed to fetch order list: ", error);
@@ -274,6 +275,7 @@ function Bill() {
     if (dateString === "") {
       settabledata(fakedata);
     } else {
+      console.log(">>fakedata", fakedata);
       const newdatafilter = fakedata.filter(
         (fd) => fd.createAt.substring(0, 10) === dateString
       );
