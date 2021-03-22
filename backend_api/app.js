@@ -2,9 +2,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const HttpError = require("./error-handle/http-error");
+
 const fs = require("fs");
 const path = require("path");
 const cors = require("cors");
+
 require("dotenv/config");
 
 const categoriesRouters = require("./routes/categories-routes");
@@ -14,7 +16,6 @@ const shippersRouters = require("./routes/shippers-routes");
 const usersRouters = require("./routes/users-routes");
 const commentsRouters = require("./routes/comments-routes");
 const couponCodeRouters = require("./routes/couponCode-routes");
-const testRouters = require("./routes/test-routes");
 
 const app = express();
 app.use(bodyParser.json());
@@ -47,7 +48,6 @@ app.use("/api/shippers", shippersRouters);
 app.use("/api/users", usersRouters);
 app.use("/api/comments", commentsRouters);
 app.use("/api/couponCode", couponCodeRouters);
-app.use("/api/test",testRouters);
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route.", 404);
@@ -71,7 +71,7 @@ mongoose
     { useFindAndModify: false }
   )
   .then(() => {
-    app.listen(3000);
+    app.listen(5000);
     console.log("Connect Success");
   })
   .catch((error) => {

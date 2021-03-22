@@ -1,9 +1,14 @@
+const moment = require("moment");
 const mongoose = require("mongoose");
 
 const couponCodeSchema = new mongoose.Schema({
-  note: { type: String, required: false },
-  discount: { type: Number, require: false },
-  couponCode: { type: String, required: false },
+  couponCode: { type: String, required: false, unique: true },
+  content: { type: String, require: false },
+  //isPercent: { type: Boolean, require: false, default: true },
+  createAt: {type: Date, default: Date.now},
+  amount: { type: Number, require: false },
+  expireDate: { type: Date, require: false },
+  isActive: { type: Boolean, require: false, default: true },
 });
 
 module.exports = mongoose.model("CouponCode", couponCodeSchema);
