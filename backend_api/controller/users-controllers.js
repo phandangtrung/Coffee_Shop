@@ -284,7 +284,7 @@ const getConfirmation = async (req, res, next) => {
   }
 
   //res.status(200).json({message: 'Verify email Success'});
-  return res.redirect("http://localhost:3001/signupsuccess/");
+  return res.redirect("http://localhost:3000/signupsuccess/");
 };
 
 const getAllUsers = async (req, res, next) => {
