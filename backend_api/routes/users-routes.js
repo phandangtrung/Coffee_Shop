@@ -8,6 +8,7 @@ const { isAdmin, isAuth } = require("../middleware/uilt");
 const router = express.Router();
 
 router.post("/googlelogin", usersController.loginGoogle);
+router.post("/facebooklogin", usersController.loginFacebook);
 
 router.post(
   "/signup",

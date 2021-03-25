@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const HttpError = require("../error-handle/http-error");
 const User = require("../models/users");
 const { OAuth2Client } = require("google-auth-library");
+const fetch = require("node-fetch");
 require("dotenv/config");
 
 const brcypt = require("bcryptjs");
@@ -12,9 +13,7 @@ const nodemailer = require("nodemailer");
 const { getToken } = require("../middleware/uilt");
 const { response } = require("express");
 
-const client = new OAuth2Client(
-  process.env.google_client_ID
-);
+const client = new OAuth2Client(process.env.google_client_ID);
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -158,14 +157,106 @@ const loginGoogle = async (req, res, next) => {
   const { tokenId } = req.body;
   try {
     client
-    .verifyIdToken({
-      idToken: tokenId,
-      audience:
-      process.env.google_client_ID,
+      .verifyIdToken({
+        idToken: tokenId,
+        audience: process.env.google_client_ID,
+      })
+      .then(async (response) => {
+        const { email_verified, name, email } = response.payload;
+        if (email_verified) {
+          let existingUser;
+          try {
+            existingUser = await User.findOne({ email: email });
+          } catch (err) {
+            const error = new HttpError("Login failed. Pls try again", 500);
+            return next(error);
+          }
+
+          if (!existingUser) {
+            let stringToHash = email + Math.floor(Math.random() * 3000);
+            console.log(stringToHash);
+            let hashedPassword;
+            hashedPassword = await brcypt.hash(stringToHash, 9);
+            const createdUser = {
+              fName: name,
+              email: email,
+              isAdmin: false,
+              isConfirm: true,
+              isLock: false,
+              password: hashedPassword,
+            };
+            let newUsers;
+            try {
+              console.log(createdUser);
+              newUsers = new User(createdUser);
+              await newUsers.save();
+            } catch (err) {
+              const error = new HttpError(
+                "Signing up failed, please try again later.",
+                500
+              );
+              return next(error);
+            }
+            transporter.sendMail({
+              to: createdUser.email,
+              subject: "Thanks for your subscription",
+              //html: `Here is your password if you need to login without google: ${stringToHash}`,
+            });
+            let token;
+            try {
+              token = getToken(createdUser);
+            } catch (err) {
+              const error = new HttpError(
+                "Signing up failed, please try again later.",
+                500
+              );
+              return next(error);
+            }
+            res.status(200).json({
+              email: createdUser.email,
+              isAdmin: createdUser.isAdmin,
+              token: token,
+            });
+          } else if (existingUser.isLock === true) {
+            const error = new HttpError("Your account was blocked", 401);
+            return next(error);
+          } else {
+            let token;
+            try {
+              token = getToken(existingUser);
+            } catch (err) {
+              const error = new HttpError(
+                "Login failed, please try again later.",
+                500
+              );
+              return next(error);
+            }
+
+            res.status(200).json({
+              email: existingUser.email,
+              isAdmin: existingUser.isAdmin,
+              token: token,
+            });
+          }
+        }
+      });
+  } catch (err) {
+    const error = new HttpError("Login failed, please try again later.", 500);
+    return next(error);
+  }
+  return res.redirect("http://localhost:3000/");
+};
+
+const loginFacebook = async (req, res, next) => {
+  const { userID, accessToken } = req.body;
+  try {
+    let urlGraphFacebook = `https://graph.facebook.com/v2.11/${userID}/?fields=id,name,email&access_token=${accessToken}`;
+    fetch(urlGraphFacebook, {
+      method: "GET",
     })
-    .then(async (response) => {
-      const { email_verified, name, email } = response.payload;
-      if (email_verified) {
+      .then((response) => response.json())
+      .then(async (response) => {
+        const { email, name } = response;
         let existingUser;
         try {
           existingUser = await User.findOne({ email: email });
@@ -173,9 +264,8 @@ const loginGoogle = async (req, res, next) => {
           const error = new HttpError("Login failed. Pls try again", 500);
           return next(error);
         }
-     
         if (!existingUser) {
-          let stringToHash = email  + Math.floor(Math.random() * 30000);
+          let stringToHash = email + Math.floor(Math.random() * 3000);
           console.log(stringToHash);
           let hashedPassword;
           hashedPassword = await brcypt.hash(stringToHash, 9);
@@ -185,13 +275,13 @@ const loginGoogle = async (req, res, next) => {
             isAdmin: false,
             isConfirm: true,
             isLock: false,
-            password: hashedPassword
+            password: hashedPassword,
           };
           let newUsers;
           try {
-            console.log(createdUser)
+            console.log(createdUser);
             newUsers = new User(createdUser);
-            await newUsers.save();   // error
+            await newUsers.save();
           } catch (err) {
             const error = new HttpError(
               "Signing up failed, please try again later.",
@@ -199,11 +289,6 @@ const loginGoogle = async (req, res, next) => {
             );
             return next(error);
           }
-          transporter.sendMail({
-            to: createdUser.email,
-            subject: "Thanks for your subscription",
-            html: `Here is your password if you need to login without google: ${stringToHash}`,
-          });
           let token;
           try {
             token = getToken(createdUser);
@@ -216,46 +301,35 @@ const loginGoogle = async (req, res, next) => {
           }
           res.status(200).json({
             email: createdUser.email,
-            isAdmin: createdUser.isAdmin,
+            isAdmin: existingUser.isAdmin,
+            token: token,
+          });
+        } else if (existingUser.isLock === true) {
+          const error = new HttpError("Your account was blocked", 401);
+          return next(error);
+        } else {
+          let token;
+          try {
+            token = getToken(existingUser);
+          } catch (err) {
+            const error = new HttpError(
+              "Login failed, please try again later.",
+              500
+            );
+            return next(error);
+          }
+          res.status(200).json({
+            email: existingUser.email,
+            isAdmin: existingUser.isAdmin,
             token: token,
           });
         }
-        
-        else if (existingUser.isLock === true) {
-          const error = new HttpError(
-            "Your account is not confirm or was locked",
-            401
-          );
-          return next(error);
-        }
-        else {
-        let token;
-        try {
-          token = getToken(existingUser);
-        } catch (err) {
-          const error = new HttpError(
-            "Login failed, please try again later.",
-            500
-          );
-          return next(error);
-        }
-
-        res.status(200).json({
-          email: existingUser.email,
-          isAdmin: existingUser.isAdmin,
-          token: token,
-        });
-      }
-      }
-    });
+      });
   } catch (err) {
-    const error = new HttpError(
-      "Login failed, please try again later.",
-      500
-    );
+    const error = new HttpError("Login failed, please try again later.", 500);
     return next(error);
   }
-  
+  return res.redirect("http://localhost:3000/");
 };
 
 const getConfirmation = async (req, res, next) => {
@@ -517,4 +591,5 @@ module.exports = {
   admin,
   loginAdmin,
   loginGoogle,
+  loginFacebook,
 };
