@@ -8,13 +8,14 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from './src/screens/Home/index';
 import Profile from './src/screens/Profile/index';
 import Product from './src/screens/Product/index';
+import Checkout from "./src/screens/Checkout/index";
 const Tab = createBottomTabNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator initialRouteName="Home">
-        <Tab.Screen name="Home" component={Product} />
+        <Tab.Screen name="Home" component={Checkout} />
         <Tab.Screen name="Settings" component={Profile} />
       </Tab.Navigator>
     </NavigationContainer>
