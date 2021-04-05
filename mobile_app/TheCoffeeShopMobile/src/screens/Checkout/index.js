@@ -55,6 +55,9 @@ const Checkout = () => {
               backgroundColor: '#ffffff',
               height: 160,
               borderRadius: 0.5,
+
+              paddingRight: 10,
+
               shadowColor: '#000',
               shadowOffset: {
                 width: 0,
