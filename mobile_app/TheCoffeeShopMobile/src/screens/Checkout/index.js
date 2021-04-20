@@ -26,7 +26,7 @@ const Checkout = () => {
       }}>
       <ScrollView>
         <View style={{width: '100%', paddingLeft: 15, paddingRight: 15}}>
-          <View style={{height: 80}}>
+          {/* <View style={{height: 80}}>
             <View style={{height: 20, width: '100%', paddingTop: 20}}>
               <View>
                 <FontAwesome5
@@ -47,7 +47,7 @@ const Checkout = () => {
                 </Text>
               </View>
             </View>
-          </View>
+          </View> */}
 
           <View
             style={{
@@ -55,7 +55,7 @@ const Checkout = () => {
               backgroundColor: '#ffffff',
               height: 160,
               borderRadius: 0.5,
-
+              marginTop: 20,
               paddingRight: 10,
 
               shadowColor: '#000',

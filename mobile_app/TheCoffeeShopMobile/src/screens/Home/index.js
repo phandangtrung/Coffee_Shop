@@ -20,10 +20,12 @@ import styles from './style';
 import ProductTag from '../../components/productTag/index';
 import ProductCart from '../../components/productCart/index';
 
-const Home = () => {
+const Home = ({navigation}) => {
   const [search, setsearch] = useState('');
   const drawer = useRef(null);
-
+  onclickProduct = () => {
+    navigation.navigate('Product');
+  };
   const navigationView = () => (
     <View style={{backgroundColor: 'white', paddingTop: 10}}>
       <ScrollView style={{height: '80%'}}>
@@ -63,7 +65,12 @@ const Home = () => {
           <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'59.000đ'}</Text>
         </View>
         <View>
-          <Button style={{fontSize: 20}} color="#ffb460" title="Đặt đơn" />
+          <Button
+            onPress={() => navigation.navigate('Checkout')}
+            style={{fontSize: 20}}
+            color="#ffb460"
+            title="Đặt đơn"
+          />
         </View>
       </View>
     </View>
@@ -137,11 +144,15 @@ const Home = () => {
               style={{zIndex: 2}}
               horizontal={true}
               showsHorizontalScrollIndicator={false}>
-              <ProductTag color="red" />
-              <ProductTag color="blue" />
-              <ProductTag color="orange" />
-              <ProductTag color="green" />
-              <ProductTag color="yellow" />
+              {/* <Button
+                title="Go to product"
+                onPress={() => navigation.navigate('Product')}
+              /> */}
+              <ProductTag onclickProduct={onclickProduct} color="red" />
+              <ProductTag onclickProduct={onclickProduct} color="blue" />
+              <ProductTag onclickProduct={onclickProduct} color="orange" />
+              <ProductTag onclickProduct={onclickProduct} color="green" />
+              <ProductTag onclickProduct={onclickProduct} color="yellow" />
             </ScrollView>
           </View>
           <View>

@@ -3,6 +3,7 @@ import React from 'react';
 import {SafeAreaView, View, Text, Image} from 'react-native';
 import styles from './style';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {TouchableOpacity} from 'react-native';
 const ProductTag = (props) => {
   return (
     <View
@@ -31,17 +32,20 @@ const ProductTag = (props) => {
             borderBottomLeftRadius: 13,
             borderBottomRightRadius: 13,
           }}>
-          <Text
-            style={{
-              color: 'white',
-              fontFamily: 'Oswald-VariableFont_wght',
-              fontSize: 20,
-              paddingLeft: 5,
-              textShadowColor: 'rgba(0, 0, 0, 0.75)',
-              textShadowOffset: {width: -1, height: 1},
-              textShadowRadius: 5,
-              // fontWeight: 'bold',
-            }}>{`Expresso`}</Text>
+          <TouchableOpacity onPress={() => props.onclickProduct()}>
+            <Text
+              style={{
+                color: 'white',
+                fontFamily: 'Oswald-VariableFont_wght',
+                fontSize: 20,
+                paddingLeft: 5,
+                textShadowColor: 'rgba(0, 0, 0, 0.75)',
+                textShadowOffset: {width: -1, height: 1},
+                textShadowRadius: 5,
+                // fontWeight: 'bold',
+              }}>{`Expresso`}</Text>
+          </TouchableOpacity>
+
           <Text
             style={{
               color: 'white',
