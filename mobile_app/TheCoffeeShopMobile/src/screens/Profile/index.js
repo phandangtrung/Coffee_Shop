@@ -9,8 +9,10 @@ import {
   Button,
   TouchableOpacity,
   Modal,
-  Picker,
+  // Picker,
 } from 'react-native';
+// import {Picker} from '@react-native-community/picker';
+import {Picker} from '@react-native-picker/picker';
 import {Avatar, Card, Input, Icon} from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 const Profile = () => {
