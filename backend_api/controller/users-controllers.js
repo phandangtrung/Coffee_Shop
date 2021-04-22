@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const HttpError = require("../error-handle/http-error");
 const User = require("../models/users");
+const { OAuth2Client } = require("google-auth-library");
+const fetch = require("node-fetch");
+require("dotenv/config");
 
 const brcypt = require("bcryptjs");
 const { validationResult } = require("express-validator");
@@ -8,6 +11,9 @@ const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const { getToken } = require("../middleware/uilt");
+const { response } = require("express");
+
+const client = new OAuth2Client(process.env.google_client_ID);
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
@@ -87,7 +93,7 @@ const register = async (req, res, next) => {
     newUsers,
     token,
   });
-  const url = `http://localhost:3000/api/users/confirmation/${token}`;
+  const url = `http://localhost:5000/api/users/confirmation/${token}`;
   transporter.sendMail({
     to: createdUser.email,
     subject: "Confirm Email",
@@ -147,6 +153,185 @@ const login = async (req, res, next) => {
   });
 };
 
+const loginGoogle = async (req, res, next) => {
+  const { tokenId } = req.body;
+  try {
+    client
+      .verifyIdToken({
+        idToken: tokenId,
+        audience: process.env.google_client_ID,
+      })
+      .then(async (response) => {
+        const { email_verified, name, email } = response.payload;
+        if (email_verified) {
+          let existingUser;
+          try {
+            existingUser = await User.findOne({ email: email });
+          } catch (err) {
+            const error = new HttpError("Login failed. Pls try again", 500);
+            return next(error);
+          }
+
+          if (!existingUser) {
+            let stringToHash = email + Math.floor(Math.random() * 3000);
+            console.log(stringToHash);
+            let hashedPassword;
+            hashedPassword = await brcypt.hash(stringToHash, 9);
+            const createdUser = {
+              fName: name,
+              email: email,
+              isAdmin: false,
+              isConfirm: true,
+              isLock: false,
+              password: hashedPassword,
+            };
+            let newUsers;
+            try {
+              console.log(createdUser);
+              newUsers = new User(createdUser);
+              await newUsers.save();
+            } catch (err) {
+              const error = new HttpError(
+                "Signing up failed, please try again later.",
+                500
+              );
+              return next(error);
+            }
+            transporter.sendMail({
+              to: createdUser.email,
+              subject: "Thanks for your subscription",
+              //html: `Here is your password if you need to login without google: ${stringToHash}`,
+            });
+            let token;
+            try {
+              token = getToken(createdUser);
+            } catch (err) {
+              const error = new HttpError(
+                "Signing up failed, please try again later.",
+                500
+              );
+              return next(error);
+            }
+            res.status(200).json({
+              email: createdUser.email,
+              isAdmin: createdUser.isAdmin,
+              token: token,
+            });
+          } else if (existingUser.isLock === true) {
+            const error = new HttpError("Your account was blocked", 401);
+            return next(error);
+          } else {
+            let token;
+            try {
+              token = getToken(existingUser);
+            } catch (err) {
+              const error = new HttpError(
+                "Login failed, please try again later.",
+                500
+              );
+              return next(error);
+            }
+
+            res.status(200).json({
+              email: existingUser.email,
+              isAdmin: existingUser.isAdmin,
+              token: token,
+            });
+          }
+        }
+      });
+  } catch (err) {
+    const error = new HttpError("Login failed, please try again later.", 500);
+    return next(error);
+  }
+  return res.redirect("http://localhost:3000/");
+};
+
+const loginFacebook = async (req, res, next) => {
+  const { userID, accessToken } = req.body;
+  try {
+    let urlGraphFacebook = `https://graph.facebook.com/v2.11/${userID}/?fields=id,name,email&access_token=${accessToken}`;
+    fetch(urlGraphFacebook, {
+      method: "GET",
+    })
+      .then((response) => response.json())
+      .then(async (response) => {
+        const { email, name } = response;
+        let existingUser;
+        try {
+          existingUser = await User.findOne({ email: email });
+        } catch (err) {
+          const error = new HttpError("Login failed. Pls try again", 500);
+          return next(error);
+        }
+        if (!existingUser) {
+          let stringToHash = email + Math.floor(Math.random() * 3000);
+          console.log(stringToHash);
+          let hashedPassword;
+          hashedPassword = await brcypt.hash(stringToHash, 9);
+          const createdUser = {
+            fName: name,
+            email: email,
+            isAdmin: false,
+            isConfirm: true,
+            isLock: false,
+            password: hashedPassword,
+          };
+          let newUsers;
+          try {
+            console.log(createdUser);
+            newUsers = new User(createdUser);
+            await newUsers.save();
+          } catch (err) {
+            const error = new HttpError(
+              "Signing up failed, please try again later.",
+              500
+            );
+            return next(error);
+          }
+          let token;
+          try {
+            token = getToken(createdUser);
+          } catch (err) {
+            const error = new HttpError(
+              "Signing up failed, please try again later.",
+              500
+            );
+            return next(error);
+          }
+          res.status(200).json({
+            email: createdUser.email,
+            isAdmin: existingUser.isAdmin,
+            token: token,
+          });
+        } else if (existingUser.isLock === true) {
+          const error = new HttpError("Your account was blocked", 401);
+          return next(error);
+        } else {
+          let token;
+          try {
+            token = getToken(existingUser);
+          } catch (err) {
+            const error = new HttpError(
+              "Login failed, please try again later.",
+              500
+            );
+            return next(error);
+          }
+          res.status(200).json({
+            email: existingUser.email,
+            isAdmin: existingUser.isAdmin,
+            token: token,
+          });
+        }
+      });
+  } catch (err) {
+    const error = new HttpError("Login failed, please try again later.", 500);
+    return next(error);
+  }
+  return res.redirect("http://localhost:3000/");
+};
+
 const getConfirmation = async (req, res, next) => {
   const token = req.params.token;
   const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
@@ -173,7 +358,7 @@ const getConfirmation = async (req, res, next) => {
   }
 
   //res.status(200).json({message: 'Verify email Success'});
-  return res.redirect("http://localhost:3001/signupsuccess/");
+  return res.redirect("http://localhost:3000/signupsuccess/");
 };
 
 const getAllUsers = async (req, res, next) => {
@@ -405,4 +590,6 @@ module.exports = {
   getUserById,
   admin,
   loginAdmin,
+  loginGoogle,
+  loginFacebook,
 };
