@@ -1,10 +1,72 @@
 const mongoose = require("mongoose");
 const Order = require("../models/orders");
 const Product = require("../models/products");
+const Branch = require("../models/branches");
 
 const { validationResult } = require("express-validator");
 
 const HttpError = require("../error-handle/http-error");
+
+const { create_payment, execute_payment } = require("../middleware/paypal");
+
+const payment = async (req, res, next) => {
+  const itemsList = JSON.parse(req.body.itemsList);
+  let total;
+  total = 0;
+  for (i = 0; i < itemsList.length; i++) {
+    total += parseFloat(itemsList[i].price) * parseFloat(itemsList[i].quantity);
+  }
+  console.log(total);
+  console.log(itemsList);
+  create_payment(itemsList, total);
+  payment.payment.create_payment(
+    create_payment_json,
+    function (error, payment) {
+      if (error) {
+        throw error;
+      } else {
+        for (let i = 0; i < payment.links.length; i++) {
+          if (payment.links[i].rel === "approval_url") {
+            res.status(200).json({ link: payment.links[i].href });
+          }
+        }
+      }
+    }
+  );
+};
+
+const success = async (req, res, next) => {
+  const payerId = req.params.payerID;
+  const paymentId = req.params.paymentId;
+  4;
+
+  execute_payment(payerId);
+  paypal.payment.execute(
+    paymentId,
+    execute_payment_json,
+    function (error, payment) {
+      if (error) {
+        console.log(error.response);
+        throw error;
+      } else {
+        var responseHTML =
+          '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "*");window.close();</script></html>';
+        responseHTML = responseHTML.replace(
+          "%value%",
+          JSON.stringify({
+            message: "Success",
+            errorCode: 0,
+          })
+        );
+        res.status(200).send(responseHTML);
+      }
+    }
+  );
+};
+
+const cancel = async (req, res, next) => {
+  res.status(200).json({ message: "Cancel", errorCode: 1 });
+};
 
 const createOrder = async (req, res, next) => {
   const errors = validationResult(req);
@@ -26,6 +88,7 @@ const createOrder = async (req, res, next) => {
     userAddress: req.body.userAddress,
     userId: req.body.userId,
   };
+  
   try {
     const newOrder = new Order(createOrder);
     await newOrder.save();
@@ -166,6 +229,35 @@ const getOrderByUserId = async (req, res, next) => {
   res.json({ orders });
 };
 
+const createOrderNew = async(req, res, next) => {
+
+  const createOrder = {
+    customerName: req.body.customerName,
+    customerAddress: req.body.customerAddress,
+    customerPhone: req.body.customerPhone,
+    totalPrices: req.body.totalPrices,
+    productlist: req.body.productlist,
+  };
+  let newOrder;
+  try {
+    console.log("con cho mongo")
+    console.log(createOrder);
+    newOrder = new Order(createOrder);
+    console.log(1)
+    await newOrder.save();
+    console.log(newOrder);
+  } catch(err){
+    const error = new HttpError(
+      "Something went wrong, could not find any user.",
+      500
+    );
+    return next(error);
+  }
+  res.status(200).json({
+    newOrder
+  });
+}
+
 module.exports = {
   createOrder,
   updateOrderById,
@@ -173,4 +265,8 @@ module.exports = {
   getOrderById,
   getAllOrder,
   getOrderByUserId,
+  payment,
+  success,
+  cancel,
+  createOrderNew
 };
