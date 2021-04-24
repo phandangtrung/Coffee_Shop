@@ -20,7 +20,7 @@ const Checkout = () => {
   return (
     <SafeAreaView
       style={{
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         height: '100%',
         backgroundColor: '#f7f9fa',
       }}>
