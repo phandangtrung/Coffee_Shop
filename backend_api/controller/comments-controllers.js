@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Comment = require("../models/comments");
-const Product = require("../models/products");
+const {products} = require("../models/products");
 
 const { validationResult } = require("express-validator");
 

@@ -52,7 +52,7 @@ const createProduct = async (req, res, next) => {
     };
     console.log(createProduct);
     try {
-      const newProducts = new Product(createProduct);
+      const newProducts = new products(createProduct);
       await newProducts.save();
       console.log(newProducts);
       res.status(200).json({
@@ -73,7 +73,6 @@ const createProduct = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      //quantity: req.body.quantity,
       status: req.body.status,
       reviews: req.body.reviews,
       createAt: req.body.createAt,
@@ -83,7 +82,7 @@ const createProduct = async (req, res, next) => {
     };
     console.log(createProduct);
     try {
-      const newProducts = new Product(createProduct);
+      const newProducts = new products(createProduct);
       await newProducts.save();
       console.log(newProducts);
       res.status(200).json({
@@ -119,7 +118,6 @@ const updateProductbyId = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      //quantity: req.body.quantity,
       status: req.body.status,
       reviews: req.body.reviews,
       createAt: req.body.createAt,
@@ -127,7 +125,7 @@ const updateProductbyId = async (req, res, next) => {
     };
     try {
       let products;
-      products = await Product.findByIdAndUpdate(ProId, updatedProduct);
+      products = await products.findByIdAndUpdate(ProId, updatedProduct);
       console.log(products);
       return res.status(200).json({
         message: "Update Product success",
@@ -147,7 +145,6 @@ const updateProductbyId = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      //quantity: req.body.quantity,
       status: req.body.status,
       reviews: req.body.reviews,
       createAt: req.body.createAt,
@@ -156,7 +153,7 @@ const updateProductbyId = async (req, res, next) => {
     };
     try {
       let products;
-      products = await Product.findByIdAndUpdate(ProId, updatedProduct);
+      products = await products.findByIdAndUpdate(ProId, updatedProduct);
       console.log(products);
       return res.status(200).json({
         message: "Update Product success",
@@ -176,7 +173,7 @@ const deleteProductById = async (req, res, next) => {
   const ProId = req.params.pid;
   let products;
   try {
-    products = await Product.findByIdAndDelete(ProId);
+    products = await products.findByIdAndDelete(ProId);
   } catch (err) {
     const error = new HttpError("Something went wrong, can not delete", 500);
     return next(error);
@@ -235,7 +232,7 @@ const getProductByCateId = async (req, res, next) => {
   const CateId = req.params.cid;
   let products;
   try {
-    products = await Product.find({ categoryId: CateId });
+    products = await products.find({ categoryId: CateId });
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find a product.",

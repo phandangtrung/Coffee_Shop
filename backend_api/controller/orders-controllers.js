@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Order = require("../models/orders");
-const Product = require("../models/products");
+const { products } = require("../models/products");
 const Branch = require("../models/branches");
 
 const { validationResult } = require("express-validator");
@@ -84,50 +84,54 @@ const createOrder = async (req, res, next) => {
     note: req.body.status,
     createAt: req.body.createAt,
     doneAt: req.body.doneAt,
-    productlist: req.body.productlist,
-    userAddress: req.body.userAddress,
+    productList: req.body.productList,
+    quantity: req.body.quantity,
+    branchId: req.body.branchId,
     userId: req.body.userId,
   };
-  
-  try {
-    const newOrder = new Order(createOrder);
-    await newOrder.save();
-    console.log("Successfull");
-    console.log(newOrder.productlist[0].product_id);
-    console.log(newOrder.productlist.length);
-    let i;
-    for (i = 0; i < newOrder.productlist.length; i++) {
-      console.log(i);
-      productId = newOrder.productlist[i].product_id;
+  const BrId = req.params.bid;
+  const branches = Branch.findById({ branchId: BrId });
+  if (branches.exists) {
+    try {
+      const newOrder = new Order(createOrder);
+      await newOrder.save();
+      console.log("Successfull");
+      console.log(newOrder.productlist[0].product_id);
+      console.log(newOrder.productlist.length);
+      let i;
+      for (i = 0; i < newOrder.productlist.length; i++) {
+        console.log(i);
+        productId = newOrder.productlist[i].product_id;
 
-      let productInfo;
-      productInfo = await Product.findById(productId);
-      console.log(productInfo);
+        let branchInfo;
+        productInfo = await Product.findById(productId);
+        console.log(productInfo);
 
-      let productQuantityUpdate;
-      productQuantityUpdate =
-        productInfo.quantity - newOrder.productlist[i].quantity;
-      console.log(productQuantityUpdate);
+        let productQuantityUpdate;
+        productQuantityUpdate =
+          productInfo.quantity - newOrder.productlist[i].quantity;
+        console.log(productQuantityUpdate);
 
-      let productUpdate;
-      const quantityUpdate = {
-        quantity: productQuantityUpdate,
-      };
-      productUpdate = await Product.findByIdAndUpdate(
-        productId,
-        quantityUpdate
-      );
+        let productUpdate;
+        const quantityUpdate = {
+          quantity: productQuantityUpdate,
+        };
+        productUpdate = await Product.findByIdAndUpdate(
+          productId,
+          quantityUpdate
+        );
+      }
+      res.status(200).json({
+        message: "Create success",
+        newOrder,
+      });
+    } catch (error) {
+      if (error.name === "MongoError" && error.code === 11000) {
+        // Duplicate username
+        return res.status(422).send({ message: "Order already exist!" });
+      }
+      return res.status(422).send(error);
     }
-    res.status(200).json({
-      message: "Create success",
-      newOrder,
-    });
-  } catch (error) {
-    if (error.name === "MongoError" && error.code === 11000) {
-      // Duplicate username
-      return res.status(422).send({ message: "Order already exist!" });
-    }
-    return res.status(422).send(error);
   }
 };
 
@@ -229,34 +233,42 @@ const getOrderByUserId = async (req, res, next) => {
   res.json({ orders });
 };
 
-const createOrderNew = async(req, res, next) => {
-
+const createOrderNew = async (req, res, next) => {
   const createOrder = {
     customerName: req.body.customerName,
     customerAddress: req.body.customerAddress,
     customerPhone: req.body.customerPhone,
     totalPrices: req.body.totalPrices,
-    productlist: req.body.productlist,
   };
-  let newOrder;
+
+  const listProducQuantity = req.body.productList;
+
   try {
-    console.log("con cho mongo")
-    console.log(createOrder);
-    newOrder = new Order(createOrder);
-    console.log(1)
+    const newOrder = new Order(createOrder);
+    console.log(1);
+    for (const productQuantity in listProducQuantity) {
+      let product;
+      console.log(listProducQuantity[productQuantity].productId);
+      product = await products.findById(
+        listProducQuantity[productQuantity].productId
+      );
+      console.log(product);
+      //Add a embedded document in array
+      newOrder.productList.push({
+        pro: product,
+        quantity: listProducQuantity[productQuantity].quantity,
+      });
+    }
+    newOrder.markModified("order.productList");
+    console.log(newOrder.productList);
     await newOrder.save();
-    console.log(newOrder);
-  } catch(err){
-    const error = new HttpError(
-      "Something went wrong, could not find any user.",
-      500
-    );
-    return next(error);
+    res.status(200).json({
+      newOrder,
+    });
+  } catch (error) {
+    return res.status(422).send(error);
   }
-  res.status(200).json({
-    newOrder
-  });
-}
+};
 
 module.exports = {
   createOrder,
@@ -268,5 +280,5 @@ module.exports = {
   payment,
   success,
   cancel,
-  createOrderNew
+  createOrderNew,
 };
