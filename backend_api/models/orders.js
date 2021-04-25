@@ -8,8 +8,7 @@ const ordersSchema = new mongoose.Schema({
   totalPrices: { type: Number, require: false },
   status: { type: Boolean, default: true },
   note: { type: String, required: false },
-  createAt: { type: Date, require: false },
-  doneAt: { type: Date, require: false },
+  // doneAt: { type: Date, require: false },
   productList: [
     {
       _id: false,

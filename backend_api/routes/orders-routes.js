@@ -13,7 +13,7 @@ router.get("/payment/cancel", ordersController.cancel);
 router.get("/:oid", ordersController.getOrderById);
 router.get("/user/:uid", ordersController.getOrderByUserId);
 
-router.post("/", ordersController.createOrder);
+// router.post("/", ordersController.createOrder);
 router.post("/create/order", ordersController.createOrderNew);
 
 router.put("/:oid", ordersController.updateOrderById);

@@ -29,10 +29,10 @@ const createBranches = async (req, res, next) => {
     alias: getAlias(req.body.name),
     listProduct: req.body.listProduct,
   };
-  const existBranch = Branch.find({ name: "name" });
+  const existBranch = await Branch.find({ name: "name" });
   if(existBranch.exists){
     return res.status(422).json({
-      message: "The branch name has been existed",
+      message: "The branch's name has been existed",
     })
   }
   try {
