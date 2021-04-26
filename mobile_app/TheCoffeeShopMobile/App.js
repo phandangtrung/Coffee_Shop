@@ -14,6 +14,7 @@ import Home from './src/screens/Home/index';
 import Profile from './src/screens/Profile/index';
 import Product from './src/screens/Product/index';
 import Checkout from './src/screens/Checkout/index';
+import Login from './src/screens/Login/index';
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const MaterialBottomTab = createMaterialBottomTabNavigator();
@@ -51,49 +52,62 @@ const App = () => {
 
   return (
     <NavigationContainer>
-      <Tab.Navigator
-        tabBarOptions={{
-          activeTintColor: '#ffae5d',
-          color: '#6f7865',
-        }}>
-        {/* <MaterialBottomTab.Screen name="Home" component={createHomeStack} /> */}
-        <Tab.Screen
-          name="Home"
-          component={MyStack}
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Login"
+          component={Login}
           options={{
-            tabBarLabel: 'Home',
-            tabBarIcon: ({color}) => (
-              <FontAwesome5
-                style={{fontSize: 20}}
-                color={color}
-                name={'coffee'}
-                solid
-              />
-            ),
-          }}
-          // children={
-          //   <Stack.Navigator>
-          //     <Stack.Screen name="Product" component={Product} />
-          //   </Stack.Navigator>
-          // }
-        />
-        <Tab.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            tabBarLabel: 'Profile',
-            tabBarIcon: ({color}) => (
-              <FontAwesome5
-                style={{fontSize: 20}}
-                color={color}
-                name={'user'}
-                solid
-              />
-            ),
+            headerTintColor: 'white',
+            headerStyle: {backgroundColor: 'tomato'},
+            headerShown: false,
           }}
         />
-      </Tab.Navigator>
+      </Stack.Navigator>
     </NavigationContainer>
+    // <NavigationContainer>
+    //   <Tab.Navigator
+    //     tabBarOptions={{
+    //       activeTintColor: '#ffae5d',
+    //       color: '#6f7865',
+    //     }}>
+    //     {/* <MaterialBottomTab.Screen name="Home" component={createHomeStack} /> */}
+    //     <Tab.Screen
+    //       name="Home"
+    //       component={MyStack}
+    //       options={{
+    //         tabBarLabel: 'Home',
+    //         tabBarIcon: ({color}) => (
+    //           <FontAwesome5
+    //             style={{fontSize: 20}}
+    //             color={color}
+    //             name={'coffee'}
+    //             solid
+    //           />
+    //         ),
+    //       }}
+    //       // children={
+    //       //   <Stack.Navigator>
+    //       //     <Stack.Screen name="Product" component={Product} />
+    //       //   </Stack.Navigator>
+    //       // }
+    //     />
+    //     <Tab.Screen
+    //       name="Profile"
+    //       component={Profile}
+    //       options={{
+    //         tabBarLabel: 'Profile',
+    //         tabBarIcon: ({color}) => (
+    //           <FontAwesome5
+    //             style={{fontSize: 20}}
+    //             color={color}
+    //             name={'user'}
+    //             solid
+    //           />
+    //         ),
+    //       }}
+    //     />
+    //   </Tab.Navigator>
+    // </NavigationContainer>
   );
 };
 
