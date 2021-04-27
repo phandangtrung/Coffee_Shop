@@ -15,10 +15,14 @@ import {
 import {Picker} from '@react-native-picker/picker';
 import {Avatar, Card, Input, Icon} from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
+import {AuthContext} from '../../config/context';
+
 const Profile = () => {
   const [search, setsearch] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
   const drawer = useRef(null);
+  const {signOut} = React.useContext(AuthContext);
   const ProfileTag = ({iconP, titleP, dcrP}) => (
     <View
       style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
@@ -230,16 +234,30 @@ const Profile = () => {
           </TouchableOpacity>
         </View>
       </View>
-
-      <Text
-        style={{
-          textAlign: 'center',
-          fontSize: 15,
-          color: 'grey',
-          fontStyle: 'italic',
-        }}>
-        {'kaitrung99@gmail.com'}
-      </Text>
+      <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+        <View
+          style={{flexDirection: 'row', alignItems: 'center', paddingRight: 5}}>
+          <TouchableOpacity
+            onPress={() => {
+              signOut();
+            }}>
+            <FontAwesome5
+              style={{color: 'white', fontSize: 15, color: '#4b5d53'}}
+              name={'sign-out-alt'}
+              solid
+            />
+          </TouchableOpacity>
+        </View>
+        <Text
+          style={{
+            textAlign: 'center',
+            fontSize: 15,
+            color: 'grey',
+            fontStyle: 'italic',
+          }}>
+          {'kaitrung99@gmail.com'}
+        </Text>
+      </View>
       <View style={{flexDirection: 'column', paddingTop: 20}}>
         <View style={{marginBottom: 20}}>
           <ProfileTag

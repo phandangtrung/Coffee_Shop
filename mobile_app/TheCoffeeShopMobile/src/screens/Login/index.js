@@ -11,10 +11,12 @@ import {
   TouchableOpacity,
   Modal,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 
 import DropShadow from 'react-native-drop-shadow';
 import LinearGradient from 'react-native-linear-gradient';
+import {AuthContext} from '../../config/context';
 
 import CommentTag from '../../components/commentTag/index';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
@@ -22,6 +24,20 @@ import {Avatar, Card, Input, Icon} from 'react-native-elements';
 
 const Login = () => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [account, setAccount] = useState({us: '', pw: ''});
+  const [isloading, setIsloading] = useState(false);
+
+  const {signIn} = React.useContext(AuthContext);
+
+  const onchangKey = (usname, password) => {
+    if (password === ' ') {
+      setAccount({...account, us: usname});
+    } else setAccount({...account, pw: password});
+  };
+  const loginHandle = () => {
+    console.log('>>ac', account);
+    signIn(account.us, account.pw);
+  };
   return (
     <ImageBackground
       style={{
@@ -69,6 +85,7 @@ const Login = () => {
                   solid
                 />
               }
+              onChangeText={(values) => onchangKey(values, ' ')}
             />
           </View>
           <View style={{width: '90%'}}>
@@ -81,23 +98,43 @@ const Login = () => {
                   solid
                 />
               }
+              onChangeText={(values) => onchangKey(' ', values)}
               secureTextEntry={true}
             />
           </View>
-          <View
+          <TouchableOpacity
             style={{
-              width: '75%',
+              width: '100%',
               height: 45,
-              backgroundColor: '#4a507a',
-              borderRadius: 20,
               flexDirection: 'row',
               justifyContent: 'center',
-              alignItems: 'center',
+            }}
+            onPress={() => {
+              loginHandle();
             }}>
-            <Text style={{fontSize: 18, color: 'white', fontWeight: 'bold'}}>
-              {'Login'}
-            </Text>
-          </View>
+            <View
+              style={{
+                width: '75%',
+                height: 45,
+                backgroundColor: '#4a507a',
+                borderRadius: 20,
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  textAlign: 'center',
+                  color: 'white',
+                  fontWeight: 'bold',
+                }}>
+                {'Login'}
+              </Text>
+              {/* <ActivityIndicator size="large" color="#ffff" /> */}
+            </View>
+          </TouchableOpacity>
+
           <View style={{paddingTop: 20}}></View>
           <View
             style={{
