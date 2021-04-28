@@ -1,6 +1,6 @@
 import 'react-native-gesture-handler';
 import React, {useMemo, useEffect, useState} from 'react';
-import {View, Text} from 'react-native';
+import {View, Text, Alert} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import {createStackNavigator} from '@react-navigation/stack';
@@ -11,13 +11,17 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {AuthContext} from './src/config/context';
 import Loading from './src/components/loading/Loading';
-
+import {serport} from './src/config/port';
+import axios from 'axios';
 import AsyncStorage from '@react-native-community/async-storage';
 import Home from './src/screens/Home/index';
 import Profile from './src/screens/Profile/index';
 import Product from './src/screens/Product/index';
 import Checkout from './src/screens/Checkout/index';
 import Login from './src/screens/Login/index';
+import {Overlay} from 'react-native-elements';
+import {Button} from 'react-native';
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const MaterialBottomTab = createMaterialBottomTabNavigator();
@@ -26,6 +30,15 @@ const MaterialTopTab = createMaterialTopTabNavigator();
 
 const App = () => {
   // const [userToken, setUserToken] = useState(null);
+  const createWrongAlert = () =>
+    Alert.alert('Login failed', 'Wrong username or password ', [
+      {text: 'OK', onPress: () => console.log('OK Pressed')},
+    ]);
+  const createNullAlert = () =>
+    Alert.alert('Login failed', 'Username or Password must not be left blank', [
+      {text: 'OK', onPress: () => console.log('OK Pressed')},
+    ]);
+
   const initialLoginState = {
     isLoading: true,
     userName: null,
@@ -67,17 +80,42 @@ const App = () => {
     () => ({
       signIn: async (userName, password) => {
         // setUserToken('fgkj');
+        const accountinfo = {email: userName, password: password};
         let userToken;
         userToken = null;
-        if (userName === 'user' && password === 'pass') {
-          try {
-            userToken = 'dfgdfg';
-            await AsyncStorage.setItem('userToken', userToken);
-          } catch (e) {
-            console.log(e);
-          }
+
+        if (userName === '' || password === '') {
+          createNullAlert();
+        } else {
+          axios
+            .post(`${serport}/users/login`, accountinfo)
+            .then((response) => {
+              console.log('>>reponse', response?.data);
+              userToken = response?.data.token;
+              console.log('>>tokenrp', userToken);
+
+              try {
+                dispatch({type: 'LOGIN', id: userName, token: userToken});
+                AsyncStorage.setItem('userToken', userToken);
+              } catch (e) {
+                console.log(e);
+              }
+            })
+            .catch((error) => {
+              createWrongAlert();
+              console.log('Error: ', error);
+            });
+          // setTimeout(function(){ if (checkpass) {
+          //   try {
+          //     dispatch({type: 'LOGIN', id: userName, token: userToken});
+          //     await AsyncStorage.setItem('userToken', userToken);
+          //   } catch (e) {
+          //     console.log(e);
+          //   }
+          // } else {
+          //   createWrongAlert();
+          // } }, 2000);
         }
-        dispatch({type: 'LOGIN', id: userName, token: userToken});
       },
       signOut: async () => {
         // setUserToken(null);
