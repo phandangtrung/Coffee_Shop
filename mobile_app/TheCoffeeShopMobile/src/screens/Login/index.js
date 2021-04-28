@@ -71,13 +71,13 @@ const Login = () => {
               fontWeight: 'bold',
               color: '#4a507a',
             }}>
-            {'Login'}
+            {'Đăng nhập'}
           </Text>
         </View>
         <View style={{width: '100%', alignItems: 'center', flex: 1}}>
           <View style={{width: '90%'}}>
             <Input
-              placeholder="User name"
+              placeholder="Tên đăng nhập"
               leftIcon={
                 <FontAwesome5
                   style={{color: 'white', fontSize: 20, color: 'grey'}}
@@ -90,7 +90,7 @@ const Login = () => {
           </View>
           <View style={{width: '90%'}}>
             <Input
-              placeholder="Password"
+              placeholder="Mật khẩu"
               leftIcon={
                 <FontAwesome5
                   style={{color: 'white', fontSize: 20, color: 'grey'}}
@@ -129,7 +129,7 @@ const Login = () => {
                   color: 'white',
                   fontWeight: 'bold',
                 }}>
-                {'Login'}
+                {'Đăng nhập'}
               </Text>
               {/* <ActivityIndicator size="large" color="#ffff" /> */}
             </View>
@@ -138,13 +138,13 @@ const Login = () => {
           <View style={{paddingTop: 20}}></View>
           <View
             style={{
-              width: '70%',
+              width: '63%',
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
               paddingTop: 10,
             }}>
-            <Text style={{color: 'grey'}}>{'Or Login using social media'}</Text>
+            <Text style={{color: 'grey'}}>{'Đăng nhập bằng Google'}</Text>
             <Image
               source={require('../../img/google-2981831-2476479.png')}
               style={{width: 20, height: 20}}
@@ -156,11 +156,11 @@ const Login = () => {
         style={{
           paddingTop: 20,
           flexDirection: 'row',
-          width: '75%',
+          width: '71%',
           justifyContent: 'space-between',
         }}>
         <Text style={{fontSize: 15, color: 'white'}}>
-          {"Don't you have an account?"}
+          {'Bạn không có tài khoản?'}
         </Text>
         <Text
           style={{
@@ -169,7 +169,7 @@ const Login = () => {
             textDecorationLine: 'underline',
             fontStyle: 'italic',
           }}>
-          {'Resiger Now'}
+          {'Đăng ký ngay'}
         </Text>
       </View>
     </ImageBackground>

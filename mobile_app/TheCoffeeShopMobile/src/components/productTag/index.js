@@ -26,7 +26,7 @@ const ProductTag = (props) => {
             uri: `${imgport}/${props.imagesProduct}`,
           }}
           style={{
-            height: 100,
+            height: 130,
             width: '100%',
             resizeMode: 'cover',
             borderTopRightRadius: 13,

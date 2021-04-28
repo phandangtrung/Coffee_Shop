@@ -238,15 +238,15 @@ const Home = ({navigation}) => {
                     <Image
                       source={{
                         uri:
-                          'https://i.pinimg.com/originals/96/c2/d0/96c2d06fbe198b29deed800ebc97c338.png',
+                          'https://product.hstatic.net/1000392212/product/oq-web-pc-lycafe-01_6aadedde0e28446b9e6f1bbfe3988f9a_master.png',
                       }}
                       style={{
-                        width: 130,
-                        height: 130,
+                        width: 170,
+                        height: 170,
 
                         resizeMode: 'contain',
-                        marginLeft: 230,
-                        marginTop: -70,
+                        marginLeft: 210,
+                        marginTop: -90,
                       }}
                     />
                   </DropShadow>
@@ -263,7 +263,7 @@ const Home = ({navigation}) => {
           keyExtractor={(item) => `key-${item._id}`}
         /> */}
 
-        {/* <TouchableOpacity onPress={() => drawer.current.openDrawer()}>
+        <TouchableOpacity onPress={() => drawer.current.openDrawer()}>
           <View
             style={{
               backgroundColor: '#ffb460',
@@ -291,7 +291,7 @@ const Home = ({navigation}) => {
               {'30.000đ'}
             </Text>
           </View>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </SafeAreaView>
     </DrawerLayoutAndroid>
   );
