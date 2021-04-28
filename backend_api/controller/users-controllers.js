@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const HttpError = require("../error-handle/http-error");
 const User = require("../models/users");
+const Branch = require("../models/branches");
 const { OAuth2Client } = require("google-auth-library");
 const fetch = require("node-fetch");
 require("dotenv/config");
@@ -16,8 +17,9 @@ const { response } = require("express");
 const client = new OAuth2Client(process.env.google_client_ID);
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
+  // host: "smtp.gmail.com",
+  // port: 465,
+  service: "Gmail",
   secure: true,
   auth: {
     user: process.env.GMAIL,
@@ -149,6 +151,7 @@ const login = async (req, res, next) => {
   res.status(200).json({
     email: existingUser.email,
     isAdmin: existingUser.isAdmin,
+    isEmployee: existingUser.isEmployee,
     token: token,
   });
 };
@@ -181,6 +184,7 @@ const loginGoogle = async (req, res, next) => {
               fName: name,
               email: email,
               isAdmin: false,
+              isEmployee: false,
               isConfirm: true,
               isLock: false,
               password: hashedPassword,
@@ -273,6 +277,7 @@ const loginFacebook = async (req, res, next) => {
             fName: name,
             email: email,
             isAdmin: false,
+            isEmployee: false,
             isConfirm: true,
             isLock: false,
             password: hashedPassword,
@@ -439,6 +444,7 @@ const updateMyUser = async (req, res, next) => {
     gender: req.body.gender,
     birthday: req.body.birthday,
     phone: req.body.phone,
+    address: req.body.address,
   };
 
   let userUpdate;
@@ -521,7 +527,6 @@ const admin = async (req, res, next) => {
   await newAdmin.save();
   res.status(201).json({
     createdAdmin,
-    message: "Created Admin",
   });
   let token;
   try {
@@ -574,9 +579,129 @@ const loginAdmin = async (req, res, next) => {
     email: existingAdmin.email,
     isAdmin: existingAdmin.isAdmin,
     token: token,
-    message: "Login successful",
   });
 };
+
+const addEmployee = async (req, res, next) => {
+  const createEmployee = {
+    fName: req.body.fName,
+    email: req.body.email,
+    password: req.body.password,
+    isAdmin: false,
+    isEmployee: true,
+    isConfirm: true,
+    isLock: false,
+    branchId: req.body.branchId,
+  };
+  let newEmployee = new User(createEmployee);
+  await newEmployee.save();
+  res.status(201).json({ newEmployee });
+  let token;
+  let hashedPassword;
+  try {
+    hashedPassword = await brcypt.hash(password, 9);
+    token = getToken(createEmployee);
+  } catch (err) {
+    const error = new HttpError("Login failed, please try again later.", 500);
+    return next(error);
+  }
+  res.status(201).json({
+    newEmployee,
+    token,
+  });
+};
+
+const loginEmployee = async (req, res, next) => {
+  const { email, password } = req.body;
+  console.log(email, password);
+  let existingEmployee;
+  try {
+    existingEmployee = await User.findOne({ email: email });
+    console.log(existingEmployee);
+  } catch (err) {
+    const error = new HttpError("Login failed. Pls try again", 500);
+    return next(error);
+  }
+
+  if (!existingEmployee) {
+    const error = new HttpError("Email or Password is invalid", 401);
+    return next(error);
+  }
+  if (existingEmployee.isConfirm === false || existingEmployee.isLock === true) {
+    const error = new HttpError(
+      "Your account is not confirm or was locked",
+      401
+    );
+    return next(error);
+  }
+
+  let isValidPassword;
+  try {
+    isValidPassword = await brcypt.compare(password, existingUser.password);
+  } catch (err) {
+    const error = new HttpError("Something is error. Pls try again", 401);
+    return next(error);
+  }
+
+  if (!isValidPassword) {
+    const error = new HttpError("Email or Password is invalid", 401);
+    return next(error);
+  }
+
+  let token;
+  try {
+    token = getToken(existingEmployee);
+  } catch (err) {
+    const error = new HttpError("Login failed, please try again later.", 500);
+    return next(error);
+  }
+
+  res.status(200).json({
+    email: existingUser.email,
+    isEmployee: existingUser.isEmployee,
+    token: token,
+  });
+};
+
+
+
+// const loginEmployee = async (req, res, next) => {
+//   const { email, password } = req.body;
+//   console.log(email, password);
+
+//   let existingEmployee;
+//   try {
+//     existingEmployee = await User.findOne({ email: email });
+//     console.log(existingEmployee);
+//   } catch (err) {
+//     const error = new HttpError("Login failed. Pls try again", 500);
+//     return next(error);
+//   }
+
+//   if (!existingEmployee) {
+//     const error = new HttpError("Email or Password is invalid", 401);
+//     return next(error);
+//   }
+
+//   if (!existingEmployee.isEmployee) {
+//     const error = new HttpError("Account is not admin", 401);
+//     return next(error);
+//   }
+
+//   let token;
+//   try {
+//     token = getToken(branhId);
+//   } catch (err) {
+//     const error = new HttpError("Login failed, please try again later.", 500);
+//     return next(error);
+//   }
+
+//   res.status(200).json({
+//     email: existingEmployee.email,
+//     isEmployee: existingEmployee.isEmployee,
+//     token: token,
+//   });
+// };
 
 module.exports = {
   register,
@@ -590,6 +715,8 @@ module.exports = {
   getUserById,
   admin,
   loginAdmin,
+  loginEmployee,
+  addEmployee,
   loginGoogle,
   loginFacebook,
 };

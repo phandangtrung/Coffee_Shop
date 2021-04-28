@@ -270,6 +270,7 @@ const createOrderNew = async (req, res, next) => {
   const branchById = await Branch.findById(createOrder.branchId);
   try {
     const newOrder = new Order(createOrder);
+    //Run for loop for the listProduct in Order
     for (const i in listProduct) {
       let product;
       product = await products.findById(listProduct[i].productId);
@@ -279,7 +280,7 @@ const createOrderNew = async (req, res, next) => {
         pro: product,
         quantity: listProduct[i].quantity,
       });
-
+      //Run for loop for the listProduct in Branch
       for (const j in branchById.listProduct) {
         if (listProduct[i].productId == branchById.listProduct[j]._id) {
           branchById.listProduct[j].quantity -= listProduct[i].quantity;

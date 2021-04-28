@@ -29,18 +29,17 @@ const createBranches = async (req, res, next) => {
     alias: getAlias(req.body.name),
     listProduct: req.body.listProduct,
   };
-  const existBranch = await Branch.find({ name: "name" });
-  if(existBranch.exists){
-    return res.status(422).json({
-      message: "The branch's name has been existed",
-    })
-  }
+  // const existBranch = await Branch.find({ name: "name" });
+  // if(existBranch.exists){
+  //   return res.status(422).json({
+  //     message: "The branch's name has been existed",
+  //   })
+  // }
   try {
     const newbranch = new Branch(createBranches);
     await newbranch.save();
     console.log(newbranch);
     res.status(200).json({
-      message: "Create New Branch",
       newbranch,
     });
   } catch (error) {
