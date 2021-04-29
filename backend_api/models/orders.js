@@ -8,7 +8,8 @@ const ordersSchema = new mongoose.Schema({
   totalPrices: { type: Number, require: false },
   status: { type: Boolean, default: true },
   note: { type: String, required: false },
-  // doneAt: { type: Date, require: false },
+  createAt: { type: Date, default: Date.now },
+  doneAt: { type: Date, require: false },
   productList: [
     {
       _id: false,
@@ -16,8 +17,8 @@ const ordersSchema = new mongoose.Schema({
       quantity: { type: Number, require: false },
     },
   ],
-  branchId: { type: String, required: false },
-  userId: { type: String, required: false },
+  branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch" },
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
   shipperId: { type: String, required: false },
 });
 
