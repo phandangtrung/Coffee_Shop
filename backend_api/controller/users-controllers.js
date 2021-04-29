@@ -567,6 +567,19 @@ const loginAdmin = async (req, res, next) => {
     return next(error);
   }
 
+  let isValidPassword;
+  try {
+    isValidPassword = await brcypt.compare(password, existingUser.password);
+  } catch (err) {
+    const error = new HttpError("Something is error. Pls try again", 401);
+    return next(error);
+  }
+
+  if (!isValidPassword) {
+    const error = new HttpError("Email or Password is invalid", 401);
+    return next(error);
+  }
+
   let token;
   try {
     token = getToken(existingAdmin);
@@ -627,7 +640,10 @@ const loginEmployee = async (req, res, next) => {
     const error = new HttpError("Email or Password is invalid", 401);
     return next(error);
   }
-  if (existingEmployee.isConfirm === false || existingEmployee.isLock === true) {
+  if (
+    existingEmployee.isConfirm === false ||
+    existingEmployee.isLock === true
+  ) {
     const error = new HttpError(
       "Your account is not confirm or was locked",
       401
@@ -662,8 +678,6 @@ const loginEmployee = async (req, res, next) => {
     token: token,
   });
 };
-
-
 
 // const loginEmployee = async (req, res, next) => {
 //   const { email, password } = req.body;
