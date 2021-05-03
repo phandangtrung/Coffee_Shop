@@ -297,6 +297,32 @@ const createOrderNew = async (req, res, next) => {
   }
 };
 
+const getRevenue = async (req, res, next) => {
+  const bill = {
+    branchId: req.body.branchId,
+    startDay: req.body.startDay,
+    endDay: req.body.endDay,
+  };
+
+  let revenue;
+  try {
+    revenue = await Order.aggregate({
+      $match: {
+        branchId: $bill.branchId,
+        createAt: {
+          $gt: bill.startDay,
+          $lt: bill.endDay,
+        },
+      },
+    });
+  } catch (error) {
+    return res.status(422).send(error);
+  }
+  res.status(200).json({
+    revenue,
+  });
+};
+
 module.exports = {
   updateOrderById,
   deleteOrderById,
@@ -307,4 +333,5 @@ module.exports = {
   success,
   cancel,
   createOrderNew,
+  getRevenue,
 };
