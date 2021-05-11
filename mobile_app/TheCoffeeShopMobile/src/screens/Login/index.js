@@ -20,7 +20,7 @@ import {AuthContext} from '../../config/context';
 
 import CommentTag from '../../components/commentTag/index';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {Avatar, Card, Input, Icon} from 'react-native-elements';
+import {Avatar, Card, Input} from 'react-native-elements';
 
 const Login = () => {
   const [modalVisible, setModalVisible] = useState(false);
@@ -35,8 +35,13 @@ const Login = () => {
     } else setAccount({...account, pw: password});
   };
   const loginHandle = () => {
+    // setIsloading(true);
     console.log('>>ac', account);
     signIn(account.us, account.pw);
+    // const timer = setTimeout(() => {
+    //   setIsloading(false);
+    // }, 2000);
+    // return () => clearTimeout(timer);
   };
   return (
     <ImageBackground
@@ -102,38 +107,66 @@ const Login = () => {
               secureTextEntry={true}
             />
           </View>
-          <TouchableOpacity
-            style={{
-              width: '100%',
-              height: 45,
-              flexDirection: 'row',
-              justifyContent: 'center',
-            }}
-            onPress={() => {
-              loginHandle();
-            }}>
-            <View
+
+          {true ? (
+            <TouchableOpacity
               style={{
-                width: '75%',
+                width: '100%',
                 height: 45,
-                backgroundColor: '#4a507a',
-                borderRadius: 20,
                 flexDirection: 'row',
                 justifyContent: 'center',
-                alignItems: 'center',
+              }}
+              onPress={() => {
+                loginHandle();
               }}>
-              <Text
+              <View
                 style={{
-                  fontSize: 18,
-                  textAlign: 'center',
-                  color: 'white',
-                  fontWeight: 'bold',
+                  width: '75%',
+                  height: 45,
+                  backgroundColor: '#4a507a',
+                  borderRadius: 20,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}>
-                {'Đăng nhập'}
-              </Text>
-              {/* <ActivityIndicator size="large" color="#ffff" /> */}
+                <Text
+                  style={{
+                    fontSize: 18,
+                    textAlign: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}>
+                  {'Đăng nhập'}
+                </Text>
+                {/* <ActivityIndicator size="large" color="#ffff" /> */}
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <View
+              style={{
+                width: '100%',
+                height: 45,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <View
+                style={{
+                  width: '75%',
+                  height: 45,
+                  backgroundColor: '#4a507a',
+                  borderRadius: 20,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={require('../../img/post-loader.gif')}
+                  style={{width: 130, height: 130}}
+                />
+                {/* <ActivityIndicator size="large" color="#ffff" /> */}
+              </View>
             </View>
-          </TouchableOpacity>
+          )}
 
           <View style={{paddingTop: 20}}></View>
           <View

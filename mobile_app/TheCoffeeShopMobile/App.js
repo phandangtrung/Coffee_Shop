@@ -31,16 +31,18 @@ const MaterialTopTab = createMaterialTopTabNavigator();
 const App = () => {
   // const [userToken, setUserToken] = useState(null);
   const createWrongAlert = () =>
-    Alert.alert('Login failed', 'Wrong username or password ', [
-      {text: 'OK', onPress: () => console.log('OK Pressed')},
+    Alert.alert('Đăng nhập thất bại', 'Sai tên đăng nhập hoặc mật khẩu ', [
+      {text: 'Đóng', onPress: () => console.log('OK Pressed')},
     ]);
   const createNullAlert = () =>
-    Alert.alert('Login failed', 'Username or Password must not be left blank', [
-      {text: 'OK', onPress: () => console.log('OK Pressed')},
-    ]);
+    Alert.alert(
+      'Đăng nhập thất bại',
+      'Không được bỏ trống tên đăng nhập và mật khẩu',
+      [{text: 'Đóng', onPress: () => console.log('OK Pressed')}],
+    );
 
   const initialLoginState = {
-    isLoading: true,
+    isLoading: false,
     userName: null,
     userToken: null,
   };
@@ -80,6 +82,7 @@ const App = () => {
     () => ({
       signIn: async (userName, password) => {
         // setUserToken('fgkj');
+        loginState.isLoading = true;
         const accountinfo = {email: userName, password: password};
         let userToken;
         userToken = null;
@@ -97,6 +100,7 @@ const App = () => {
               try {
                 dispatch({type: 'LOGIN', id: userName, token: userToken});
                 AsyncStorage.setItem('userToken', userToken);
+                loginState.isLoading = false;
               } catch (e) {
                 console.log(e);
               }
@@ -104,6 +108,7 @@ const App = () => {
             .catch((error) => {
               createWrongAlert();
               console.log('Error: ', error);
+              loginState.isLoading = false;
             });
           // setTimeout(function(){ if (checkpass) {
           //   try {
@@ -138,13 +143,13 @@ const App = () => {
       let userToken;
       userToken = null;
       try {
-        loginState.userToken = await AsyncStorage.getItem('userToken');
-
+        userToken = await AsyncStorage.getItem('userToken');
         console.log('>>token', userToken);
       } catch (e) {
         console.log(e);
       }
-      dispatch({type: 'REGISTER', token: userToken});
+      console.log('>>tokendis', userToken);
+      dispatch({type: 'RETRIEVE_TOKEN', token: userToken});
     }, 1000);
   }, []);
 

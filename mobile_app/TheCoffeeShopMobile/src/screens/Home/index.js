@@ -23,7 +23,7 @@ import ProductCart from '../../components/productCart/index';
 import Loading from '../../components/loading/Loading';
 
 import connect1 from '../../api/connect1.tsx';
-
+import {connect} from 'react-redux';
 import {serport} from '../../config/port';
 
 const Home = ({navigation}) => {
