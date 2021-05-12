@@ -2,9 +2,8 @@ const express = require("express");
 const { check } = require("express-validator");
 
 const usersController = require("../controller/users-controllers");
-const { path } = require("dotenv/lib/env-options");
 const { isAdmin, isAuth, isEmployee } = require("../middleware/uilt");
-const { Router } = require("express");
+
 
 const router = express.Router();
 
@@ -27,11 +26,13 @@ router.post("/login/employee/loginEmployee", usersController.loginEmployee);
 router.post("/login", usersController.login);
 router.get("/confirmation/:token", usersController.getConfirmation);
 
+router.post("/forgotPass/", usersController.forgotPassword);
+router.put("/forgotPass/changePass/:token", usersController.changePassword);
+
 router.use(isAuth);
 
 router.get("/myUser", usersController.getMyUser);
 router.put("/myUser", usersController.updateMyUser);
-
 
 router.use(isAdmin);
 

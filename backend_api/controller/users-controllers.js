@@ -12,7 +12,6 @@ const { validationResult } = require("express-validator");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const { getToken } = require("../middleware/uilt");
-const { response } = require("express");
 
 const client = new OAuth2Client(process.env.google_client_ID);
 
@@ -99,7 +98,7 @@ const register = async (req, res, next) => {
   transporter.sendMail({
     to: createdUser.email,
     subject: "Confirm Email",
-    html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
+    html: `Please click this email to confirm your email: <a href="${url}">Click here</a>`,
   });
 };
 
@@ -154,6 +153,70 @@ const login = async (req, res, next) => {
     isEmployee: existingUser.isEmployee,
     token: token,
   });
+};
+
+const forgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ email: email });
+    console.log(existingUser);
+  } catch (err) {
+    const error = new HttpError("Something wrong", 500);
+    return next(error);
+  }
+  if (!existingUser) {
+    const error = new HttpError("User with email does not exist", 422);
+    return next(error);
+  }
+  let token;
+  try {
+    token = getToken(existingUser);
+  } catch (err) {
+    const error = new HttpError("Sonething wrong", 500);
+    return next(error);
+  }
+  res.status(201).json({
+    email: existingUser.email,
+    token: token,
+  });
+  const url = `${process.env.CLIENT_URL}/api/users/forgotPass/changePass/${token}`;
+  await transporter.sendMail({
+    to: existingUser.email,
+    subject: "Link change email",
+    html: `Please click link this email to change your email: <a href="${url}">Click here</a>`,
+    // html: `<p>${process.env.CLIENT_URL}/api/users/forgotPass/changePass/${token}</p>`
+  });
+};
+
+const changePassword = async (req, res, next) => {
+  const token = req.params.token;
+  const decodedToken = jwt.verify(token, process.env.CHANGE_PASS_KEY);
+  const userData = {
+    email: decodedToken.email,
+  };
+  console.log(user.email);
+  const changePass = {
+    password: req.body.password,
+  };
+  let existingUser;
+  try {
+    existingUser = await User.updateOne({ email: userData.email }, changePass);
+    console.log(existingUser);
+  } catch (err) {
+    const error = new HttpError("request time out", 500);
+    return next(error);
+  }
+  if (!existingUser) {
+    const error = new HttpError("Could not find any users", 404);
+    return next(error);
+  }
+
+  res.status(200).json({
+    message: "Update Successfully!",
+    existingUser,
+  });
+  return res.redirect("http://localhost:3000/api/users/forgotPass/updatePass/");
 };
 
 const loginGoogle = async (req, res, next) => {
@@ -679,47 +742,11 @@ const loginEmployee = async (req, res, next) => {
   });
 };
 
-// const loginEmployee = async (req, res, next) => {
-//   const { email, password } = req.body;
-//   console.log(email, password);
-
-//   let existingEmployee;
-//   try {
-//     existingEmployee = await User.findOne({ email: email });
-//     console.log(existingEmployee);
-//   } catch (err) {
-//     const error = new HttpError("Login failed. Pls try again", 500);
-//     return next(error);
-//   }
-
-//   if (!existingEmployee) {
-//     const error = new HttpError("Email or Password is invalid", 401);
-//     return next(error);
-//   }
-
-//   if (!existingEmployee.isEmployee) {
-//     const error = new HttpError("Account is not admin", 401);
-//     return next(error);
-//   }
-
-//   let token;
-//   try {
-//     token = getToken(branhId);
-//   } catch (err) {
-//     const error = new HttpError("Login failed, please try again later.", 500);
-//     return next(error);
-//   }
-
-//   res.status(200).json({
-//     email: existingEmployee.email,
-//     isEmployee: existingEmployee.isEmployee,
-//     token: token,
-//   });
-// };
-
 module.exports = {
   register,
   login,
+  forgotPassword,
+  changePassword,
   getConfirmation,
   lockUser,
   unlockUser,

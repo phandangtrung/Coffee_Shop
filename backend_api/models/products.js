@@ -12,7 +12,7 @@ const productsSchema = new mongoose.Schema(
     imagesProduct: { type: String, require: false },
     reviews: { type: String, require: false },
     ratings: { type: Number, require: false },
-    categoryId: { type: String, required: false },
+    categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "Category" },
   },
   {
     timestamps: true,

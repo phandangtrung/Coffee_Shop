@@ -170,7 +170,7 @@ const updateOrderById = async (req, res, next) => {
   const updatedOrder = {
     status: req.body.status,
     doneAt: req.body.doneAt,
-    shipperId: req.body.shipperId,
+    //shipperId: req.body.shipperId,
   };
   let orders;
   orders = await Order.findByIdAndUpdate(OrderId, updatedOrder);

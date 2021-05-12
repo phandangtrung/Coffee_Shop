@@ -19,7 +19,7 @@ const ordersSchema = new mongoose.Schema(
     ],
     branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch" },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    shipperId: { type: String, required: false },
+    //shipperId: { type: String, required: false },
   },
   {
     timestamps: true,

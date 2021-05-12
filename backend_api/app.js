@@ -49,7 +49,7 @@ app.use("/api/shippers", shippersRouters);
 app.use("/api/users", usersRouters);
 app.use("/api/comments", commentsRouters);
 app.use("/api/couponCode", couponCodeRouters);
-app.use("/api/branches",branchesRouters);
+app.use("/api/branches", branchesRouters);
 
 app.use((req, res, next) => {
   const error = new HttpError("Could not find this route.", 404);
@@ -65,13 +65,12 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-  .connect(
-    process.env.DB_CONNECTION,
-    { useNewUrlParser: true },
-    { useUnifiedTopology: true },
-    { useCreateIndex: true },
-    { useFindAndModify: false }
-  )
+  .connect(process.env.DB_CONNECTION, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  })
   .then(() => {
     app.listen(5000);
     console.log("Connect Success");
