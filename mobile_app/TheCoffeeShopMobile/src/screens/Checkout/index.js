@@ -12,11 +12,20 @@ import {
   Picker,
 } from 'react-native';
 import {Avatar, Card, Input, Icon} from 'react-native-elements';
-
+import {connect} from 'react-redux';
 import ProductCheckout from '../../components/productCheckout/index';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-const Checkout = () => {
+const Checkout = (props) => {
+  const formatCurrency = (monney) => {
+    const mn = String(monney);
+    return mn
+      .split('')
+      .reverse()
+      .reduce((prev, next, index) => {
+        return (index % 3 ? next : next + '.') + prev;
+      });
+  };
   return (
     <SafeAreaView
       style={{
@@ -80,56 +89,37 @@ const Checkout = () => {
               <View>
                 <Text
                   style={{fontSize: 18, fontStyle: 'italic', color: 'grey'}}>
-                  {'Tổng số: 4'}
+                  {`Loại sản phẩm: ${props.cart.length}`}
                 </Text>
               </View>
-              <View>
+              {/* <View>
                 <FontAwesome5
                   style={{color: '#ffb460', fontSize: 20}}
                   name={'trash-alt'}
                   solid
                 />
-              </View>
+              </View> */}
             </View>
             <ScrollView
               style={{paddingLeft: 10, paddingRight: 10}}
               horizontal={true}>
-              <View
-                style={{
-                  height: 70,
-                  width: 250,
-                  paddingRight: 20,
-                  marginRight: 5,
-                }}>
-                <ProductCheckout />
-              </View>
-              <View
-                style={{
-                  height: 70,
-                  width: 250,
-                  paddingRight: 20,
-                  marginRight: 5,
-                }}>
-                <ProductCheckout />
-              </View>
-              <View
-                style={{
-                  height: 70,
-                  width: 250,
-                  paddingRight: 20,
-                  marginRight: 5,
-                }}>
-                <ProductCheckout />
-              </View>
-              <View
-                style={{
-                  height: 70,
-                  width: 250,
-                  paddingRight: 20,
-                  marginRight: 5,
-                }}>
-                <ProductCheckout />
-              </View>
+              {props.cart.map((pro) => (
+                <View
+                  key={pro.id}
+                  style={{
+                    height: 70,
+                    width: 250,
+                    paddingRight: 20,
+                    marginRight: 5,
+                  }}>
+                  <ProductCheckout
+                    name={pro.name}
+                    prices={pro.prices}
+                    quantity={pro.quantity}
+                    imagesProduct={pro.imagesProduct}
+                  />
+                </View>
+              ))}
             </ScrollView>
           </View>
         </View>
@@ -508,7 +498,9 @@ const Checkout = () => {
               <Text style={{fontSize: 17, fontWeight: 'bold'}}>{'Tổng'}</Text>
             </View>
             <View>
-              <Text style={{fontSize: 17}}>{'200.000đ'}</Text>
+              <Text style={{fontSize: 17}}>{`${formatCurrency(
+                props.totalprice,
+              )}đ`}</Text>
             </View>
           </View>
         </Card>
@@ -521,4 +513,12 @@ const Checkout = () => {
     </SafeAreaView>
   );
 };
-export default Checkout;
+
+const mapStateToProps = (state) => {
+  return {
+    cart: state.cart.cartAr,
+    totalprice: state.cart.totalprice,
+  };
+};
+
+export default connect(mapStateToProps, {})(Checkout);

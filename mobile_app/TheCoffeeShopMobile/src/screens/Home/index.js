@@ -150,7 +150,7 @@ const Home = (props) => {
   };
   const drawer = useRef(null);
   const onclickProduct = () => {
-    navigation.navigate('Product');
+    props.navigation.navigate('Product');
   };
   const navigationView = () => (
     <View style={{backgroundColor: 'white', paddingTop: 10}}>
@@ -239,7 +239,7 @@ const Home = (props) => {
             </View>
             <View>
               <Button
-                onPress={() => navigation.navigate('Checkout')}
+                onPress={() => props.navigation.navigate('Checkout')}
                 style={{fontSize: 20}}
                 color="#ffb460"
                 title="Đặt đơn"
