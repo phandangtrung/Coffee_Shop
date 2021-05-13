@@ -12,13 +12,13 @@ import {
   FlatList,
 } from 'react-native';
 import {SearchBar} from 'react-native-elements';
-
 import DropShadow from 'react-native-drop-shadow';
 import LinearGradient from 'react-native-linear-gradient';
 
 import styles from './style';
 
 import ProductTag from '../../components/productTag/index';
+import {deleteProduct} from '../../components/productTag/actions/index';
 import ProductCart from '../../components/productCart/index';
 import Loading from '../../components/loading/Loading';
 
@@ -26,7 +26,7 @@ import connect1 from '../../api/connect1.tsx';
 import {connect} from 'react-redux';
 import {serport} from '../../config/port';
 
-const Home = ({navigation}) => {
+const Home = (props) => {
   const [search, setsearch] = useState('');
 
   const [product, setProduct] = useState([]);
@@ -37,7 +37,15 @@ const Home = ({navigation}) => {
     getListCategory();
     return () => {};
   }, []);
-
+  const formatCurrency = (monney) => {
+    const mn = String(monney);
+    return mn
+      .split('')
+      .reverse()
+      .reduce((prev, next, index) => {
+        return (index % 3 ? next : next + '.') + prev;
+      });
+  };
   const getListCategory = () => {
     const apiURL = `${serport}/categories`;
     setIsloading(true);
@@ -119,6 +127,7 @@ const Home = ({navigation}) => {
                 onclickProduct={onclickProduct}
                 color="red"
                 key={products._id}
+                id={products._id}
                 name={products.name}
                 description={products.description}
                 prices={products.prices}
@@ -145,51 +154,100 @@ const Home = ({navigation}) => {
   };
   const navigationView = () => (
     <View style={{backgroundColor: 'white', paddingTop: 10}}>
-      <ScrollView style={{height: '80%'}}>
+      {props.cart.length === 0 ? (
         <View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              paddingTop: 50,
+            }}>
+            <Image
+              source={require('../../img/emptycart.419d0783.png')}
+              style={{width: 200, height: 200}}
+            />
+          </View>
           <Text
             style={{
               textAlign: 'center',
               fontWeight: 'bold',
-              fontSize: 18,
-              color: 'grey',
+              fontSize: 20,
+              color: 'black',
+              paddingBottom: 10,
             }}>
-            {'TÓM TẮT ĐƠN HÀNG'}
+            {'Giỏ hàng trống'}
           </Text>
-          <ProductCart />
-          <ProductCart />
-          <ProductCart />
-          <ProductCart />
-        </View>
-      </ScrollView>
-      <View
-        style={{
-          width: '100%',
-          height: '20%',
-          padding: 10,
 
-          borderTopWidth: 0.3,
-          borderColor: 'grey',
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'space-between',
-            paddingBottom: 20,
-          }}>
-          <Text style={{fontSize: 18}}>{'Tổng cộng'}</Text>
-          <Text style={{fontSize: 18, fontWeight: 'bold'}}>{'59.000đ'}</Text>
+          <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+            <Text
+              style={{
+                textAlign: 'center',
+                fontWeight: 'bold',
+                fontSize: 16,
+                color: 'grey',
+                width: '80%',
+                paddingBottom: 30,
+              }}>
+              {'Bạn chưa thêm bất cứ sản phẩm nào vào giỏ hàng của mình'}
+            </Text>
+          </View>
         </View>
+      ) : (
         <View>
-          <Button
-            onPress={() => navigation.navigate('Checkout')}
-            style={{fontSize: 20}}
-            color="#ffb460"
-            title="Đặt đơn"
-          />
+          <ScrollView style={{height: '80%'}}>
+            <View>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontWeight: 'bold',
+                  fontSize: 18,
+                  color: 'grey',
+                }}>
+                {'TÓM TẮT ĐƠN HÀNG'}
+              </Text>
+              {props.cart.map((product) => (
+                <ProductCart
+                  key={product.id}
+                  name={product.name}
+                  prices={product.prices}
+                  quantity={product.quantity}
+                  ondeleteProduct={() => props.deleteProduct(product)}
+                />
+              ))}
+            </View>
+          </ScrollView>
+          <View
+            style={{
+              width: '100%',
+              height: '20%',
+              padding: 10,
+
+              borderTopWidth: 0.3,
+              borderColor: 'grey',
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between',
+                paddingBottom: 20,
+              }}>
+              <Text style={{fontSize: 18}}>{'Tổng cộng'}</Text>
+              <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                {`${formatCurrency(props.totalprice)}đ`}
+              </Text>
+            </View>
+            <View>
+              <Button
+                onPress={() => navigation.navigate('Checkout')}
+                style={{fontSize: 20}}
+                color="#ffb460"
+                title="Đặt đơn"
+              />
+            </View>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
   return (
@@ -288,7 +346,7 @@ const Home = ({navigation}) => {
                 color: 'white',
                 fontSize: 17,
               }}>
-              {'30.000đ'}
+              {`${formatCurrency(props.totalprice)}đ`}
             </Text>
           </View>
         </TouchableOpacity>
@@ -296,4 +354,16 @@ const Home = ({navigation}) => {
     </DrawerLayoutAndroid>
   );
 };
-export default Home;
+const mapStateToProps = (state) => {
+  return {
+    cart: state.cart.cartAr,
+    totalprice: state.cart.totalprice,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    deleteProduct: (product_current) =>
+      dispatch(deleteProduct(product_current)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

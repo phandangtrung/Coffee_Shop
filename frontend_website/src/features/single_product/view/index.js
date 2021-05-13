@@ -146,7 +146,7 @@ function SingleProduct({ props }) {
           <Col style={{ textAlign: "start" }} span={12}>
             <img
               alt="single-product"
-              src={`http://localhost:3000/${location.state.img}`}
+              src={`http://localhost:5000/${location.state.img}`}
             />
           </Col>
           <Col span={12}>

@@ -1,16 +1,22 @@
 import 'react-native-gesture-handler';
 import React from 'react';
-import {SafeAreaView, View, Text, Image} from 'react-native';
+import {SafeAreaView, View, Text, TouchableOpacity, Image} from 'react-native';
 import styles from './style';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 const ProductCart = (props) => {
   return (
     <View>
       <View style={styles.cart_tag}>
-        <Text style={styles.text_cart}>{'Expresso'}</Text>
+        <Text su style={styles.text_cart}>
+          {props.name}
+        </Text>
         <View style={{flexDirection: 'row'}}>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Text style={styles.text_cart}>{'x 1'}</Text>
+            {props.quantity === undefined ? (
+              <Text style={styles.text_cart}>{'x 1'}</Text>
+            ) : (
+              <Text style={styles.text_cart}>{`x ${props.quantity}`}</Text>
+            )}
           </View>
           <View style={{flexDirection: 'column', paddingLeft: 5}}>
             <FontAwesome5
@@ -25,14 +31,17 @@ const ProductCart = (props) => {
             />
           </View>
         </View>
-        <Text style={styles.text_cart}>{'30.000đ'}</Text>
-        <FontAwesome5
-          style={{color: 'white', fontSize: 20, color: 'white'}}
-          name={'times'}
-          solid
-        />
+        <Text style={styles.text_cart}>{`${props.prices}đ`}</Text>
+        <TouchableOpacity onPress={() => props.ondeleteProduct()}>
+          <FontAwesome5
+            style={{color: 'white', fontSize: 20, color: 'white'}}
+            name={'times'}
+            solid
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
 };
 export default ProductCart;
+// export default connect({}, mapDispatchToProps)(ProductCart);

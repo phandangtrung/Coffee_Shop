@@ -2,6 +2,10 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import {SafeAreaView, View, Text, Image} from 'react-native';
 import {imgport} from '../../config/port';
+
+import {connect} from 'react-redux';
+import {buyProduct} from './actions/index';
+
 import styles from './style';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {TouchableOpacity} from 'react-native';
@@ -12,7 +16,7 @@ const ProductTag = (props) => {
       .split('')
       .reverse()
       .reduce((prev, next, index) => {
-        return (index % 3 ? next : next + ',') + prev;
+        return (index % 3 ? next : next + '.') + prev;
       });
   };
   return (
@@ -83,7 +87,7 @@ const ProductTag = (props) => {
               fontFamily: 'Oswald-VariableFont_wght',
               fontSize: 15,
             }}>
-            {formatCurrency(props.prices)}
+            {`${formatCurrency(props.prices)}đ`}
           </Text>
           <View
             style={{
@@ -92,11 +96,24 @@ const ProductTag = (props) => {
               fontFamily: 'Oswald-VariableFont_wght',
               fontSize: 15,
             }}>
-            <FontAwesome5 style={{color: 'white'}} name={'plus'} solid />
+            <TouchableOpacity onPress={() => props.buyProduct(props)}>
+              <FontAwesome5 style={{color: 'white'}} name={'plus'} solid />
+            </TouchableOpacity>
           </View>
         </View>
       </View>
     </View>
   );
 };
-export default ProductTag;
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    buyProduct: (product_current) => dispatch(buyProduct(product_current)),
+  };
+};
+const mapStateToProps = (state) => {
+  return {
+    cart: state.cart.cartAr,
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(ProductTag);
