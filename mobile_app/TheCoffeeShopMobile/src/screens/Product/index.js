@@ -12,17 +12,31 @@ import {
   Modal,
 } from 'react-native';
 import {SearchBar, Avatar, Rating} from 'react-native-elements';
-
+import {imgport} from '../../config/port';
 import DropShadow from 'react-native-drop-shadow';
 import LinearGradient from 'react-native-linear-gradient';
+
+import {connect} from 'react-redux';
+import {buyProduct} from '../../components/productTag/actions/index';
 
 import CommentTag from '../../components/commentTag/index';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import styles from './style';
 
-const Product = () => {
+const Product = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const productID = props.route.params._id;
+  const dataProduct = {...props.route.params, id: productID};
+  const formatCurrency = (monney) => {
+    const mn = String(monney);
+    return mn
+      .split('')
+      .reverse()
+      .reduce((prev, next, index) => {
+        return (index % 3 ? next : next + '.') + prev;
+      });
+  };
   return (
     <SafeAreaView>
       <View
@@ -69,8 +83,7 @@ const Product = () => {
               <Avatar
                 rounded
                 source={{
-                  uri:
-                    'https://product.hstatic.net/1000075078/product/latte_dd6427d058294df5aa4745e5a6035a93_master.jpg',
+                  uri: `${imgport}/${props.route.params.imagesProduct}`,
                 }}
                 containerStyle={{
                   width: 120,
@@ -85,7 +98,7 @@ const Product = () => {
                 fontWeight: 'bold',
                 color: 'black',
               }}>
-              {'Expresso'}
+              {props.route.params.name}
             </Text>
             <Text
               style={{
@@ -94,7 +107,7 @@ const Product = () => {
                 fontWeight: 'bold',
                 color: 'grey',
               }}>
-              {'27.000đ'}
+              {`${formatCurrency(props.route.params.prices)} đ`}
             </Text>
             <View
               style={{
@@ -104,7 +117,7 @@ const Product = () => {
                 alignItems: 'center',
                 paddingTop: 10,
               }}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => props.buyProduct(dataProduct)}>
                 <View
                   style={{
                     backgroundColor: '#ffb460',
@@ -228,4 +241,14 @@ const Product = () => {
     </SafeAreaView>
   );
 };
-export default Product;
+const mapStateToProps = (state) => {
+  return {
+    cart: state.cart.cartAr,
+  };
+};
+const mapDispatchToProps = (dispatch) => {
+  return {
+    buyProduct: (product_current) => dispatch(buyProduct(product_current)),
+  };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Product);

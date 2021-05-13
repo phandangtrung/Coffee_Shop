@@ -8,6 +8,7 @@ const initialState = {
 const cartReducer = (state = initialState, action) => {
   switch (action.type) {
     case actionType.BUY_PRODUCT:
+      console.log('>>product _id', action.payload.id);
       const productInCart = state.cartAr.find(
         (p) => p.id === action.payload.id,
       );

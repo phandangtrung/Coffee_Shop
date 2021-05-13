@@ -124,7 +124,7 @@ const Home = (props) => {
             showsHorizontalScrollIndicator={false}>
             {proByCate[id].map((products) => (
               <ProductTag
-                onclickProduct={onclickProduct}
+                onclickProduct={() => onclickProduct(products)}
                 color="red"
                 key={products._id}
                 id={products._id}
@@ -149,8 +149,8 @@ const Home = (props) => {
     );
   };
   const drawer = useRef(null);
-  const onclickProduct = () => {
-    props.navigation.navigate('Product');
+  const onclickProduct = (prod) => {
+    props.navigation.navigate('Product', prod);
   };
   const navigationView = () => (
     <View style={{backgroundColor: 'white', paddingTop: 10}}>
