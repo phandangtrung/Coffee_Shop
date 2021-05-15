@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   View,
@@ -11,18 +11,52 @@ import {
   Modal,
   // Picker,
 } from 'react-native';
+import axios from 'axios';
+import {serport} from '../../config/port';
 // import {Picker} from '@react-native-community/picker';
 import {Picker} from '@react-native-picker/picker';
 import {Avatar, Card, Input, Icon} from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import {AuthContext} from '../../config/context';
 
 const Profile = () => {
   const [search, setsearch] = useState('');
+  const [userProfile, setuserProfile] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
   const drawer = useRef(null);
   const {signOut} = React.useContext(AuthContext);
+  const _storeData = async () => {
+    try {
+      const userToken = await AsyncStorage.getItem('userToken');
+      if (userToken !== null) {
+        // We have data!!
+        axios
+          .get(`${serport}/users/myUser`, {
+            headers: {
+              Authorization: `token ${userToken}`,
+            },
+          })
+          .then((res) => {
+            console.log(res.data);
+
+            let trandata;
+            if (res.data.users.gender === 'female') {
+              trandata = {...res.data.users, gender: 'Nữ'};
+            } else trandata = {...res.data.users, gender: 'Nam'};
+            setuserProfile(trandata);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
+  useEffect(() => {
+    _storeData();
+  }, []);
   const ProfileTag = ({iconP, titleP, dcrP}) => (
     <View
       style={{width: '100%', flexDirection: 'row', justifyContent: 'center'}}>
@@ -221,7 +255,7 @@ const Profile = () => {
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'center'}}>
         <Text style={{textAlign: 'center', fontSize: 25, fontWeight: 'bold'}}>
-          {'Trung Phan'}
+          {userProfile.fName}
         </Text>
         <View
           style={{flexDirection: 'row', alignItems: 'center', paddingLeft: 5}}>
@@ -255,7 +289,7 @@ const Profile = () => {
             color: 'grey',
             fontStyle: 'italic',
           }}>
-          {'kaitrung99@gmail.com'}
+          {userProfile.email}
         </Text>
       </View>
       <View style={{flexDirection: 'column', paddingTop: 20}}>
@@ -263,14 +297,22 @@ const Profile = () => {
           <ProfileTag
             iconP="calendar-week"
             titleP="Ngày sinh"
-            dcrP="01/01/1999"
+            dcrP={userProfile.birthday}
           />
         </View>
         <View style={{marginBottom: 20}}>
-          <ProfileTag iconP="phone" titleP="Số điện thoại" dcrP="0566439754" />
+          <ProfileTag
+            iconP="phone"
+            titleP="Số điện thoại"
+            dcrP={userProfile.phone}
+          />
         </View>
         <View style={{marginBottom: 20}}>
-          <ProfileTag iconP="venus-mars" titleP="Giới tính" dcrP="Nam" />
+          <ProfileTag
+            iconP="venus-mars"
+            titleP="Giới tính"
+            dcrP={userProfile.gender}
+          />
         </View>
       </View>
     </SafeAreaView>

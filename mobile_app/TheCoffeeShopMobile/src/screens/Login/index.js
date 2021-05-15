@@ -38,10 +38,6 @@ const Login = () => {
     // setIsloading(true);
     console.log('>>ac', account);
     signIn(account.us, account.pw);
-    // const timer = setTimeout(() => {
-    //   setIsloading(false);
-    // }, 2000);
-    // return () => clearTimeout(timer);
   };
   return (
     <ImageBackground
