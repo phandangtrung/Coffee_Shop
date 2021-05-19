@@ -8,6 +8,8 @@ const getToken = (user) => {
       fName: user.fName,
       email: user.email,
       isAdmin: user.isAdmin,
+      isEmployee: user.isEmployee,
+      branchId: user.branchId,
     },
     process.env.JWT_SECRET,
     {
@@ -34,6 +36,7 @@ const isAuth = (req, res, next) => {
       fName: decodedToken.fName,
       email: decodedToken.email,
       isAdmin: decodedToken.isAdmin,
+      isEmployee: decodedToken.isEmployee,
     };
     console.log(req.userData);
     next();
@@ -51,4 +54,12 @@ const isAdmin = (req, res, next) => {
   return next(error);
 };
 
-module.exports = { isAuth, isAdmin, getToken };
+const isEmployee = (req, res, next) => {
+  if (req.userData && req.userData.isEmployee) {
+    return next();
+  }
+  const error = new HttpError("Token is not employee", 401);
+  return next(error);
+};
+
+module.exports = { isAuth, isAdmin, isEmployee, getToken };

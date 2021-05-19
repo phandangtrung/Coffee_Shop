@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.get("/", productsController.getAllProducts);
 router.get("/:pid", productsController.getProductById);
+router.get("/cate/:cid", productsController.getProductByCateId);
 
 router.post(
   "/",

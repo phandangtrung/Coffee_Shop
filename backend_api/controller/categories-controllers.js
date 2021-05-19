@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Category = require("../models/categories");
-const Product = require("../models/products");
+const {products} = require("../models/products");
 
 const { validationResult } = require("express-validator");
 
@@ -145,7 +145,7 @@ const deleteProductByCateId = async (req, res, next) => {
   const CateId = req.params.cid;
   let categories;
   try {
-    categories = await Product.remove({ categoryId: CateId });
+    categories = await products.remove({ categoryId: CateId });
     await Category.findByIdAndDelete(CateId);
   } catch (err) {
     const error = new HttpError("Something went wrong, can not delete", 500);

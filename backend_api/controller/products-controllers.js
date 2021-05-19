@@ -1,11 +1,10 @@
 const mongoose = require("mongoose");
-const Product = require("../models/products");
+const {products} = require("../models/products");
 const Category = require("../models/categories");
 
 const { validationResult } = require("express-validator");
 
 const HttpError = require("../error-handle/http-error");
-const products = require("../models/products");
 
 const getAlias = (str) => {
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
@@ -43,7 +42,7 @@ const createProduct = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      quantity: req.body.quantity,
+      //quantity: req.body.quantity,
       status: req.body.status,
       reviews: req.body.reviews,
       createAt: req.body.createAt,
@@ -53,7 +52,7 @@ const createProduct = async (req, res, next) => {
     };
     console.log(createProduct);
     try {
-      const newProducts = new Product(createProduct);
+      const newProducts = new products(createProduct);
       await newProducts.save();
       console.log(newProducts);
       res.status(200).json({
@@ -74,7 +73,6 @@ const createProduct = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      quantity: req.body.quantity,
       status: req.body.status,
       reviews: req.body.reviews,
       createAt: req.body.createAt,
@@ -84,7 +82,7 @@ const createProduct = async (req, res, next) => {
     };
     console.log(createProduct);
     try {
-      const newProducts = new Product(createProduct);
+      const newProducts = new products(createProduct);
       await newProducts.save();
       console.log(newProducts);
       res.status(200).json({
@@ -120,7 +118,6 @@ const updateProductbyId = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      quantity: req.body.quantity,
       status: req.body.status,
       reviews: req.body.reviews,
       createAt: req.body.createAt,
@@ -128,7 +125,7 @@ const updateProductbyId = async (req, res, next) => {
     };
     try {
       let products;
-      products = await Product.findByIdAndUpdate(ProId, updatedProduct);
+      products = await products.findByIdAndUpdate(ProId, updatedProduct);
       console.log(products);
       return res.status(200).json({
         message: "Update Product success",
@@ -148,7 +145,6 @@ const updateProductbyId = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      quantity: req.body.quantity,
       status: req.body.status,
       reviews: req.body.reviews,
       createAt: req.body.createAt,
@@ -157,7 +153,7 @@ const updateProductbyId = async (req, res, next) => {
     };
     try {
       let products;
-      products = await Product.findByIdAndUpdate(ProId, updatedProduct);
+      products = await products.findByIdAndUpdate(ProId, updatedProduct);
       console.log(products);
       return res.status(200).json({
         message: "Update Product success",
@@ -177,7 +173,7 @@ const deleteProductById = async (req, res, next) => {
   const ProId = req.params.pid;
   let products;
   try {
-    products = await Product.findByIdAndDelete(ProId);
+    products = await products.findByIdAndDelete(ProId);
   } catch (err) {
     const error = new HttpError("Something went wrong, can not delete", 500);
     return next(error);
@@ -190,9 +186,10 @@ const deleteProductById = async (req, res, next) => {
 };
 
 const getAllProducts = async (req, res, next) => {
-  let products;
+  let productList;
+  console.log("con cho");
   try {
-    products = await Product.find();
+    productList = await products.find();
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, coud not find any product",
@@ -200,19 +197,19 @@ const getAllProducts = async (req, res, next) => {
     );
     return next(error);
   }
-  console.log(products);
-  if (!products) {
+  console.log(productList);
+  if (!productList) {
     const error = new HttpError("Could not find any product", 404);
     return next(error);
   }
-  res.status(200).json({ products });
+  res.status(200).json({ productList });
 };
 
 const getProductById = async (req, res, next) => {
   const ProId = req.params.pid;
-  let products;
+  let productList;
   try {
-    products = await Product.findById(ProId);
+    productList = await products.findById(ProId);
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find a product.",
@@ -221,21 +218,21 @@ const getProductById = async (req, res, next) => {
     return next(error);
   }
 
-  if (!products) {
+  if (!productList) {
     const error = new HttpError(
       "Could not find a product for the provided id.",
       404
     );
     return next(error);
   }
-  res.json({ products: products.toObject({ getters: true }) });
+  res.json({ productList });
 };
 
 const getProductByCateId = async (req, res, next) => {
   const CateId = req.params.cid;
   let products;
   try {
-    products = await Product.find({ categoryId: CateId });
+    products = await products.find({ categoryId: CateId });
   } catch (err) {
     const error = new HttpError(
       "Something went wrong, could not find a product.",

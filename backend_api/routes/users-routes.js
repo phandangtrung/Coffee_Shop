@@ -2,8 +2,8 @@ const express = require("express");
 const { check } = require("express-validator");
 
 const usersController = require("../controller/users-controllers");
-const { path } = require("dotenv/lib/env-options");
-const { isAdmin, isAuth } = require("../middleware/uilt");
+const { isAdmin, isAuth, isEmployee } = require("../middleware/uilt");
+
 
 const router = express.Router();
 
@@ -22,8 +22,12 @@ router.post(
 router.post("/createAdmin", usersController.admin);
 
 router.post("/login/admin", usersController.loginAdmin);
+router.post("/login/employee/loginEmployee", usersController.loginEmployee);
 router.post("/login", usersController.login);
 router.get("/confirmation/:token", usersController.getConfirmation);
+
+router.post("/forgotPass/", usersController.forgotPassword);
+router.put("/forgotPass/changePass/:token", usersController.changePassword);
 
 router.use(isAuth);
 
@@ -32,6 +36,7 @@ router.put("/myUser", usersController.updateMyUser);
 
 router.use(isAdmin);
 
+router.post("/addEmployee", usersController.addEmployee);
 router.get("/", usersController.getAllUsers);
 router.get("/:uid", usersController.getUserById);
 router.put("/lock/:uid", usersController.lockUser);
