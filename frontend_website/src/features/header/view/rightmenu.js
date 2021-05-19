@@ -122,8 +122,10 @@ const RightMenu = (props) => {
       data: { tokenId: response.tokenId },
     }).then((response) => {
       console.log("Google Login Success", response);
-
+      Cookies.set("CustomerEmail", response.data.email);
+      Cookies.set("tokenCustomer", response.data.token);
       setIsLoading(false);
+      setIsModalVisible(false);
     });
   };
 
