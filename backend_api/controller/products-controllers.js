@@ -187,7 +187,6 @@ const deleteProductById = async (req, res, next) => {
 
 const getAllProducts = async (req, res, next) => {
   let productList;
-  console.log("con cho");
   try {
     productList = await products.find();
   } catch (err) {

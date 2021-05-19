@@ -300,6 +300,7 @@ const loginGoogle = async (req, res, next) => {
             }
 
             res.status(200).json({
+              message: "login success",
               email: existingUser.email,
               isAdmin: existingUser.isAdmin,
               token: token,
@@ -311,7 +312,11 @@ const loginGoogle = async (req, res, next) => {
     const error = new HttpError("Login failed, please try again later.", 500);
     return next(error);
   }
-  res.status(200).json({message: "login success"});
+  // res.status(200).json({
+  //   message: "login success",
+  //   email: existingUser.email,
+  //   token: existingUser.token,
+  // });
   //return res.redirect("http://localhost:3000/");
 };
 
@@ -398,7 +403,9 @@ const loginFacebook = async (req, res, next) => {
     const error = new HttpError("Login failed, please try again later.", 500);
     return next(error);
   }
-  res.status(200).json({message: "login success"});
+  res.status(200).json({
+    message: "login success",
+  });
   //return res.redirect("http://localhost:3000/");
 };
 
