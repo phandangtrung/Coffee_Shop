@@ -311,7 +311,8 @@ const loginGoogle = async (req, res, next) => {
     const error = new HttpError("Login failed, please try again later.", 500);
     return next(error);
   }
-  return res.redirect("http://localhost:3000/");
+  res.status(200).json({message: "login success"});
+  //return res.redirect("http://localhost:3000/");
 };
 
 const loginFacebook = async (req, res, next) => {
@@ -397,7 +398,8 @@ const loginFacebook = async (req, res, next) => {
     const error = new HttpError("Login failed, please try again later.", 500);
     return next(error);
   }
-  return res.redirect("http://localhost:3000/");
+  res.status(200).json({message: "login success"});
+  //return res.redirect("http://localhost:3000/");
 };
 
 const getConfirmation = async (req, res, next) => {
