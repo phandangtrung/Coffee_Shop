@@ -30,6 +30,9 @@ import {
   SolutionOutlined,
 } from "@ant-design/icons";
 import userApi from "../../../api/userApi";
+import axios from "axios";
+import GoogleLogin from "react-google-login";
+
 import Cookies from "js-cookie";
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -109,6 +112,24 @@ const RightMenu = (props) => {
     fetchCreateProduct();
   };
   const [isLoading, setIsLoading] = useState(false);
+
+  const responseSuccessGoogle = (response) => {
+    setIsLoading(true);
+    console.log(">> này nè", response);
+    axios({
+      method: "POST",
+      url: "http://localhost:5000/api/users/googlelogin",
+      data: { tokenId: response.tokenId },
+    }).then((response) => {
+      console.log("Google Login Success", response);
+
+      setIsLoading(false);
+    });
+  };
+
+  const responseErrorGoogle = (response) => {
+    console.log(response);
+  };
 
   const onSignIn = (values) => {
     const datalogin = { ...values };
@@ -293,6 +314,22 @@ const RightMenu = (props) => {
                     </Col>
                   </Row>
                 </Form>
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    paddingBottom: "5px",
+                  }}
+                >
+                  <GoogleLogin
+                    clientId="161356782679-supo9tgvceuf5u8ts0d0su6d3eg4sckf.apps.googleusercontent.com"
+                    buttonText="Login with google"
+                    onSuccess={responseSuccessGoogle}
+                    onFailure={responseErrorGoogle}
+                    cookiePolicy={"single_host_origin"}
+                  />
+                </div>
               </Spin>
             </Tabs.TabPane>
             <Tabs.TabPane tab="Sign Up" key="signup">
