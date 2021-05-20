@@ -19,4 +19,5 @@ export const Images = {
   BBG: IMAGE_URL + "/static/img/BANHMI-bg_2.jpg",
   ADS: IMAGE_URL + "/static/img/ads.png",
   CPIM: IMAGE_URL + "/static/img/coupon_img.jpg",
+  LOCATE: IMAGE_URL + "/static/img/location.png",
 };

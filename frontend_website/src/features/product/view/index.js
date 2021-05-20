@@ -10,8 +10,9 @@ import {
   Skeleton,
   Input,
   Alert,
+  Select,
 } from "antd";
-import { CaretUpOutlined } from "@ant-design/icons";
+import { CaretUpOutlined, CompassOutlined } from "@ant-design/icons";
 import "./style.css";
 import ProductTag from "../../../components/ProductTag";
 import { Images } from "../../../config/image";
@@ -38,27 +39,58 @@ function Product() {
   const [isalter, setisalter] = useState(false);
   const [productList, setProductList] = useState([]);
   const [fakeproductList, setfakeProductList] = useState([]);
+  const [BraProList, setBraProList] = useState([]);
+  const [dfSelect, setDfSelect] = useState("");
   const [categoryList, dispatchCategory] = useReducer(dataFetchCategory, {
     isLoading: false,
     isError: false,
     data: [],
   });
   const { Search } = Input;
+  const fetchBranchList = async () => {
+    try {
+      setloadProduct(true);
+      const Brresponse = await productApi.getBranch();
+      console.log("Fetch branch succesfully: ", Brresponse.branches);
+      const Prresponse = await productApi.getAll();
+      console.log("Fetch products succesfully: ", Prresponse.productList);
+      let newBraL = [];
+      Brresponse.branches.map((bl) => {
+        let newproLi = { ...bl, listProduct: [] };
+        bl.listProduct.map((brpro) => {
+          const found = Prresponse.productList.find(
+            (element) => element._id === brpro._id
+          );
+          newproLi.listProduct.push({ ...brpro, ...found });
+        });
+        newBraL.push(newproLi);
+      });
+      console.log(">>newBraL", newBraL);
+      setBraProList(newBraL);
+      setProductList(newBraL[0].listProduct);
+      setDfSelect(String(newBraL[0].branch_name));
+      console.log(">>newBraL[0].branch_name", newBraL[0].branch_name);
+      setfakeProductList(newBraL[0].listProduct);
+      setloadProduct(false);
+    } catch (error) {
+      console.log("failed to fetch product list: ", error);
+    }
+  };
+  const fetchProductList = async () => {
+    try {
+      setloadProduct(true);
+      const response = await productApi.getAll();
+      console.log("Fetch products succesfully: ", response);
+      setProductList(response.productList);
+      setfakeProductList(response.productList);
+      setloadProduct(false);
+      return response.productList;
+    } catch (error) {
+      console.log("failed to fetch product list: ", error);
+    }
+  };
   useEffect(() => {
-    const fetchProductList = async () => {
-      try {
-        setloadProduct(true);
-        const response = await productApi.getAll();
-        console.log("Fetch products succesfully: ", response);
-        setProductList(response.products);
-        setfakeProductList(response.products);
-        console.log(">>>> productlist: ", productList);
-        setloadProduct(false);
-      } catch (error) {
-        console.log("failed to fetch product list: ", error);
-      }
-    };
-    fetchProductList();
+    fetchBranchList();
 
     // categoryapi
     const fetchCategoryList = async () => {
@@ -94,23 +126,30 @@ function Product() {
       else setisalter(true);
     }
   };
-  const getallProduct = () => {
-    const fetchProductList = async () => {
-      // dispatch({ type: "FETCH_INIT" });
-      try {
-        setloadProduct(true);
-        const response = await productApi.getAll();
-        console.log("Fetch products succesfully: ", response);
-        // dispatchProduct(doGetList_success(response.products));
-        setProductList(response.products);
-        console.log(">>>> productlist: ", productList);
-        setloadProduct(false);
-      } catch (error) {
-        console.log("failed to fetch product list: ", error);
-      }
-    };
-    fetchProductList();
+  const handleChangeLoca = (value) => {
+    const found = BraProList.find((element) => element.branch_name === value);
+    console.log(">>BraProList", BraProList);
+    console.log(">>found", found);
+    setProductList(found.listProduct);
+    setfakeProductList(found.listProduct);
   };
+  // const getallProduct = () => {
+  //   const fetchProductList = async () => {
+  //     // dispatch({ type: "FETCH_INIT" });
+  //     try {
+  //       setloadProduct(true);
+  //       const response = await productApi.getAll();
+  //       console.log("Fetch products succesfully: ", response);
+  //       // dispatchProduct(doGetList_success(response.products));
+  //       setProductList(response.products);
+  //       console.log(">>>> productlist: ", productList);
+  //       setloadProduct(false);
+  //     } catch (error) {
+  //       console.log("failed to fetch product list: ", error);
+  //     }
+  //   };
+  //   fetchProductList();
+  // };
   const fillterPro = (cateid) => {
     console.log(">>>cateid", cateid);
     const newprolist = fakeproductList.filter(
@@ -170,7 +209,7 @@ function Product() {
             <Menu.Item
               style={{ textTransform: "uppercase" }}
               key="getall"
-              onClick={() => getallProduct()}
+              onClick={() => fetchBranchList()}
             >
               ALL PRODUCT
             </Menu.Item>
@@ -196,11 +235,45 @@ function Product() {
           <div className="product-banner">
             <img alt="product_banner" src={Images.SBANNER} />
           </div>
-          <Search
-            placeholder="Search product"
-            onSearch={onSearch}
-            style={{ width: "70%" }}
-          />
+          {isloadProduct ? (
+            ""
+          ) : (
+            <div style={{ display: "flex", paddingLeft: "20px" }}>
+              <div
+                style={{
+                  width: "60%",
+                  marginRight: "20px",
+                  display: "flex",
+                  justifyContent: "space-between",
+                }}
+              >
+                <img
+                  alt="icon_location"
+                  style={{ width: "35px" }}
+                  src={Images.LOCATE}
+                />
+                <Select
+                  defaultValue="Chi Nhanh Thu Duc"
+                  style={{ width: "90%", textAlign: "start" }}
+                  onChange={(values) => handleChangeLoca(values)}
+                >
+                  {BraProList.map((bp) => (
+                    <Select.Option
+                      key={bp._id}
+                      value={bp.branch_name}
+                    >{`${bp.branch_name} - ${bp.location}`}</Select.Option>
+                  ))}
+                </Select>
+              </div>
+
+              <Search
+                placeholder="Search product"
+                onSearch={onSearch}
+                style={{ width: "30%" }}
+              />
+            </div>
+          )}
+
           <div className="altersearch__form">
             {isalter === true ? (
               <Alert
