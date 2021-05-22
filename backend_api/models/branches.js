@@ -6,7 +6,7 @@ const BranchesSchema = new mongoose.Schema(
   {
     name: { type: String, require: true },
     location: { type: String, require: true },
-    ailas: { type: String, require: false },
+    alias: { type: String, require: false },
     status: { type: Boolean, default: true },
     listProduct: [
       {
