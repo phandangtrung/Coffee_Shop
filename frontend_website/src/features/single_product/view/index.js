@@ -168,7 +168,7 @@ function SingleProduct({ props }) {
               <div className="button-form">
                 {location.state.quantity > 0 ? (
                   <Button className="button-buy" htmlType="submit">
-                    BUY NOW
+                    MUA NGAY
                   </Button>
                 ) : (
                   <a className="amount">Out of stock</a>
@@ -180,7 +180,7 @@ function SingleProduct({ props }) {
         <Row>
           <div className="tabs-rating">
             <Tabs type="card" size="large">
-              <TabPane tab="Rate and Comment" key="1">
+              <TabPane tab="Đánh giá và Bình luận" key="1">
                 <Spin spinning={loadcomment}>
                   {commentList.length > 0 ? (
                     <div className="rate-container">
@@ -230,7 +230,7 @@ function SingleProduct({ props }) {
                   justifyContent: "center",
                   paddingTop: "30px",
                 }}
-                tab="Your Review"
+                tab="Đánh giá của bạn"
                 key="3"
               >
                 {tokenCustomer !== undefined ? (

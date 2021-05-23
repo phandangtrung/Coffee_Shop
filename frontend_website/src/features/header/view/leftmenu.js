@@ -40,19 +40,19 @@ const LeftMenu = (props) => {
       >
         <Menu.Item name="home" key="home">
           <div clasname="titlemenu">
-            <Link to="/"> Home</Link>
+            <Link to="/"> Trang chủ</Link>
           </div>
         </Menu.Item>
         <Menu.Item key="product">
           <div clasname="titlemenu">
-            <Link to="/product">Product</Link>
+            <Link to="/product">Sản phẩm</Link>
           </div>
         </Menu.Item>
         <Menu.Item key="order">
-          <Link to="/searchorder">Search Order</Link>
+          <Link to="/searchorder">Xem đơn đặt hàng</Link>
         </Menu.Item>
         <Menu.Item key="coupon">
-          <Link to="/coupon">Coupon</Link>
+          <Link to="/coupon">Mã giảm giá</Link>
         </Menu.Item>
         <Menu.Item key="menu">
           <Link to="/intro">Menu</Link>

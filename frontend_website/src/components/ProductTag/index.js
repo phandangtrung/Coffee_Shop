@@ -99,9 +99,9 @@ function ProductTag(props) {
           </div>
           <div className="button-form">
             {props.quantity === 0 ? (
-              <a style={{ fontSize: "20px" }}>Out of stock</a>
+              <a style={{ fontSize: "20px" }}>Hết hàng</a>
             ) : (
-              <button onClick={addtoCart}>BUY NOW</button>
+              <button onClick={addtoCart}>MUA NGAY</button>
             )}
           </div>
         </div>

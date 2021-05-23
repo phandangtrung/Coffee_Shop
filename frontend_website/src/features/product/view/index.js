@@ -198,13 +198,13 @@ function Product() {
             defaultOpenKeys={["sub1"]}
             mode="inline"
           >
-            <Menu.Item className="category-title">CATEGORIES</Menu.Item>
+            <Menu.Item className="category-title">DANH MỤC</Menu.Item>
             <Menu.Item
               style={{ textTransform: "uppercase" }}
               key="getall"
               onClick={() => fetchBranchList()}
             >
-              ALL PRODUCT
+              HIỆN TẤT CẢ
             </Menu.Item>
             {isLoading ? (
               <Skeleton active />
@@ -261,7 +261,7 @@ function Product() {
               </div>
 
               <Search
-                placeholder="Search product"
+                placeholder="Tìm sản phẩm"
                 onSearch={onSearch}
                 style={{ width: "30%" }}
               />

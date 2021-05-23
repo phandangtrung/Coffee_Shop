@@ -171,12 +171,12 @@ const RightMenu = (props) => {
     <Menu>
       <Menu.Item>
         <Link to="/myprofile">
-          <SolutionOutlined /> My Profile
+          <SolutionOutlined /> Cá nhân
         </Link>
       </Menu.Item>
       <Menu.Item danger>
         <Link to="/" rel="noopener noreferrer" onClick={onsignout}>
-          <LogoutOutlined /> Signout
+          <LogoutOutlined /> Đăng xuất
         </Link>
       </Menu.Item>
     </Menu>
@@ -193,7 +193,7 @@ const RightMenu = (props) => {
         <Menu.Item className="button-signup" key="mail">
           {islogin === undefined ? (
             <Button onClick={showModal} className="button-signup">
-              Signin
+              Đăng nhập
             </Button>
           ) : (
             <Dropdown overlay={menu}>
@@ -226,7 +226,7 @@ const RightMenu = (props) => {
       >
         <div className="header_modal-title">
           <Tabs style={{ fontSize: "30px" }} tabPosition={"top"}>
-            <Tabs.TabPane tab="Sign In" key="signin" className="loginmodal">
+            <Tabs.TabPane tab="Đăng nhập" key="signin" className="loginmodal">
               <Spin spinning={isLoading}>
                 <Form
                   name="basic"
@@ -310,7 +310,7 @@ const RightMenu = (props) => {
                           type="primary"
                           htmlType="submit"
                         >
-                          Sign in
+                          Đăng nhập
                         </Button>
                       </Form.Item>
                     </Col>
@@ -334,7 +334,7 @@ const RightMenu = (props) => {
                 </div>
               </Spin>
             </Tabs.TabPane>
-            <Tabs.TabPane tab="Sign Up" key="signup">
+            <Tabs.TabPane tab="Đăng ký" key="signup">
               <Spin spinning={loadingmodal}>
                 <Form
                   layout="horizontal"
