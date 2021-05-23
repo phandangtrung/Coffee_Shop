@@ -312,14 +312,23 @@ function ShoppingPage(props) {
             </div>
 
             <hr />
-            <Spin spinning={isloading}>
+            {cart.length > 0 ? (
               <Table
                 pagination={false}
                 dataSource={cart}
                 columns={columns}
                 rowKey="_id"
               />
-            </Spin>
+            ) : (
+              <div
+                style={{
+                  width: "auto",
+                  backgroundImage: `url(${Images.EMPTYC})`,
+                  height: "500px",
+                  backgroundSize: "cover",
+                }}
+              ></div>
+            )}
             <Button className="button-checkout-repon" onClick={showModal}>
               CHECK OUT DT
             </Button>
