@@ -93,7 +93,6 @@
   justify-content: space-between;
   font-family: "Fira Sans Condensed", sans-serif;
   padding-top: 10px;
-  padding-bottom: 40px;
   font-size: 25px;
   font-weight: bold;
 }
@@ -104,6 +103,7 @@
   font-size: 20px;
   color: white;
   background-color: cornflowerblue;
+  margin-top: 10px;
 }
 .shopping-card img {
   width: 30%;

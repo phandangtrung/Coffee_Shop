@@ -61,6 +61,8 @@ function ShoppingPage(props) {
   const [productList, setproductList] = useState([]);
   const [isloading, setisloading] = useState(false);
   const [totalPrice, settotalPrice] = useState(0);
+  const [codeprice, setcodeprice] = useState(0);
+  const [codeloading, setcodeloading] = useState(false);
   Geocode.setApiKey("AIzaSyB_eKxh8KTsPy6aPPJPROh2yP75dTvg92o");
   const [form] = Form.useForm();
   const [coordinates, setCoordinates] = useState({
@@ -93,6 +95,7 @@ function ShoppingPage(props) {
       couponCode: "",
     });
     setalteraplly(null);
+    setcodeprice(0);
     setfaketotal(calculateTotal(newcart));
   };
   const loadmaxpro = (proid) => {
@@ -104,6 +107,8 @@ function ShoppingPage(props) {
   const deleteitem = (proid) => {
     const newCart = cart.filter((cartitem) => cartitem.product_id !== proid);
     setcart(newCart);
+    setcodeprice(0);
+    setfaketotal(calculateTotal(newCart));
     localStorage.setItem("cart", JSON.stringify(newCart));
   };
   const handleOk = (values) => {
@@ -159,7 +164,7 @@ function ShoppingPage(props) {
       ),
     },
     {
-      title: "NAME",
+      title: "TÊN THỨC UỐNG",
       dataIndex: "name",
       key: "name",
       render: (name) => (
@@ -171,7 +176,7 @@ function ShoppingPage(props) {
       ),
     },
     {
-      title: "SIZE",
+      title: "KÍCH CỠ",
       dataIndex: "size",
       key: "size",
       render: (size) => (
@@ -190,7 +195,7 @@ function ShoppingPage(props) {
       ),
     },
     {
-      title: "QUANTITY",
+      title: "SỐ LƯỢNG",
       dataIndex: "quantity",
       key: "quantity",
       render: (quantity, row) => (
@@ -205,7 +210,7 @@ function ShoppingPage(props) {
       ),
     },
     {
-      title: "PRICE",
+      title: "ĐƠN GIÁ",
       dataIndex: "price",
       key: "price",
       render: (price) => (
@@ -260,6 +265,7 @@ function ShoppingPage(props) {
     console.log(">>values", values);
     const fetchCoupon = async () => {
       try {
+        setcodeloading(true);
         const response = await couponApi.getAll();
         console.log("Fetch order succesfully: ", response);
         const getbycoupon = response.couponcode.filter(
@@ -267,15 +273,19 @@ function ShoppingPage(props) {
         );
         console.log(">>getbycoupon", getbycoupon);
         if (getbycoupon.length > 0) {
-          const perse = Number(getbycoupon[0].discount);
+          const perse = Number(getbycoupon[0].percentage);
           const totlapr = faketotal - faketotal * (perse / 100);
           settotalPrice(totlapr);
+          setcodeprice(faketotal * (perse / 100));
           setalteraplly(
-            `Bạn đã nhập mã  ${getbycoupon[0].note} ${getbycoupon[0].discount}%`
+            `Bạn đã nhập mã  ${getbycoupon[0].content} giảm ${getbycoupon[0].percentage}%`
           );
+          setcodeloading(false);
         } else {
           setalteraplly("Mã không hợp lệ");
           settotalPrice(faketotal);
+          setcodeprice(0);
+          setcodeloading(false);
         }
       } catch (error) {
         console.log("failed to fetch order: ", error);
@@ -297,8 +307,8 @@ function ShoppingPage(props) {
         <div className="shopping-card">
           <div className="cart-container">
             <div className="title-form">
-              <div className="title">Shopping Cart</div>
-              <div className="item-cart">{cart.length} Items</div>
+              <div className="title">Giỏ hàng</div>
+              <div className="item-cart">{cart.length} Sản phẩm</div>
             </div>
 
             <hr />
@@ -317,10 +327,10 @@ function ShoppingPage(props) {
         </div>
         <div className="order-form">
           <div className="order-content">
-            <div className="title-form">Order Summary</div>
+            <div className="title-form">Tóm tắt đơn hàng</div>
             <hr />
             <div className="saleoff-form">
-              <div className="title">PROMO CODE</div>
+              <div className="title">MÃ GIẢM GIÁ</div>
               <Form form={form} onFinish={applycode}>
                 <Form.Item
                   name="couponCode"
@@ -340,25 +350,57 @@ function ShoppingPage(props) {
                   className="button-apply"
                   type="dashed"
                   danger
+                  loading={codeloading}
                 >
-                  APPLY
+                  ÁP DỤNG
                 </Button>
               </Form>
             </div>
             <hr />
             <div className="totalcost-form">
-              <div>TOTAL COST</div>
+              <div>TẠM TÍNH</div>
               <div>
                 <CurrencyFormat
-                  value={totalPrice}
+                  value={faketotal}
                   displayType={"text"}
                   thousandSeparator={true}
                 />
                 {""} VND
               </div>
             </div>
+            {codeprice !== 0 ? (
+              <>
+                {" "}
+                <div style={{ opacity: "0.3" }} className="totalcost-form">
+                  <div> </div>
+                  <div>
+                    -{" "}
+                    <CurrencyFormat
+                      value={codeprice}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                    />
+                    {""} VND
+                  </div>
+                </div>
+                <div className="totalcost-form">
+                  <div>TỔNG TIỀN</div>
+                  <div>
+                    <CurrencyFormat
+                      value={totalPrice}
+                      displayType={"text"}
+                      thousandSeparator={true}
+                    />
+                    {""} VND
+                  </div>
+                </div>
+              </>
+            ) : (
+              ""
+            )}
+
             <Button className="button-checkout" onClick={showModal}>
-              CHECK OUT
+              THANH TOÁN
             </Button>
           </div>
         </div>
@@ -373,7 +415,7 @@ function ShoppingPage(props) {
         <Spin spinning={isloadorder}>
           <div className="modal-order">
             <Form form={form} onFinish={handleOk}>
-              <div className="title-modal">COMPLETE ORDER</div>
+              <div className="title-modal">HOÀN THÀNH ĐƠN HÀNG</div>
               <Form.Item>
                 <div className="maps-form ">
                   <Mapstore
