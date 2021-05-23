@@ -25,16 +25,10 @@ const getAlias = (str) => {
 const createBranches = async (req, res, next) => {
   const createBranches = {
     name: req.body.name,
-    location: req.body.location,
     alias: getAlias(req.body.name),
+    location: req.body.location,
     listProduct: req.body.listProduct,
   };
-  // const existBranch = await Branch.find({ name: "name" });
-  // if(existBranch.exists){
-  //   return res.status(422).json({
-  //     message: "The branch's name has been existed",
-  //   })
-  // }
   try {
     const newbranch = new Branch(createBranches);
     await newbranch.save();
@@ -47,12 +41,12 @@ const createBranches = async (req, res, next) => {
   }
 };
 
-const updateBranches = async (req, res, next) => {
+const updateBranchesById = async (req, res, next) => {
   const BrId = req.params.bid;
   const updateBranches = {
     name: req.body.name,
-    location: req.body.location,
     alias: getAlias(req.body.name),
+    location: req.body.location,
     listProduct: req.body.listProduct,
     status: req.body.status,
   };
@@ -62,7 +56,7 @@ const updateBranches = async (req, res, next) => {
     console.log(branches);
     return res.status(200).json({
       message: "Update success",
-      branches: updateBranches,
+      branches,
     });
   } catch (error) {
     return res.status(422).send(error);
@@ -112,7 +106,7 @@ const getBranchById = async (req, res, next) => {
 
 module.exports = {
   createBranches,
-  updateBranches,
+  updateBranchesById,
   getAllBranches,
   getBranchById,
 };

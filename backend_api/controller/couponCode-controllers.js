@@ -89,8 +89,8 @@ const getAllCouponCodeByUser = async (req, res, next) => {
   //console.log(end)
   try {
     couponcode = await CouponCode.find({
-      startTime: {$lte: currentDate},
-      endTime: {$gte: currentDate}
+      startTime: { $lte: currentDate },
+      endTime: { $gte: currentDate },
     });
     console.log(couponcode);
   } catch (err) {
@@ -110,9 +110,14 @@ const getAllCouponCodeByUser = async (req, res, next) => {
 
 const getCouponbyCode = async (req, res, next) => {
   let couponcode;
+  let currentDate = new Date();
   const code = req.body.couponCode;
   try {
-    couponcode = await CouponCode.findOne({ couponCode: code });
+    couponcode = await CouponCode.findOne({
+      couponCode: code,
+      startTime: { $lte: currentDate },
+      endTime: { $gte: currentDate },
+    });
     console.log(couponcode);
   } catch (err) {
     const error = new HttpError(

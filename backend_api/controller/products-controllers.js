@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const {products} = require("../models/products");
+const { products } = require("../models/products");
 const Category = require("../models/categories");
 
 const { validationResult } = require("express-validator");
@@ -24,14 +24,10 @@ const getAlias = (str) => {
   return str.toLowerCase().replace(/ /g, "-");
 };
 
-const createProduct = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    console.log(errors);
-    const error = new HttpError("Invalid Input! Pls check your data", 400);
-    return next(error);
-  }
+/*------------------------Tao San Pham Moi ------------------------------*/
 
+const createProduct = async (req, res, next) => {
+  let newProducts;
   let imagesCurrent;
   if (typeof req.file !== "undefined") {
     imagesCurrent = req.file.path;
@@ -39,33 +35,36 @@ const createProduct = async (req, res, next) => {
   if (imagesCurrent === null) {
     const createProduct = {
       name: req.body.name,
+      alias: getAlias(req.body.name),
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      //quantity: req.body.quantity,
-      status: req.body.status,
       reviews: req.body.reviews,
-      createAt: req.body.createAt,
       description: req.body.description,
-      alias: getAlias(req.body.name),
       categoryId: req.body.categoryId,
     };
     console.log(createProduct);
     try {
-      const newProducts = new products(createProduct);
-      await newProducts.save();
-      console.log(newProducts);
+      existingProduct = await products.findOne({ alias: createProduct.alias });
+    } catch (err) {
+      const error = new HttpError("Something wrong!!!", 500);
+      return res.send(error);
+    }
+    if (!existingProduct) {
+      try {
+        newProducts = new products(createProduct);
+        await newProducts.save();
+        console.log(newProducts);
+      } catch (err) {
+        const error = new HttpError("Something wrong!!!", 500);
+        return res.status(422).send(error);
+      }
       res.status(200).json({
         message: "Create success",
         newProducts,
       });
-    } catch (error) {
-      if (error.name === "MongoError" && error.code === 11000) {
-        // Duplicate username
-        return res.status(422).send({ message: "Product already exist!" });
-      }
-      return res.status(422).send(error);
     }
+    res.status(422).json({ message: "Product already exist" });
   } else {
     const createProduct = {
       name: req.body.name,
@@ -73,40 +72,41 @@ const createProduct = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      status: req.body.status,
       reviews: req.body.reviews,
-      createAt: req.body.createAt,
       description: req.body.description,
       imagesProduct: imagesCurrent,
       categoryId: req.body.categoryId,
     };
     console.log(createProduct);
     try {
-      const newProducts = new products(createProduct);
-      await newProducts.save();
-      console.log(newProducts);
+      existingProduct = await products.find({ alias: createProduct.alias });
+    } catch (err) {
+      const error = new HttpError("Something wrong!!!", 500);
+      return res.send(error);
+    }
+    if (!existingProduct) {
+      try {
+        newProducts = new products(createProduct);
+        await newProducts.save();
+        console.log(newProducts);
+      } catch (err) {
+        const error = new HttpError("Something wrong!!!", 500);
+        return res.status(422).send(error);
+      }
       res.status(200).json({
         message: "Create success",
         newProducts,
       });
-    } catch (error) {
-      if (error.name === "MongoError" && error.code === 11000) {
-        // Duplicate username
-        return res.status(422).send({ message: "Product already exist!" });
-      }
-      return res.status(422).send(error);
     }
+    res.status(422).json({ message: "Product already exist" });
   }
 };
 
+/*------------------------Cap Nhat San Pham------------------------------*/
+
 const updateProductbyId = async (req, res, next) => {
-  const errors = validationResult(req);
   const ProId = req.params.pid;
-  if (!errors.isEmpty()) {
-    console.log(errors);
-    const error = new HttpError("Invalid Input! Pls check your data", 400);
-    return next(error);
-  }
+  let updatedPro;
   let imagesCurrent;
   if (typeof req.file !== "undefined") {
     imagesCurrent = req.file.path;
@@ -118,26 +118,31 @@ const updateProductbyId = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      status: req.body.status,
       reviews: req.body.reviews,
-      createAt: req.body.createAt,
       description: req.body.description,
+      categoryId: req.body.categoryId,
     };
+    console.log(updatedProduct);
     try {
-      let products;
-      products = await products.findByIdAndUpdate(ProId, updatedProduct);
-      console.log(products);
+      existingProduct = await products.findOne({ alias: updatedProduct.alias });
+    } catch (err) {
+      const error = new HttpError("Something wrong!!!", 500);
+      return res.send(error);
+    }
+    if (!existingProduct) {
+      try {
+        updatedPro = await products.findByIdAndUpdate(ProId, updatedProduct);
+        console.log(updatedPro);
+      } catch (err) {
+        const error = new HttpError("Something wrong!!!", 500);
+        return res.status(422).send(error);
+      }
       return res.status(200).json({
         message: "Update Product success",
-        products: updatedProduct,
+        updatedPro: updatedProduct,
       });
-    } catch (error) {
-      if (error.name === "MongoError" && error.code === 11000) {
-        // Duplicate username
-        return res.status(422).send({ message: "Product already exist!" });
-      }
-      return res.status(422).send(error);
     }
+    res.status(422).json({ message: "Product already exist" });
   } else {
     const updatedProduct = {
       name: req.body.name,
@@ -145,27 +150,32 @@ const updateProductbyId = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      status: req.body.status,
       reviews: req.body.reviews,
-      createAt: req.body.createAt,
       description: req.body.description,
       imagesProduct: imagesCurrent,
+      categoryId: req.body.categoryId,
     };
+    console.log(updatedProduct);
     try {
-      let products;
-      products = await products.findByIdAndUpdate(ProId, updatedProduct);
-      console.log(products);
+      existingProduct = await products.findOne({ alias: updatedPro.alias });
+    } catch (err) {
+      const error = new HttpError("Something wrong!!!", 500);
+      return res.send(error);
+    }
+    if (!existingProduct) {
+      try {
+        updatedPro = await products.findByIdAndUpdate(ProId, updatedProduct);
+        console.log(updatedPro);
+      } catch (err) {
+        const error = new HttpError("Something wrong!!!", 500);
+        return res.status(422).send(error);
+      }
       return res.status(200).json({
         message: "Update Product success",
-        products: updatedProduct,
+        updatedPro: updatedProduct,
       });
-    } catch (error) {
-      if (error.name === "MongoError" && error.code === 11000) {
-        // Duplicate username
-        return res.status(422).send({ message: "Product already exist!" });
-      }
-      return res.status(422).send(error);
     }
+    res.status(422).json({ message: "Product already exist" });
   }
 };
 
