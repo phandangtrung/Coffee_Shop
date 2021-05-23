@@ -1,51 +1,43 @@
 import React, { useState, useEffect } from "react";
 import "./style.css";
-import { Row, Col, Form, Input, Button, Spin, Table, Tag } from "antd";
+import {
+  Row,
+  Col,
+  Form,
+  Input,
+  Button,
+  Spin,
+  Table,
+  Tag,
+  Modal,
+  Space,
+  Card,
+} from "antd";
+import {
+  CheckCircleOutlined,
+  RightCircleOutlined,
+  ClockCircleOutlined,
+} from "@ant-design/icons";
+import Moment from "react-moment";
+import { Images } from "../../../config/image";
 import orderApi from "../../../api/orderApi";
 function Searchorder() {
   const { Search } = Input;
   const [data, setdata] = useState([]);
   const [fakedata, setfakedata] = useState([]);
   const [isloading, setisloading] = useState(false);
-  const columns = [
-    {
-      title: "Customer Name",
-      dataIndex: "customerName",
-      key: "name",
-      render: (text) => <a>{text}</a>,
-    },
-    {
-      title: "Customer Address",
-      dataIndex: "customerAddress",
-      key: "customerAddress",
-    },
-    {
-      title: "Customer Phone",
-      dataIndex: "customerPhone",
-      key: "address",
-    },
-    {
-      title: "Status",
-      dataIndex: "status",
-      key: "address",
-      render: (stt) => (
-        <>
-          {stt === false ? (
-            <Tag color="volcano" key="tag">
-              UNCONFIRM
-            </Tag>
-          ) : (
-            <Tag color="green" key="tag">
-              CONFIRMED
-            </Tag>
-          )}
-        </>
-      ),
-    },
-  ];
+  const [visible, setvisible] = useState(false);
+  const [currentOd, setcurrentOd] = useState({ productList: [] });
+  const showModal = (dt) => {
+    setcurrentOd(dt);
+    setvisible(true);
+  };
+  const hideModal = () => {
+    setvisible(false);
+  };
+
   useEffect(() => {
     const fetchOrderList = async () => {
-      // dispatch({ type: "FETCH_INIT" });
       try {
         const response = await orderApi.getall();
         console.log("Fetch products succesfully: ", response);
@@ -65,8 +57,57 @@ function Searchorder() {
     setisloading(false);
     console.log(">>order", dataorder);
   };
+  const gridStyle = {
+    width: "100%",
+  };
+
   return (
     <>
+      <Modal
+        style={{ height: "20px" }}
+        title="Sản phẩm của đơn hàng"
+        visible={visible}
+        onCancel={hideModal}
+        footer={[
+          <Button key="back" onClick={hideModal}>
+            OK
+          </Button>,
+        ]}
+      >
+        <div>
+          <div>{`TỔNG ĐƠN HÀNG: ${currentOd.totalPrices} VNĐ`}</div>
+          <div
+            style={{ marginTop: "10px", height: "300px", overflowY: "scroll" }}
+          >
+            <div style={{ width: "100%" }}>
+              <Row style={{ display: "flex", justifyContent: "center" }}>
+                {currentOd.productList.map((product) => (
+                  <Col span={11} style={{ padding: "20px" }}>
+                    <Card
+                      hoverable
+                      style={{ width: "100%", height: "auto" }}
+                      cover={
+                        <img
+                          alt="picture"
+                          src={`http://localhost:5000/${product.pro.imagesProduct}`}
+                        />
+                      }
+                    >
+                      <Card.Meta
+                        title={product.pro.name}
+                        description="Số lượng: 3"
+                      />
+                      <Card.Meta description="Giá: 4000vnd" />
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+              ,
+            </div>
+          </div>
+        </div>
+        ,
+      </Modal>
       <div className="container">
         <div className="search-orer__form">
           <Search
@@ -79,7 +120,133 @@ function Searchorder() {
       </div>
       <div className="table__form">
         <Spin spinning={isloading}>
-          <Table pagination={false} columns={columns} dataSource={data} />
+          {/* <Table pagination={false} columns={columns} dataSource={data} /> */}
+          {data.map((dt) => (
+            <div
+              style={{
+                width: "100%",
+                justifyContent: "center",
+                display: "flex",
+                marginBottom: "50px",
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: "white",
+                  width: "80%",
+                  height: "40vh",
+                  borderRadius: "30px",
+                  boxShadow: "3px 7px 13px gray",
+                  letterSpacing: "2px",
+                  lineHeight: "50px",
+                  backgroundImage: `url(${Images.BILLB})`,
+                  backgroundSize: "cover",
+                  textAlign: "start",
+                  padding: "30px",
+                  fontFamily: "Sansita Swashed",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "30px",
+                    display: "flex",
+                    width: "100%",
+                  }}
+                >
+                  <div style={{ color: "white" }}>Khách hàng:</div>
+                  <div>{dt.customerName}</div>
+                </div>
+                <div
+                  style={{
+                    fontSize: "20px",
+                    display: "flex",
+                    width: "90%",
+                  }}
+                >
+                  <div style={{ color: "white" }}>Địa chỉ:</div>
+                  <div>{` ${dt.customerAddress}`}</div>
+                </div>
+                <div
+                  style={{
+                    fontSize: "20px",
+                    display: "flex",
+                    width: "90%",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "20px",
+                      display: "flex",
+                      width: "45%",
+                    }}
+                  >
+                    <div style={{ color: "white" }}>Số điện thoại:</div>
+                    <div>{dt.customerPhone}</div>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "20px",
+                      display: "flex",
+                      width: "50%",
+                    }}
+                  >
+                    <div style={{ color: "white" }}>Ngày mua:</div>
+                    <div>
+                      <Moment format="DD/MM/YYYY - hh:mm">
+                        {dt.createdAt}
+                      </Moment>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  style={{
+                    fontSize: "20px",
+                    display: "flex",
+                    width: "35%",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <div style={{ color: "white" }}>Trạng thái:</div>
+                  {dt.status ? (
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <div>Hoàn thành</div>
+                      <CheckCircleOutlined style={{ color: "green" }} />
+                    </div>
+                  ) : (
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <div>Đang xử lý</div>
+                      <ClockCircleOutlined style={{ color: "brown" }} />
+                    </div>
+                  )}
+                </div>
+                <div
+                  style={{
+                    fontSize: "20px",
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "flex-end",
+                    alignItems: "center",
+                    color: "white",
+                    fontStyle: "italic",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "33%",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => showModal(dt)}
+                  >
+                    Xem chi tiết hóa đơn <RightCircleOutlined />
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </Spin>
       </div>
     </>

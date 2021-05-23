@@ -11,6 +11,7 @@ import {
   Input,
   Alert,
   Select,
+  Popconfirm,
 } from "antd";
 import { CaretUpOutlined, CompassOutlined } from "@ant-design/icons";
 import "./style.css";
@@ -68,8 +69,8 @@ function Product() {
       console.log(">>newBraL", newBraL);
       setBraProList(newBraL);
       setProductList(newBraL[0].listProduct);
-      setDfSelect(String(newBraL[0].branch_name));
-      console.log(">>newBraL[0].branch_name", newBraL[0].branch_name);
+      setDfSelect(String(newBraL[0].name));
+      console.log(">>newBraL[0].name", newBraL[0].name);
       setfakeProductList(newBraL[0].listProduct);
       setloadProduct(false);
     } catch (error) {
@@ -127,29 +128,13 @@ function Product() {
     }
   };
   const handleChangeLoca = (value) => {
-    const found = BraProList.find((element) => element.branch_name === value);
+    const found = BraProList.find((element) => element.name === value);
     console.log(">>BraProList", BraProList);
     console.log(">>found", found);
     setProductList(found.listProduct);
     setfakeProductList(found.listProduct);
   };
-  // const getallProduct = () => {
-  //   const fetchProductList = async () => {
-  //     // dispatch({ type: "FETCH_INIT" });
-  //     try {
-  //       setloadProduct(true);
-  //       const response = await productApi.getAll();
-  //       console.log("Fetch products succesfully: ", response);
-  //       // dispatchProduct(doGetList_success(response.products));
-  //       setProductList(response.products);
-  //       console.log(">>>> productlist: ", productList);
-  //       setloadProduct(false);
-  //     } catch (error) {
-  //       console.log("failed to fetch product list: ", error);
-  //     }
-  //   };
-  //   fetchProductList();
-  // };
+
   const fillterPro = (cateid) => {
     console.log(">>>cateid", cateid);
     const newprolist = fakeproductList.filter(
@@ -252,6 +237,7 @@ function Product() {
                   style={{ width: "35px" }}
                   src={Images.LOCATE}
                 />
+
                 <Select
                   defaultValue="Chi Nhanh Thu Duc"
                   style={{ width: "90%", textAlign: "start" }}
@@ -260,8 +246,8 @@ function Product() {
                   {BraProList.map((bp) => (
                     <Select.Option
                       key={bp._id}
-                      value={bp.branch_name}
-                    >{`${bp.branch_name} - ${bp.location}`}</Select.Option>
+                      value={bp.name}
+                    >{`${bp.name} - ${bp.location}`}</Select.Option>
                   ))}
                 </Select>
               </div>

@@ -20,4 +20,5 @@ export const Images = {
   ADS: IMAGE_URL + "/static/img/ads.png",
   CPIM: IMAGE_URL + "/static/img/coupon_img.jpg",
   LOCATE: IMAGE_URL + "/static/img/location.png",
+  BILLB: IMAGE_URL + "/static/img/old-2228749_1280.jpg",
 };
