@@ -33,7 +33,9 @@ const createCategory = async (req, res, next) => {
   console.log(createCategories);
   let existingCategory;
   try {
-    existingCategory = await Category.findOne({ name: createCategories.name });
+    existingCategory = await Category.findOne({
+      alias: createCategories.alias,
+    });
   } catch (err) {
     const error = new HttpError("Something wrong!!!", 500);
     return res.send(error);
@@ -65,7 +67,7 @@ const updateCategoryById = async (req, res, next) => {
   };
   console.log(updateCategory);
   try {
-    existingCategory = await Category.findOne({ name: updateCategory.name });
+    existingCategory = await Category.findOne({ alias: updateCategory.alias });
   } catch (err) {
     const error = new HttpError("Something Wrong!!!", 500);
     return next(error);
