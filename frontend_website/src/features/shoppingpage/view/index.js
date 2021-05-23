@@ -199,7 +199,8 @@ function ShoppingPage(props) {
           className="productname"
           placeholder={quantity}
           min={1}
-          max={loadmaxpro(row.product_id)}
+          // max={loadmaxpro(row.product_id)}
+          max={row.storequantity}
         />
       ),
     },

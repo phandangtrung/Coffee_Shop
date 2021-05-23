@@ -25,11 +25,12 @@ function ProductTag(props) {
           size: "M",
           quantity: 1,
           price: props.price,
+          storequantity: props.storequantity,
         });
       } else {
         let check_available = false;
         for (let i = 0; i < cart.length; i++) {
-          if (cart[i]._id === props._id) {
+          if (cart[i].product_id === props._id) {
             cart[i].quantity = cart[i].quantity + 1;
             check_available = true;
           }
@@ -42,6 +43,7 @@ function ProductTag(props) {
             size: "M",
             quantity: 1,
             price: props.price,
+            storequantity: props.storequantity,
           });
         }
       }

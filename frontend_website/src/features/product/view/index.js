@@ -12,6 +12,7 @@ import {
   Alert,
   Select,
   Popconfirm,
+  message,
 } from "antd";
 import { CaretUpOutlined, CompassOutlined } from "@ant-design/icons";
 import "./style.css";
@@ -77,6 +78,10 @@ function Product() {
       console.log("failed to fetch product list: ", error);
     }
   };
+  const warning = () => {
+    message.warning("Đã thay đổi cửa hàng. Giỏ hàng của bạn sẽ được làm mới");
+  };
+
   const fetchProductList = async () => {
     try {
       setloadProduct(true);
@@ -133,6 +138,9 @@ function Product() {
     console.log(">>found", found);
     setProductList(found.listProduct);
     setfakeProductList(found.listProduct);
+    localStorage.removeItem("cart");
+    // localStorage.removeItem("branchId");
+    warning();
   };
 
   const fillterPro = (cateid) => {
@@ -289,6 +297,7 @@ function Product() {
                     price={product.prices}
                     quantity={product.quantity}
                     description={product.description}
+                    storequantity={product.quantity}
                   />
                 </Col>
               ))
