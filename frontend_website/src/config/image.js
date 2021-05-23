@@ -18,7 +18,9 @@ export const Images = {
   BCFF: IMAGE_URL + "/static/img/breadcoffee_tranpa.png",
   BBG: IMAGE_URL + "/static/img/BANHMI-bg_2.jpg",
   ADS: IMAGE_URL + "/static/img/ads.png",
-  CPIM: IMAGE_URL + "/static/img/coupon_img.jpg",
+  CPIM:
+    IMAGE_URL +
+    "/static/img/coffee-seamless-pattern-coffee-beans-hand-drawn-sketch-hot-drink-coffee-background-vector.jpg",
   LOCATE: IMAGE_URL + "/static/img/location.png",
   BILLB: IMAGE_URL + "/static/img/old-2228749_1280.jpg",
 };
