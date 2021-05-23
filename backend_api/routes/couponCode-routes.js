@@ -6,7 +6,7 @@ const router = express.Router();
 
 //router.use(isAuth);
 
-router.get("/couponcode/user", couponCodeController.getAllCouponCodeByUser);
+router.get("/discount/user", couponCodeController.getAllCouponCodeByUser);
 
 router.get("/code", couponCodeController.getCouponbyCode);
 
