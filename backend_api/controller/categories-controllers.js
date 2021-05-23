@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Category = require("../models/categories");
-const {products} = require("../models/products");
+const { products } = require("../models/products");
 
 const { validationResult } = require("express-validator");
 
@@ -24,54 +24,64 @@ const getAlias = (str) => {
   return str.toLowerCase().replace(/ /g, "-");
 };
 
-const getAllCategory = async (req, res, next) => {
-  let categories;
+const createCategory = async (req, res, next) => {
+  let newCategories;
+  const createCategories = {
+    name: req.body.name,
+    alias: getAlias(req.body.name),
+  };
+  console.log(createCategories);
+  let existingCategory;
   try {
-    categories = await Category.find();
-    console.log(categories);
+    existingCategory = await Category.findOne({ name: createCategories.name });
   } catch (err) {
-    const error = new HttpError(
-      "Something went wrong, coud not find any category",
-      500
-    );
-    return next(error);
+    const error = new HttpError("Something wrong!!!", 500);
+    return res.send(error);
   }
-
-  if (!categories) {
-    const error = new HttpError("Could not find any category", 404);
-    return next(error);
+  if (!existingCategory) {
+    try {
+      newCategories = new Category(createCategories);
+      await newCategories.save();
+      console.log(newCategories);
+    } catch (err) {
+      const error = new HttpError("Something wrong!!!", 500);
+      return res.send(error);
+    }
+    res.status(200).json({
+      message: "Create success",
+      newCategories,
+    });
   }
-  res.status(200).json({ categories });
+  res.status(422).json({ message: "Category already exist" });
 };
 
 const updateCategoryById = async (req, res, next) => {
-  const errors = validationResult(req);
   const CateId = req.params.cid;
-  if (!errors.isEmpty()) {
-    console.log(errors);
-    const error = new HttpError("Invalid Input! Pls check your data", 400);
-    return next(error);
-  }
-  const updatedCategory = {
+  let categories;
+  let existingCategory;
+  const updateCategory = {
     name: req.body.name,
     alias: getAlias(req.body.name),
-    createAt: req.body.createAt,
   };
-
+  console.log(updateCategory);
   try {
-    let categories;
-    categories = await Category.findByIdAndUpdate(CateId, updatedCategory);
+    existingCategory = await Category.findOne({ name: updateCategory.name });
+  } catch (err) {
+    const error = new HttpError("Something Wrong!!!", 500);
+    return next(error);
+  }
+  if (!existingCategory) {
+    try {
+      categories = await Category.findByIdAndUpdate(CateId, updateCategory);
+    } catch (error) {
+      return res.status(422).send(error);
+    }
     res.status(200).json({
       message: "update success",
-      categories: updatedCategory,
+      categories: updateCategory,
     });
-  } catch (error) {
-    if (error.name === "MongoError" && error.code === 11000) {
-      // Duplicate username
-      return res.status(422).send({ message: "Category already exist!" });
-    }
-    return res.status(422).send(error);
   }
+  res.status(422).json({ message: "Category already exist!" });
 };
 
 const deleteCategoryById = async (req, res, next) => {
@@ -90,32 +100,24 @@ const deleteCategoryById = async (req, res, next) => {
   res.status(200).json({ message: "Deleted Category successfull" });
 };
 
-const createCategory = async (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    console.log(errors);
-    const error = new HttpError("Invalid Input! Pls check your data", 400);
+const getAllCategory = async (req, res, next) => {
+  let categories;
+  try {
+    categories = await Category.find();
+    console.log(categories);
+  } catch (err) {
+    const error = new HttpError(
+      "Something went wrong, coud not find any category",
+      500
+    );
     return next(error);
   }
-  const createCategory = {
-    name: req.body.name,
-    alias: getAlias(req.body.name),
-    createAt: req.body.createAt,
-  };
-  try {
-    const newCategories = new Category(createCategory);
-    await newCategories.save();
-    res.status(200).json({
-      message: "Create success",
-      newCategories,
-    });
-  } catch (error) {
-    if (error.name === "MongoError" && error.code === 11000) {
-      // Duplicate username
-      return res.status(422).send({ message: "Category already exist!" });
-    }
-    return res.status(422).send(error);
+
+  if (!categories) {
+    const error = new HttpError("Could not find any category", 404);
+    return next(error);
   }
+  res.status(200).json({ categories });
 };
 
 const getCategoryById = async (req, res, next) => {
