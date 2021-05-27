@@ -27,29 +27,41 @@ const Checkout = (props) => {
       });
   };
   const formatDate = (date) => {
-    date = new Date(date);
-    return date.toLocaleDateString('en-GB'); // dd/mm/yyyy
+    const dateT = new Date(date);
+    return (
+      dateT.getDate() + '.' + (dateT.getMonth() + 1) + '.' + dateT.getFullYear()
+    ); //prints expected format.
   };
   const [Isloading, setIsloading] = useState(false);
+  const [fakeprice, setfakeprice] = useState(0);
+  const [price, setprice] = useState(0);
   const [couponList, setCouponList] = useState([]);
   const getListCode = () => {
-    // const apiURL = `${Backport}/couponCode/discount/user`;
-    const apiURL = `http://192.168.55.110:5000/api/couponCode/discount/user`;
+    const apiURL = `${Backport}/couponCode/discount/user`;
 
     setIsloading(true);
     fetch(apiURL)
       .then((res) => res.json())
       .then((resJson) => {
+        console.log('>>Abcd');
         setCouponList(resJson.couponcode);
         console.log('>>resJson.couponcode', resJson.couponcode);
+        setIsloading(false);
         return resJson.couponcode;
       })
       .catch((error) => {
         console.log('Error: ', error);
       });
   };
+  const addCode = (code) => {
+    const percentage = code.percentage;
+    const disprice = fakeprice - fakeprice * (percentage / 100);
+    setprice(disprice);
+  };
   useEffect(() => {
     getListCode();
+    setfakeprice(props.totalprice);
+    setprice(props.totalprice);
   }, []);
   return (
     <SafeAreaView
@@ -198,93 +210,104 @@ const Checkout = (props) => {
           <ScrollView
             style={{backgroundColor: 'white', height: 75}}
             horizontal={true}>
-            {couponList.map((coupon) => (
-              <View
-                key={coupon._id}
-                style={{
-                  height: 70,
-                  width: 270,
-
-                  borderRadius: 5,
-
-                  flexDirection: 'row',
-                  marginRight: 15,
-                }}>
+            {Isloading === false ? (
+              couponList.map((coupon) => (
                 <View
+                  key={coupon._id}
                   style={{
-                    width: '75%',
-                    backgroundColor: '#e79b4e',
-                    borderBottomRightRadius: 10,
-                    borderTopRightRadius: 10,
-                    paddingLeft: 10,
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
+                    height: 70,
+                    width: 270,
 
-                    elevation: 5,
+                    borderRadius: 5,
+
+                    flexDirection: 'row',
+                    marginRight: 15,
                   }}>
                   <View
                     style={{
-                      width: '100%',
-                      backgroundColor: 'white',
-                      height: 70,
-
+                      width: '75%',
+                      backgroundColor: '#e79b4e',
                       borderBottomRightRadius: 10,
                       borderTopRightRadius: 10,
+                      paddingLeft: 10,
+                      shadowColor: '#000',
+                      shadowOffset: {
+                        width: 0,
+                        height: 2,
+                      },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 3.84,
+
+                      elevation: 5,
                     }}>
-                    <View style={{paddingLeft: 10, paddingTop: 5}}>
-                      <Text
-                        style={{
-                          fontSize: 12,
-                          color: 'grey',
-                          textTransform: 'uppercase',
-                        }}>
-                        {coupon.content}
-                      </Text>
-                      <Text style={{fontWeight: 'bold', paddingTop: 3}}>
-                        {`Giảm ${coupon.percentage}% cho đơn`}
-                      </Text>
-                      <Text
-                        style={{fontSize: 12, color: 'grey', paddingTop: 5}}>
-                        {`HSD: ${formatDate(coupon.endTime)}`}
-                      </Text>
+                    <View
+                      style={{
+                        width: '100%',
+                        backgroundColor: 'white',
+                        height: 70,
+
+                        borderBottomRightRadius: 10,
+                        borderTopRightRadius: 10,
+                      }}>
+                      <View style={{paddingLeft: 10, paddingTop: 5}}>
+                        <Text
+                          style={{
+                            fontSize: 12,
+                            color: 'grey',
+                            textTransform: 'uppercase',
+                          }}>
+                          {coupon.content}
+                        </Text>
+                        <Text style={{fontWeight: 'bold', paddingTop: 3}}>
+                          {`Giảm ${coupon.percentage}% cho đơn`}
+                        </Text>
+                        <Text
+                          style={{fontSize: 12, color: 'grey', paddingTop: 5}}>
+                          {`HSD: ${formatDate(coupon.endTime)}`}
+                        </Text>
+                      </View>
                     </View>
                   </View>
+
+                  <View
+                    style={{
+                      height: 70,
+                      width: '25%',
+                      backgroundColor: 'white',
+                      borderBottomRightRadius: 5,
+                      borderTopRightRadius: 5,
+                      borderBottomLeftRadius: 10,
+                      borderTopLeftRadius: 10,
+                      shadowColor: '#000',
+                      shadowOffset: {
+                        width: 0,
+                        height: 2,
+                      },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 3.84,
+
+                      elevation: 5,
+
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    <TouchableOpacity onPress={() => addCode(coupon)}>
+                      <View>
+                        <Text style={{color: '#ffb460', fontWeight: 'bold'}}>
+                          {'Chọn'}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  </View>
                 </View>
-
-                <View
-                  style={{
-                    height: 70,
-                    width: '25%',
-                    backgroundColor: 'white',
-                    borderBottomRightRadius: 5,
-                    borderTopRightRadius: 5,
-                    borderBottomLeftRadius: 10,
-                    borderTopLeftRadius: 10,
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-
-                    elevation: 5,
-
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text style={{color: '#ffb460', fontWeight: 'bold'}}>
-                    {'Chọn'}
-                  </Text>
-                </View>
-              </View>
-            ))}
+              ))
+            ) : (
+              <Image
+                source={require('../../img/id-loading-5.gif')}
+                style={{width: 300, height: 80}}
+              />
+            )}
           </ScrollView>
         </Card>
         <Card style={{borderRadius: 20}}>
@@ -298,9 +321,7 @@ const Checkout = (props) => {
               <Text style={{fontSize: 17, fontWeight: 'bold'}}>{'Tổng'}</Text>
             </View>
             <View>
-              <Text style={{fontSize: 17}}>{`${formatCurrency(
-                props.totalprice,
-              )}đ`}</Text>
+              <Text style={{fontSize: 17}}>{`${formatCurrency(price)}đ`}</Text>
             </View>
           </View>
         </Card>
