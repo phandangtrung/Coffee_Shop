@@ -38,6 +38,7 @@ import Modal from "antd/lib/modal/Modal";
 function ShoppingPage(props) {
   const { Text, Link } = Typography;
   useEffect(() => {
+    Geocode.setApiKey("AIzaSyCvfJ8y5punvcfwRLV50M_fSPe_vDhKMgk");
     const fetchProductList = async () => {
       try {
         setisloading(true);
@@ -63,7 +64,7 @@ function ShoppingPage(props) {
   const [totalPrice, settotalPrice] = useState(0);
   const [codeprice, setcodeprice] = useState(0);
   const [codeloading, setcodeloading] = useState(false);
-  Geocode.setApiKey("AIzaSyB_eKxh8KTsPy6aPPJPROh2yP75dTvg92o");
+
   const [form] = Form.useForm();
   const [coordinates, setCoordinates] = useState({
     lat: 10.850899,
