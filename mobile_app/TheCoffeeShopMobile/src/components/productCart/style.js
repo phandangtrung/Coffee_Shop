@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
   text_cart: {
     fontWeight: 'bold',
     color: 'white',
+    width: 70,
   },
 });
 

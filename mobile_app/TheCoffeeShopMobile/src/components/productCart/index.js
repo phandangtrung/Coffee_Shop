@@ -7,7 +7,7 @@ const ProductCart = (props) => {
   return (
     <View>
       <View style={styles.cart_tag}>
-        <Text su style={styles.text_cart}>
+        <Text numberOfLines={1} style={styles.text_cart}>
           {props.name}
         </Text>
         <View style={{flexDirection: 'row'}}>
