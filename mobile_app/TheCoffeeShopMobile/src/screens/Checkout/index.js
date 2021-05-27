@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   View,
@@ -14,7 +14,7 @@ import {
 import {Avatar, Card, Input, Icon} from 'react-native-elements';
 import {connect} from 'react-redux';
 import ProductCheckout from '../../components/productCheckout/index';
-
+import {Backport} from '../../config/port';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 const Checkout = (props) => {
   const formatCurrency = (monney) => {
@@ -26,6 +26,31 @@ const Checkout = (props) => {
         return (index % 3 ? next : next + '.') + prev;
       });
   };
+  const formatDate = (date) => {
+    date = new Date(date);
+    return date.toLocaleDateString('en-GB'); // dd/mm/yyyy
+  };
+  const [Isloading, setIsloading] = useState(false);
+  const [couponList, setCouponList] = useState([]);
+  const getListCode = () => {
+    // const apiURL = `${Backport}/couponCode/discount/user`;
+    const apiURL = `http://192.168.55.110:5000/api/couponCode/discount/user`;
+
+    setIsloading(true);
+    fetch(apiURL)
+      .then((res) => res.json())
+      .then((resJson) => {
+        setCouponList(resJson.couponcode);
+        console.log('>>resJson.couponcode', resJson.couponcode);
+        return resJson.couponcode;
+      })
+      .catch((error) => {
+        console.log('Error: ', error);
+      });
+  };
+  useEffect(() => {
+    getListCode();
+  }, []);
   return (
     <SafeAreaView
       style={{
@@ -173,318 +198,93 @@ const Checkout = (props) => {
           <ScrollView
             style={{backgroundColor: 'white', height: 75}}
             horizontal={true}>
-            <View
-              style={{
-                height: 70,
-                width: 270,
-
-                borderRadius: 5,
-
-                flexDirection: 'row',
-                marginRight: 15,
-              }}>
+            {couponList.map((coupon) => (
               <View
+                key={coupon._id}
                 style={{
-                  width: '75%',
-                  backgroundColor: '#e79b4e',
-                  borderBottomRightRadius: 10,
-                  borderTopRightRadius: 10,
-                  paddingLeft: 10,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
+                  height: 70,
+                  width: 270,
 
-                  elevation: 5,
+                  borderRadius: 5,
+
+                  flexDirection: 'row',
+                  marginRight: 15,
                 }}>
                 <View
                   style={{
-                    width: '100%',
-                    backgroundColor: 'white',
-                    height: 70,
-
+                    width: '75%',
+                    backgroundColor: '#e79b4e',
                     borderBottomRightRadius: 10,
                     borderTopRightRadius: 10,
+                    paddingLeft: 10,
+                    shadowColor: '#000',
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+
+                    elevation: 5,
                   }}>
-                  <View style={{paddingLeft: 10, paddingTop: 5}}>
-                    <Text style={{fontSize: 12, color: 'grey'}}>
-                      {'KHAOTAT'}
-                    </Text>
-                    <Text style={{fontWeight: 'bold', paddingTop: 3}}>
-                      {'Giảm 22k cho đơn 40k'}
-                    </Text>
-                    <Text style={{fontSize: 12, color: 'grey', paddingTop: 5}}>
-                      {'HSD: 06.04.2021'}
-                    </Text>
+                  <View
+                    style={{
+                      width: '100%',
+                      backgroundColor: 'white',
+                      height: 70,
+
+                      borderBottomRightRadius: 10,
+                      borderTopRightRadius: 10,
+                    }}>
+                    <View style={{paddingLeft: 10, paddingTop: 5}}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          color: 'grey',
+                          textTransform: 'uppercase',
+                        }}>
+                        {coupon.content}
+                      </Text>
+                      <Text style={{fontWeight: 'bold', paddingTop: 3}}>
+                        {`Giảm ${coupon.percentage}% cho đơn`}
+                      </Text>
+                      <Text
+                        style={{fontSize: 12, color: 'grey', paddingTop: 5}}>
+                        {`HSD: ${formatDate(coupon.endTime)}`}
+                      </Text>
+                    </View>
                   </View>
                 </View>
-              </View>
 
-              <View
-                style={{
-                  height: 70,
-                  width: '25%',
-                  backgroundColor: 'white',
-                  borderBottomRightRadius: 5,
-                  borderTopRightRadius: 5,
-                  borderBottomLeftRadius: 10,
-                  borderTopLeftRadius: 10,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-
-                  elevation: 5,
-
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text style={{color: '#ffb460', fontWeight: 'bold'}}>
-                  {'Chọn'}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                height: 70,
-                width: 270,
-
-                borderRadius: 5,
-
-                flexDirection: 'row',
-                marginRight: 15,
-              }}>
-              <View
-                style={{
-                  width: '75%',
-                  backgroundColor: '#e79b4e',
-                  borderBottomRightRadius: 10,
-                  borderTopRightRadius: 10,
-                  paddingLeft: 10,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-
-                  elevation: 5,
-                }}>
                 <View
                   style={{
-                    width: '100%',
-                    backgroundColor: 'white',
                     height: 70,
+                    width: '25%',
+                    backgroundColor: 'white',
+                    borderBottomRightRadius: 5,
+                    borderTopRightRadius: 5,
+                    borderBottomLeftRadius: 10,
+                    borderTopLeftRadius: 10,
+                    shadowColor: '#000',
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
 
-                    borderBottomRightRadius: 10,
-                    borderTopRightRadius: 10,
+                    elevation: 5,
+
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
-                  <View style={{paddingLeft: 10, paddingTop: 5}}>
-                    <Text style={{fontSize: 12, color: 'grey'}}>
-                      {'KHAOTAT'}
-                    </Text>
-                    <Text style={{fontWeight: 'bold', paddingTop: 3}}>
-                      {'Giảm 22k cho đơn 40k'}
-                    </Text>
-                    <Text style={{fontSize: 12, color: 'grey', paddingTop: 5}}>
-                      {'HSD: 06.04.2021'}
-                    </Text>
-                  </View>
+                  <Text style={{color: '#ffb460', fontWeight: 'bold'}}>
+                    {'Chọn'}
+                  </Text>
                 </View>
               </View>
-
-              <View
-                style={{
-                  height: 70,
-                  width: '25%',
-                  backgroundColor: 'white',
-                  borderBottomRightRadius: 5,
-                  borderTopRightRadius: 5,
-                  borderBottomLeftRadius: 10,
-                  borderTopLeftRadius: 10,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-
-                  elevation: 5,
-
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text style={{color: '#ffb460', fontWeight: 'bold'}}>
-                  {'Chọn'}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                height: 70,
-                width: 270,
-
-                borderRadius: 5,
-
-                flexDirection: 'row',
-                marginRight: 15,
-              }}>
-              <View
-                style={{
-                  width: '75%',
-                  backgroundColor: '#e79b4e',
-                  borderBottomRightRadius: 10,
-                  borderTopRightRadius: 10,
-                  paddingLeft: 10,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-
-                  elevation: 5,
-                }}>
-                <View
-                  style={{
-                    width: '100%',
-                    backgroundColor: 'white',
-                    height: 70,
-
-                    borderBottomRightRadius: 10,
-                    borderTopRightRadius: 10,
-                  }}>
-                  <View style={{paddingLeft: 10, paddingTop: 5}}>
-                    <Text style={{fontSize: 12, color: 'grey'}}>
-                      {'KHAOTAT'}
-                    </Text>
-                    <Text style={{fontWeight: 'bold', paddingTop: 3}}>
-                      {'Giảm 22k cho đơn 40k'}
-                    </Text>
-                    <Text style={{fontSize: 12, color: 'grey', paddingTop: 5}}>
-                      {'HSD: 06.04.2021'}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View
-                style={{
-                  height: 70,
-                  width: '25%',
-                  backgroundColor: 'white',
-                  borderBottomRightRadius: 5,
-                  borderTopRightRadius: 5,
-                  borderBottomLeftRadius: 10,
-                  borderTopLeftRadius: 10,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-
-                  elevation: 5,
-
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text style={{color: '#ffb460', fontWeight: 'bold'}}>
-                  {'Chọn'}
-                </Text>
-              </View>
-            </View>
-            <View
-              style={{
-                height: 70,
-                width: 270,
-
-                borderRadius: 5,
-
-                flexDirection: 'row',
-                marginRight: 15,
-              }}>
-              <View
-                style={{
-                  width: '75%',
-                  backgroundColor: '#e79b4e',
-                  borderBottomRightRadius: 10,
-                  borderTopRightRadius: 10,
-                  paddingLeft: 10,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-
-                  elevation: 5,
-                }}>
-                <View
-                  style={{
-                    width: '100%',
-                    backgroundColor: 'white',
-                    height: 70,
-
-                    borderBottomRightRadius: 10,
-                    borderTopRightRadius: 10,
-                  }}>
-                  <View style={{paddingLeft: 10, paddingTop: 5}}>
-                    <Text style={{fontSize: 12, color: 'grey'}}>
-                      {'KHAOTAT'}
-                    </Text>
-                    <Text style={{fontWeight: 'bold', paddingTop: 3}}>
-                      {'Giảm 22k cho đơn 40k'}
-                    </Text>
-                    <Text style={{fontSize: 12, color: 'grey', paddingTop: 5}}>
-                      {'HSD: 06.04.2021'}
-                    </Text>
-                  </View>
-                </View>
-              </View>
-
-              <View
-                style={{
-                  height: 70,
-                  width: '25%',
-                  backgroundColor: 'white',
-                  borderBottomRightRadius: 5,
-                  borderTopRightRadius: 5,
-                  borderBottomLeftRadius: 10,
-                  borderTopLeftRadius: 10,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-
-                  elevation: 5,
-
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}>
-                <Text style={{color: '#ffb460', fontWeight: 'bold'}}>
-                  {'Chọn'}
-                </Text>
-              </View>
-            </View>
+            ))}
           </ScrollView>
         </Card>
         <Card style={{borderRadius: 20}}>
