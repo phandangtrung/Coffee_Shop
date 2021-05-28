@@ -13,11 +13,11 @@ import {
   ImageBackground,
   ActivityIndicator,
 } from 'react-native';
-
+import axios from 'axios';
 import DropShadow from 'react-native-drop-shadow';
 import LinearGradient from 'react-native-linear-gradient';
 import {AuthContext} from '../../config/context';
-
+import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
 import CommentTag from '../../components/commentTag/index';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {Avatar, Card, Input} from 'react-native-elements';
@@ -33,6 +33,20 @@ const Login = () => {
     if (password === ' ') {
       setAccount({...account, us: usname});
     } else setAccount({...account, pw: password});
+  };
+  GoogleSignin.configure({
+    webClientId:
+      '161356782679-supo9tgvceuf5u8ts0d0su6d3eg4sckf.apps.googleusercontent.com', // client ID of type WEB for your server (needed to verify user ID and offline access)
+    offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+  });
+  const GsignIn = async () => {
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      console.log('>>userInfo', userInfo);
+    } catch (error) {
+      console.log('error', error);
+    }
   };
   const loginHandle = () => {
     // setIsloading(true);
@@ -169,15 +183,24 @@ const Login = () => {
             style={{
               width: '63%',
               flexDirection: 'row',
-              justifyContent: 'space-between',
               alignItems: 'center',
               paddingTop: 10,
+              marginBottom: 10,
             }}>
-            <Text style={{color: 'grey'}}>{'Đăng nhập bằng Google'}</Text>
-            <Image
-              source={require('../../img/google-2981831-2476479.png')}
-              style={{width: 20, height: 20}}
-            />
+            <TouchableOpacity onPress={() => GsignIn()}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  width: '97%',
+                  justifyContent: 'space-between',
+                }}>
+                <Text style={{color: 'grey'}}>{'Đăng nhập bằng Google'}</Text>
+                <Image
+                  source={require('../../img/google-2981831-2476479.png')}
+                  style={{width: 20, height: 20}}
+                />
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
       </View>

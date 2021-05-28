@@ -50,7 +50,31 @@ const cartReducer = (state = initialState, action) => {
       newcart.splice(objIndex, 1);
       console.log('>>newcart', newcart);
       return {cartAr: [...newcart], totalprice: newtotal};
+    case actionType.INCREASE_PRODUCT:
+      let newproc = state.cartAr;
+      const objIndext = newproc.findIndex((obj) => obj.id == action.payload.id);
+      newproc[objIndext] = {
+        ...newproc[objIndext],
+        quantity: newproc[objIndext].quantity + 1,
+      };
+      let pricet = 0;
+      newproc.map((pr) => (pricet = pricet + pr.prices * pr.quantity));
+      return {cartAr: [...newproc], totalprice: pricet};
+    case actionType.DECREASE_PRODUCT:
+      let newcartpro = state.cartAr;
+      const objIndextd = newcartpro.findIndex(
+        (obj) => obj.id == action.payload.id,
+      );
+      if (newcartpro[objIndextd].quantity > 1) {
+        newcartpro[objIndextd] = {
+          ...newcartpro[objIndextd],
+          quantity: newcartpro[objIndextd].quantity - 1,
+        };
+      }
 
+      pricet = 0;
+      newcartpro.map((pr) => (pricet = pricet + pr.prices * pr.quantity));
+      return {cartAr: [...newcartpro], totalprice: pricet};
     default:
       return state;
   }

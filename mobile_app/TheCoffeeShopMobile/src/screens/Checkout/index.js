@@ -11,7 +11,7 @@ import {
   Modal,
   Picker,
 } from 'react-native';
-import {Avatar, Card, Input, Icon} from 'react-native-elements';
+import {Avatar, Card, Input, Icon, Overlay} from 'react-native-elements';
 import {connect} from 'react-redux';
 import ProductCheckout from '../../components/productCheckout/index';
 import {Backport} from '../../config/port';
@@ -36,6 +36,12 @@ const Checkout = (props) => {
   const [fakeprice, setfakeprice] = useState(0);
   const [price, setprice] = useState(0);
   const [couponList, setCouponList] = useState([]);
+  const [addRess, setaddRess] = useState('Nhập địa chỉ giao hàng');
+  const [inputadd, setinputadd] = useState('');
+  const [visible, setVisible] = useState(false);
+  const toggleOverlay = () => {
+    setVisible(!visible);
+  };
   const getListCode = () => {
     const apiURL = `${Backport}/couponCode/discount/user`;
 
@@ -177,15 +183,15 @@ const Checkout = (props) => {
               <Text style={{fontSize: 17, color: 'grey', fontStyle: 'italic'}}>
                 {'Địa chỉ'}
               </Text>
-              <Text style={{fontSize: 17, color: '#ffb460'}}>{'Thay đổi'}</Text>
+              <TouchableOpacity onPress={toggleOverlay}>
+                <Text style={{fontSize: 17, color: '#ffb460'}}>
+                  {'Thay đổi'}
+                </Text>
+              </TouchableOpacity>
             </View>
           </Card.Title>
           <Card.Divider />
-          <Text style={{color: 'grey', lineHeight: 20}}>
-            {
-              'Phan Đăng Trung Phan Đắng trung phan đăng trung phan đăng trung phan đăng trung phan đăng trung'
-            }
-          </Text>
+          <Text style={{color: 'grey', lineHeight: 20}}>{addRess}</Text>
         </Card>
         <Card>
           <Card.Title
@@ -331,6 +337,25 @@ const Checkout = (props) => {
 
         <View style={{height: 5}}></View>
       </ScrollView>
+      <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
+        <Text style={{fontSize: 17, color: 'grey', fontStyle: 'italic'}}>
+          {'Thay đổi địa chỉ'}
+        </Text>
+        <View style={{paddingTop: 10, width: 300, height: 130}}>
+          <Input
+            onChangeText={(value) => setaddRess(value)}
+            placeholder="Nhập địa chỉ"
+          />
+          <Button
+            onPress={() => {
+              setinputadd(addRess);
+              setVisible(false);
+            }}
+            color="#ffb460"
+            title="OK"
+          />
+        </View>
+      </Overlay>
     </SafeAreaView>
   );
 };

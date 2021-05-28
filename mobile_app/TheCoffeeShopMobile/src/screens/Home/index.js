@@ -18,7 +18,11 @@ import LinearGradient from 'react-native-linear-gradient';
 import styles from './style';
 
 import ProductTag from '../../components/productTag/index';
-import {deleteProduct} from '../../components/productTag/actions/index';
+import {
+  decreaseProduct,
+  deleteProduct,
+  increaseProduct,
+} from '../../components/productTag/actions/index';
 import ProductCart from '../../components/productCart/index';
 import Loading from '../../components/loading/Loading';
 
@@ -72,7 +76,16 @@ const Home = (props) => {
         resJson.products.map((_product) => {
           let title = '';
           _categories.forEach((cate) => {
-            if (cate._id === _product.categoryId) title = cate.name;
+            console.log(
+              '>>cate._id',
+              cate._id,
+              '_product.categoryId',
+              _product.categoryId,
+            );
+            if (cate._id === _product.categoryId) {
+              title = cate.name;
+              console.log('>>title', title);
+            }
           });
 
           productsByCat = {
@@ -212,6 +225,8 @@ const Home = (props) => {
                   prices={product.prices}
                   quantity={product.quantity}
                   ondeleteProduct={() => props.deleteProduct(product)}
+                  onincreaseProduct={() => props.increaseProduct(product)}
+                  ondecreaseProduct={() => props.decreaseProduct(product)}
                 />
               ))}
             </View>
@@ -364,6 +379,10 @@ const mapDispatchToProps = (dispatch) => {
   return {
     deleteProduct: (product_current) =>
       dispatch(deleteProduct(product_current)),
+    increaseProduct: (product_current) =>
+      dispatch(increaseProduct(product_current)),
+    decreaseProduct: (product_current) =>
+      dispatch(decreaseProduct(product_current)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

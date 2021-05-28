@@ -19,16 +19,20 @@ const ProductCart = (props) => {
             )}
           </View>
           <View style={{flexDirection: 'column', paddingLeft: 5}}>
-            <FontAwesome5
-              style={{color: 'white', fontSize: 15, color: 'white'}}
-              name={'angle-up'}
-              solid
-            />
-            <FontAwesome5
-              style={{color: 'white', fontSize: 15, color: 'white'}}
-              name={'angle-down'}
-              solid
-            />
+            <TouchableOpacity onPress={() => props.onincreaseProduct()}>
+              <FontAwesome5
+                style={{color: 'white', fontSize: 15, color: 'white'}}
+                name={'angle-up'}
+                solid
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => props.ondecreaseProduct()}>
+              <FontAwesome5
+                style={{color: 'white', fontSize: 15, color: 'white'}}
+                name={'angle-down'}
+                solid
+              />
+            </TouchableOpacity>
           </View>
         </View>
         <Text style={styles.text_cart}>{`${props.prices}đ`}</Text>
