@@ -27,7 +27,7 @@ const WidgetsDropdown = () => {
       try {
         const tokenUser = Cookies.get("tokenUser");
         const response = await userApi.getallUser(tokenUser);
-        console.log("Fetch products succesfully: ", response);
+        console.log("Fetch account succesfully: ", response);
         setaccountList(response.users);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
@@ -37,7 +37,7 @@ const WidgetsDropdown = () => {
     const fetchcategoryList = async () => {
       try {
         const response = await categoryApi.getAll();
-        console.log("Fetch products succesfully: ", response);
+        console.log("Fetch cate succesfully: ", response);
         setcateList(response.categories);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
@@ -48,7 +48,7 @@ const WidgetsDropdown = () => {
       try {
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
-        setproList(response.products);
+        setproList(response.productList);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
       }

@@ -39,13 +39,13 @@ import {
   doDelete,
 } from "./action/actionCreater";
 import { doGetList as doGetListCategory } from "../category/action/actionCreater.js";
+import { Backport } from "../../config";
 import { doGetList_error as doGetList_errorCategory } from "../category/action/actionCreater.js";
 import { doGetList_success as doGetList_successCategory } from "../category/action/actionCreater.js";
 import categoryApi from "../../api/categoryApi";
 
 function Product() {
   const { Search } = Input;
-  const locallink = "http://localhost:3000";
   const columns = [
     {
       title: "Name",
@@ -59,21 +59,16 @@ function Product() {
       key: "imagesProduct",
       width: 200,
       render: (images) => (
-        <img style={{ width: "100%" }} src={`${locallink}/${images}`} />
+        <img style={{ width: "100%" }} src={`${Backport}/${images}`} />
       ),
     },
     {
-      title: "Quantity",
-      dataIndex: "quantity",
-      key: "quantity",
-    },
-    {
       title: "Category",
-      dataIndex: "categoryId",
-      key: "categoryId",
+      dataIndex: "catName",
+      key: "catName",
       width: 100,
       // render: (category) => <p>{category}</p>,
-      render: (category) => getCatenamebyid(category),
+      // render: (category) => getCatenamebyid(category),
     },
     {
       title: "Description",
@@ -134,12 +129,11 @@ function Product() {
   const [detail, setdetail] = useState(null);
   const [imgfile, setimgfile] = useState(null);
   const [tabledata, settabledata] = useState([]);
-  const getCatenamebyid = (cateid) => {
-    const cateobj = categoryList.data.filter(
-      (dataget) => cateid === dataget._id
-    );
-    const finalname = cateobj[0]?.name;
-    return <div>{finalname}</div>;
+  const [cateList, setcateList] = useState([]);
+  const getCatenamebyid = (cateL, cateid) => {
+    console.log(">>cateL", cateL, "cateid", cateid);
+    const cateobj = cateL.filter((dataget) => cateid === dataget._id);
+    return cateobj[0]?.name;
   };
   //uploadimage
   const [sizecheck, setSizecheck] = useState({ size_M: true, size_L: false });
@@ -192,7 +186,7 @@ function Product() {
     form.setFieldsValue(record);
     setstate({
       ...state,
-      fileList: [{ url: `http://localhost:3000/${record.imagesProduct}` }],
+      fileList: [{ url: `${Backport}/${record.imagesProduct}` }],
     });
     SetVisible(!isvisible);
     console.log(">>>record ", record);
@@ -363,14 +357,22 @@ function Product() {
   const loaddatapro = () => {
     setIsLoading(true);
 
-    const fetchProductList = async () => {
+    const fetchProductList = async (cateL) => {
       dispatch(doGetList);
       try {
         const response = await productApi.getAll();
         console.log("Fetch products succesfully: ", response);
-        dispatch(doGetList_success(response.products));
-        setfakeProductList(response.products);
-        settabledata(response.products);
+        dispatch(doGetList_success(response.productList));
+
+        let producreponse = response.productList;
+        response.productList.map((pdl) => {
+          const cateName = getCatenamebyid(cateL, pdl.categoryId);
+          const index = producreponse.findIndex((x) => x._id === pdl._id);
+          producreponse[index] = { ...producreponse[index], catName: cateName };
+        });
+        console.log(">>producreponse", producreponse);
+        settabledata(producreponse);
+        setfakeProductList(producreponse);
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
@@ -383,9 +385,10 @@ function Product() {
       dispatchCategory(doGetListCategory);
       try {
         const response = await categoryApi.getAll();
-        console.log("Fetch products succesfully: ", response);
+        console.log("Fetch cate succesfully: ", response);
         dispatchCategory(doGetList_successCategory(response.categories));
-        fetchProductList();
+        setcateList(response.categories);
+        fetchProductList(response.categories);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
         dispatchCategory(doGetList_errorCategory);
