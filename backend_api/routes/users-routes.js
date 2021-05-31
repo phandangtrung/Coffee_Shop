@@ -4,7 +4,6 @@ const { check } = require("express-validator");
 const usersController = require("../controller/users-controllers");
 const { isAdmin, isAuth, isEmployee } = require("../middleware/uilt");
 
-
 const router = express.Router();
 
 router.post("/googlelogin", usersController.loginGoogle);
@@ -21,9 +20,10 @@ router.post(
 );
 router.post("/createAdmin", usersController.admin);
 
+router.post("/login", usersController.login);
 router.post("/login/admin", usersController.loginAdmin);
 router.post("/login/employee/loginEmployee", usersController.loginEmployee);
-router.post("/login", usersController.login);
+
 router.get("/confirmation/:token", usersController.getConfirmation);
 
 router.post("/forgotPass/", usersController.forgotPassword);

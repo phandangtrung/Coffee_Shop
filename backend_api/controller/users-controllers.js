@@ -135,7 +135,7 @@ const login = async (req, res, next) => {
   }
 
   if (!isValidPassword) {
-    const error = new HttpError("Email or Password is invalid", 401);
+    const error = new HttpError("Wrong password, pls try again", 401);
     return next(error);
   }
 
@@ -149,8 +149,8 @@ const login = async (req, res, next) => {
 
   res.status(200).json({
     email: existingUser.email,
-    isAdmin: existingUser.isAdmin,
-    isEmployee: existingUser.isEmployee,
+    // isAdmin: existingUser.isAdmin,
+    // isEmployee: existingUser.isEmployee,
     token: token,
   });
 };
@@ -298,7 +298,6 @@ const loginGoogle = async (req, res, next) => {
               );
               return next(error);
             }
-
             res.status(200).json({
               message: "login success",
               email: existingUser.email,
@@ -591,6 +590,7 @@ const admin = async (req, res, next) => {
     email: "Admin",
     password: "Admin@123",
     isAdmin: true,
+    isEmployee: false,
     isConfirm: true,
     isLock: false,
   };
@@ -641,14 +641,14 @@ const loginAdmin = async (req, res, next) => {
 
   let isValidPassword;
   try {
-    isValidPassword = await brcypt.compare(password, existingUser.password);
+    isValidPassword = await User.findOne({ password: "Admin@123" });
   } catch (err) {
     const error = new HttpError("Something is error. Pls try again", 401);
     return next(error);
   }
 
   if (!isValidPassword) {
-    const error = new HttpError("Email or Password is invalid", 401);
+    const error = new HttpError("Wrong password, pls try again", 401);
     return next(error);
   }
 
