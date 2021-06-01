@@ -128,6 +128,7 @@ function Product() {
   });
   const [detail, setdetail] = useState(null);
   const [imgfile, setimgfile] = useState(null);
+  const [issizeL, setissizL] = useState(true);
   const [tabledata, settabledata] = useState([]);
   const [cateList, setcateList] = useState([]);
   const getCatenamebyid = (cateL, cateid) => {
@@ -207,14 +208,22 @@ function Product() {
           form.resetFields();
           // onCreate(values);
           console.log(">>>value", values);
-          var CurrentDate = moment().toISOString();
+          let data;
+          if (values.size_L === undefined) {
+            data = {
+              ...values,
+              imagesProduct: imgfile,
+              size_M: 0,
+              size_L: -1,
+            };
+          } else {
+            data = {
+              ...values,
+              imagesProduct: imgfile,
+              size_M: 0,
+            };
+          }
 
-          const data = {
-            ...values,
-            imagesProduct: imgfile,
-            createAt: CurrentDate,
-            ...sizecheck,
-          };
           console.log("data >>>", data);
           var form_data = new FormData();
 
@@ -471,7 +480,8 @@ function Product() {
                   <Input placeholder="Product name" />
                 </Form.Item>
               </Col>
-              <Col span={6}>
+              <Col span={1}></Col>
+              <Col span={11}>
                 <Form.Item
                   name="prices"
                   rules={[{ required: true, message: "Please input Price!" }]}
@@ -527,24 +537,36 @@ function Product() {
                 </Form.Item>
               </Col>
               <Col span={1}></Col>
-              <Col span={11}>
-                Size
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    width: "30%",
-                  }}
-                >
-                  <Form.Item>
+
+              <Col
+                style={{
+                  alignItems: "center",
+                  width: "70%",
+                }}
+                span={11}
+              >
+                {/* <Form.Item>
                     <Checkbox defaultChecked onChange={onChangemcb}>
                       M
                     </Checkbox>
-                  </Form.Item>
-                  <Form.Item>
-                    <Checkbox onChange={onChangelcb}>L</Checkbox>
-                  </Form.Item>
+                  </Form.Item> */}
+                <div
+                  style={{
+                    width: "15%",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  Size
+                  <Checkbox onChange={() => setissizL(!issizeL)}>L</Checkbox>
                 </div>
+                <Form.Item name="size_L">
+                  <Input
+                    style={{ width: "100%" }}
+                    disabled={issizeL}
+                    placeholder="Price"
+                  />
+                </Form.Item>
               </Col>
             </Row>
             <Row style={{ display: "flex", justifyContent: "space-between" }}>
