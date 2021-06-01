@@ -270,16 +270,12 @@ function Product() {
             data = {
               ...values,
               _id: idProdupdate,
-              createAt: CurrentDate,
-              ...sizecheck,
             };
           } else {
             data = {
               ...values,
               _id: idProdupdate,
               imagesProduct: imgfile,
-              createAt: CurrentDate,
-              ...sizecheck,
             };
           }
           console.log(">>data product image ", data);
