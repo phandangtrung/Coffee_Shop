@@ -6,12 +6,14 @@ const router = express.Router();
 
 //router.use(isAuth);
 
+//Người dùng xem tất cả các mã giảm giá còn hạn sử dụng
 router.get("/discount/user", couponCodeController.getAllCouponCodeByUser);
 
 router.get("/code", couponCodeController.getCouponbyCode);
 
 // router.use(isAdmin, isEmployee);
 
+//admin xem tất cả các mã giảm giá
 router.get("/", couponCodeController.getAllCouponCode);
 
 router.post("/", couponCodeController.createCouponCode);

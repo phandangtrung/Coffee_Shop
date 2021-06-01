@@ -40,6 +40,7 @@ const createProduct = async (req, res, next) => {
       size_L: req.body.size_L,
       prices: req.body.prices,
       reviews: req.body.reviews,
+      ratings: req.body.ratings,
       description: req.body.description,
       categoryId: req.body.categoryId,
     };
@@ -63,8 +64,10 @@ const createProduct = async (req, res, next) => {
         message: "Create success",
         newProducts,
       });
+    } else {
+      console.log("Product already exist");
+      res.status(422).json({ message: "Product already exist" });
     }
-    res.status(422).json({ message: "Product already exist" });
   } else {
     const createProduct = {
       name: req.body.name,
@@ -73,13 +76,14 @@ const createProduct = async (req, res, next) => {
       size_L: req.body.size_L,
       prices: req.body.prices,
       reviews: req.body.reviews,
+      ratings: req.body.ratings,
       description: req.body.description,
       imagesProduct: imagesCurrent,
       categoryId: req.body.categoryId,
     };
     console.log(createProduct);
     try {
-      existingProduct = await products.find({ alias: createProduct.alias });
+      existingProduct = await products.findOne({ alias: createProduct.alias });
     } catch (err) {
       const error = new HttpError("Something wrong!!!", 500);
       return res.send(error);
@@ -97,8 +101,10 @@ const createProduct = async (req, res, next) => {
         message: "Create success",
         newProducts,
       });
+    } else {
+      console.log("Product already exist");
+      res.status(422).json({ message: "Product already exist" });
     }
-    res.status(422).json({ message: "Product already exist" });
   }
 };
 
@@ -119,6 +125,7 @@ const updateProductbyId = async (req, res, next) => {
       size_L: req.body.size_L,
       prices: req.body.prices,
       reviews: req.body.reviews,
+      ratings: req.body.ratings,
       description: req.body.description,
       categoryId: req.body.categoryId,
     };
@@ -141,8 +148,10 @@ const updateProductbyId = async (req, res, next) => {
         message: "Update Product success",
         updatedPro: updatedProduct,
       });
+    } else {
+      console.log("Product already exist");
+      res.status(422).json({ message: "Product already exist" });
     }
-    res.status(422).json({ message: "Product already exist" });
   } else {
     const updatedProduct = {
       name: req.body.name,
@@ -151,13 +160,14 @@ const updateProductbyId = async (req, res, next) => {
       size_L: req.body.size_L,
       prices: req.body.prices,
       reviews: req.body.reviews,
+      ratings: req.body.ratings,
       description: req.body.description,
       imagesProduct: imagesCurrent,
       categoryId: req.body.categoryId,
     };
     console.log(updatedProduct);
     try {
-      existingProduct = await products.findOne({ alias: updatedPro.alias });
+      existingProduct = await products.findOne({ alias: updatedProduct.alias });
     } catch (err) {
       const error = new HttpError("Something wrong!!!", 500);
       return res.send(error);
@@ -174,8 +184,10 @@ const updateProductbyId = async (req, res, next) => {
         message: "Update Product success",
         updatedPro: updatedProduct,
       });
+    } else {
+      console.log("Product already exist");
+      res.status(422).json({ message: "Product already exist" });
     }
-    res.status(422).json({ message: "Product already exist" });
   }
 };
 
