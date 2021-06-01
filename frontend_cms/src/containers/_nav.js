@@ -39,16 +39,17 @@ export default [
   },
   {
     _tag: "CSidebarNavItem",
+    name: "Branch",
+    to: "/branch",
+    icon: "cil-inbox",
+  },
+  {
+    _tag: "CSidebarNavItem",
     name: "Order",
     to: "/order",
     icon: "cil-notes",
   },
-  {
-    _tag: "CSidebarNavItem",
-    name: "Shipper",
-    to: "/shipper",
-    icon: "cil-paper-plane",
-  },
+
   {
     _tag: "CSidebarNavItem",
     name: "Comment",
