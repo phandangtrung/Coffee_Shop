@@ -479,7 +479,7 @@ function Product() {
                   <Input placeholder="Price" />
                 </Form.Item>
               </Col>
-              <Col span={5}>
+              {/* <Col span={5}>
                 <Form.Item
                   name="quantity"
                   rules={[
@@ -488,7 +488,7 @@ function Product() {
                 >
                   <Input type="number" placeholder="Quantity" />
                 </Form.Item>
-              </Col>
+              </Col> */}
             </Row>
             <Row style={{ display: "flex", justifyContent: "space-between" }}>
               {/* <Col span={12} style={{ paddingTop: "15px" }}>
