@@ -4,8 +4,8 @@ const productsSchema = new mongoose.Schema(
   {
     name: { type: String, require: true },
     alias: { type: String, require: false },
-    size_M: { type: Boolean, default: false },
-    size_L: { type: Boolean, default: false },
+    size_M: { type: Number, default: false },
+    size_L: { type: Number, default: false },
     prices: { type: Number, require: false },
     description: { type: String, require: false },
     imagesProduct: { type: String, require: false },
