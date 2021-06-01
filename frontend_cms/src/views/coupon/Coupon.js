@@ -25,8 +25,9 @@ import {
   Tag,
   Modal,
   InputNumber,
+  DatePicker,
 } from "antd";
-
+import Moment from "react-moment";
 import commentApi from "../../api/commentApi";
 import couponApi from "../../api/couponApi";
 
@@ -35,13 +36,14 @@ function Coupon() {
   const [isLoading, setIsLoading] = useState(false);
   const [tabledata, settabledata] = useState([]);
   const [loadingmodal, setloadingmodal] = useState(false);
+  const [datecre, setdatecre] = useState({ startTime: "", endTime: "" });
   const deleteComment = (record) => {
     console.log("record: ", record);
     const fetchDeleteCoupon = async () => {
       try {
         setIsLoading(true);
         const response = await couponApi.delete(record._id);
-        console.log("Fetch user succesfully: ", response);
+        console.log("Fetch coupon succesfully: ", response);
         settabledata(tabledata.filter((coupon) => coupon._id !== record._id));
         setIsLoading(false);
       } catch (error) {
@@ -60,14 +62,34 @@ function Coupon() {
     },
     {
       title: "Discount",
-      dataIndex: "discount",
-      key: "discount",
+      dataIndex: "percentage",
+      key: "percentage",
       render: (text) => <a>{text}%</a>,
     },
     {
+      title: "Start Date",
+      dataIndex: "startTime",
+      key: "startTime",
+      render: (time) => (
+        <Tag color="#87d068">
+          <Moment format="DD/MM/YYYY">{time}</Moment>
+        </Tag>
+      ),
+    },
+    {
+      title: "End Date",
+      dataIndex: "endTime",
+      key: "endTime",
+      render: (time) => (
+        <Tag color="red">
+          <Moment format="DD/MM/YYYY">{time}</Moment>
+        </Tag>
+      ),
+    },
+    {
       title: "Note",
-      dataIndex: "note",
-      key: "note",
+      dataIndex: "content",
+      key: "content",
       render: (proid) => <a>{proid}</a>,
     },
 
@@ -89,13 +111,33 @@ function Coupon() {
       ),
     },
   ];
+  function onselectDate(value, dateString) {
+    console.log(
+      "start: ",
+      formatdate(dateString[0]),
+      "end",
+      formatdate(dateString[1])
+    );
+    setdatecre({
+      startTime: formatdate(dateString[0]),
+      endTime: formatdate(dateString[1]),
+    });
+  }
+  function formatdate(datest) {
+    var string = datest;
+    string = string.split("-");
+    const result = `${string[1]}-${string[0]}-${string[2]}`;
+    return result;
+  }
   const handleOk = () => {
     form.validateFields().then((values) => {
       const fetchCreateCoupon = async () => {
         try {
           setIsLoading(true);
-          const response = await couponApi.create(values);
-          console.log("Fetch Coupon succesfully: ", response);
+          const datacreate = { ...values, ...datecre };
+          console.log(">>datacreate", datacreate);
+          const response = await couponApi.create(datacreate);
+          console.log("Fetch create Coupon succesfully: ", response);
           const fetchCouponList = async () => {
             try {
               setIsLoading(true);
@@ -177,15 +219,31 @@ function Coupon() {
         <Spin spinning={loadingmodal} size="large">
           <Form form={form} size={"large"}>
             <Row>
-              <Col span={17}>
-                <Form.Item name="note">
-                  <Input placeholder="Coupon Note" />
+              <Col span={11}>
+                <Form.Item name="amount">
+                  <Input placeholder="Amount" />
                 </Form.Item>
               </Col>
               <Col span={1}></Col>
-              <Col span={6}>
-                <Form.Item name="discount">
+              <Col span={12}>
+                <Form.Item name="percentage">
                   <Input addonAfter="%" placeholder="Discount" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row style={{ marginBottom: "20px" }}>
+              <Col span={24}>
+                <DatePicker.RangePicker
+                  format="DD-MM-YYYY"
+                  onChange={onselectDate}
+                  // onOk={onselectDate}
+                />
+              </Col>
+            </Row>
+            <Row>
+              <Col span={24}>
+                <Form.Item name="content">
+                  <Input.TextArea placeholder="Coupon Note" />
                 </Form.Item>
               </Col>
             </Row>
