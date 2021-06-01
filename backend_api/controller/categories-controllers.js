@@ -38,7 +38,7 @@ const createCategory = async (req, res, next) => {
     });
   } catch (err) {
     const error = new HttpError("Something wrong!!!", 500);
-    return res.send(error);
+    return next(error);
   }
   if (!existingCategory) {
     try {
@@ -47,14 +47,16 @@ const createCategory = async (req, res, next) => {
       console.log(newCategories);
     } catch (err) {
       const error = new HttpError("Something wrong!!!", 500);
-      return res.send(error);
+      return next(error);
     }
     res.status(200).json({
       message: "Create success",
       newCategories,
     });
+  } else {
+    console.log("Category already exist");
+    res.status(422).json({ message: "Category already exist" });
   }
-  res.status(422).json({ message: "Category already exist" });
 };
 
 const updateCategoryById = async (req, res, next) => {
@@ -82,8 +84,10 @@ const updateCategoryById = async (req, res, next) => {
       message: "update success",
       categories: updateCategory,
     });
+  } else {
+    console.log("Category already exist");
+    res.status(422).json({ message: "Category already exist" });
   }
-  res.status(422).json({ message: "Category already exist!" });
 };
 
 const deleteCategoryById = async (req, res, next) => {
