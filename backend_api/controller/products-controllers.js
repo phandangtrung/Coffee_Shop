@@ -39,8 +39,6 @@ const createProduct = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      reviews: req.body.reviews,
-      ratings: req.body.ratings,
       description: req.body.description,
       categoryId: req.body.categoryId,
     };
@@ -75,8 +73,6 @@ const createProduct = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      reviews: req.body.reviews,
-      ratings: req.body.ratings,
       description: req.body.description,
       imagesProduct: imagesCurrent,
       categoryId: req.body.categoryId,
@@ -112,7 +108,6 @@ const createProduct = async (req, res, next) => {
 
 const updateProductbyId = async (req, res, next) => {
   const ProId = req.params.pid;
-  let updatedPro;
   let imagesCurrent;
   if (typeof req.file !== "undefined") {
     imagesCurrent = req.file.path;
@@ -124,8 +119,6 @@ const updateProductbyId = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      reviews: req.body.reviews,
-      ratings: req.body.ratings,
       description: req.body.description,
       categoryId: req.body.categoryId,
     };
@@ -138,16 +131,17 @@ const updateProductbyId = async (req, res, next) => {
     }
     if (!existingProduct) {
       try {
+        let updatedPro;
         updatedPro = await products.findByIdAndUpdate(ProId, updatedProduct);
         console.log(updatedPro);
+        return res.status(200).json({
+          message: "Update Product success",
+          updatedPro: updatedProduct,
+        });
       } catch (err) {
         const error = new HttpError("Something wrong!!!", 500);
         return res.status(422).send(error);
       }
-      return res.status(200).json({
-        message: "Update Product success",
-        updatedPro: updatedProduct,
-      });
     } else {
       console.log("Product already exist");
       res.status(422).json({ message: "Product already exist" });
@@ -159,8 +153,6 @@ const updateProductbyId = async (req, res, next) => {
       size_M: req.body.size_M,
       size_L: req.body.size_L,
       prices: req.body.prices,
-      reviews: req.body.reviews,
-      ratings: req.body.ratings,
       description: req.body.description,
       imagesProduct: imagesCurrent,
       categoryId: req.body.categoryId,
@@ -170,10 +162,11 @@ const updateProductbyId = async (req, res, next) => {
       existingProduct = await products.findOne({ alias: updatedProduct.alias });
     } catch (err) {
       const error = new HttpError("Something wrong!!!", 500);
-      return res.send(error);
+      return res.status(422).send(error);
     }
     if (!existingProduct) {
       try {
+        let updatedPro;
         updatedPro = await products.findByIdAndUpdate(ProId, updatedProduct);
         console.log(updatedPro);
       } catch (err) {
