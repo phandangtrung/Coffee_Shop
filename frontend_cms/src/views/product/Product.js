@@ -85,9 +85,9 @@ function Product() {
       sorter: (a, b) => a.prices - b.prices,
     },
     {
-      title: "Create at",
-      dataIndex: "createAt",
-      key: "createAt",
+      title: "Update at",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
 
       render: (time) => (
         <p>

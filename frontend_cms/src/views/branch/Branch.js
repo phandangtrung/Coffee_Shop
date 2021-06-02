@@ -15,6 +15,7 @@ import {
   Button,
   notification,
   Popconfirm,
+  InputNumber,
 } from "antd";
 import moment from "moment";
 import Moment from "react-moment";
@@ -23,10 +24,12 @@ import {
   CheckCircleOutlined,
   DeleteOutlined,
   FilterOutlined,
+  SelectOutlined,
 } from "@ant-design/icons";
 // import ImgCrop from "antd-img-crop";
 import "./style.css";
 import productApi from "../../api/productApi";
+import branchApi from "../../api/branchApi";
 import dataFetchReducer from "./reducer/index";
 import { dataFetchReducer as dataFetchReducerCategory } from ".././category/reducer/index";
 import {
@@ -77,6 +80,12 @@ function Branch() {
       key: "description",
     },
     {
+      title: "Quantity",
+      width: 250,
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+    {
       title: "Price",
       dataIndex: "prices",
       key: "prices",
@@ -85,9 +94,9 @@ function Branch() {
       sorter: (a, b) => a.prices - b.prices,
     },
     {
-      title: "Create at",
-      dataIndex: "createAt",
-      key: "createAt",
+      title: "Update at",
+      dataIndex: "updatedAt",
+      key: "updatedAt",
 
       render: (time) => (
         <p>
@@ -131,15 +140,24 @@ function Branch() {
   const [issizeL, setissizL] = useState(true);
   const [tabledata, settabledata] = useState([]);
   const [cateList, setcateList] = useState([]);
+  const [currentBranch, setcurrentBranch] = useState({});
   const getCatenamebyid = (cateL, cateid) => {
     console.log(">>cateL", cateL, "cateid", cateid);
     const cateobj = cateL.filter((dataget) => cateid === dataget._id);
     return cateobj[0]?.name;
   };
   //uploadimage
+  const [isselectpro, setisselectpro] = useState(true);
   const [sizecheck, setSizecheck] = useState({ size_M: true, size_L: false });
   const [loadingmodal, setloadingmodal] = useState(false);
   const [checkaddimg, setcheck] = useState(false);
+  const [branchList, setbranchList] = useState([]);
+  const [proListcreate, setproListcreate] = useState([{ name: "" }]);
+  const [dataadd, setdataadd] = useState({
+    proname: "",
+    da: { _id: "", quantity: 0 },
+  });
+  const [productBranch, setproductBranch] = useState([]);
   const toggle = () => {
     SetVisible(!isvisible);
     form.resetFields();
@@ -181,6 +199,7 @@ function Branch() {
     };
     fetchDeleteProduct();
   };
+  const [isaddproModal, setisaddproModal] = useState(false);
   const [idProdupdate, setidProdupdate] = useState(null);
   const updateProduct = (record) => {
     setdetail(record);
@@ -200,6 +219,47 @@ function Branch() {
   const props = {
     onChange: uploadimg,
   };
+  function onChangeBranch(value) {
+    console.log(`selected ${value}`);
+    const fetchproductBranchList = async (value) => {
+      try {
+        setIsLoading(true);
+        const response = await branchApi.getbyId(value);
+        setcurrentBranch(response.branches);
+        console.log("Fetch product by branch succesfully: ", response);
+        const responsepro = await productApi.getAll();
+        let producreponse = responsepro.productList;
+        let newBraL = [];
+        let newproLi = { ...response.branches, listProduct: [] };
+        response.branches.listProduct.map((brpro) => {
+          const found = producreponse.find(
+            (element) => element._id === brpro._id
+          );
+          newproLi.listProduct.push({ ...brpro, ...found });
+        });
+        newBraL.push(newproLi);
+        console.log(">>newBraLlistProduct", newBraL);
+        // setproductBranch(response.listProduct);
+        newBraL[0].listProduct.map((pdl) => {
+          const cateName = getCatenamebyid(cateList, pdl.categoryId);
+          const index = newBraL[0].listProduct.findIndex(
+            (x) => x._id === pdl._id
+          );
+          newBraL[0].listProduct[index] = {
+            ...newBraL[0].listProduct[index],
+            catName: cateName,
+          };
+        });
+        settabledata(newBraL[0].listProduct);
+        setfakeProductList(newBraL[0].listProduct);
+        setIsLoading(false);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+        dispatch(doGetList_error);
+      }
+    };
+    fetchproductBranchList(value);
+  }
   const handleOk = (values) => {
     if (detail === null) {
       form
@@ -335,17 +395,17 @@ function Branch() {
   const [isvisible, SetVisible] = useState(false);
   const [fakeproductList, setfakeProductList] = useState([]);
   // const [productList, setProductList] = useState([]);
-  const onSearch = (values) => {
-    if (values === "") {
-      settabledata(fakeproductList);
-    } else {
-      const filteredProduct = fakeproductList.filter((product) => {
-        return product.name.toLowerCase().indexOf(values.toLowerCase()) !== -1;
-      });
-      console.log(">>>filteredProduct", filteredProduct);
-      if (filteredProduct.length > 0) settabledata(filteredProduct);
-    }
-  };
+  // const onSearch = (values) => {
+  //   if (values === "") {
+  //     settabledata(fakeproductList);
+  //   } else {
+  //     const filteredProduct = fakeproductList.filter((product) => {
+  //       return product.name.toLowerCase().indexOf(values.toLowerCase()) !== -1;
+  //     });
+  //     console.log(">>>filteredProduct", filteredProduct);
+  //     if (filteredProduct.length > 0) settabledata(filteredProduct);
+  //   }
+  // };
   const [productList, dispatch] = useReducer(dataFetchReducer, {
     isLoading: false,
     isError: false,
@@ -359,6 +419,27 @@ function Branch() {
       data: initialData,
     }
   );
+  const fetchbranchList = async (produclist) => {
+    try {
+      const response = await branchApi.getAll();
+      console.log("Fetch branch succesfully: ", response);
+      let newBraL = [];
+      response.branches.map((bl) => {
+        let newproLi = { ...bl, listProduct: [] };
+        bl.listProduct.map((brpro) => {
+          const found = produclist.find((element) => element._id === brpro._id);
+          newproLi.listProduct.push({ ...brpro, ...found });
+        });
+        newBraL.push(newproLi);
+      });
+      console.log(">>newBraL", newBraL);
+
+      setbranchList(response.branches);
+    } catch (error) {
+      console.log("failed to fetch product list: ", error);
+      dispatch(doGetList_error);
+    }
+  };
   const loaddatapro = () => {
     setIsLoading(true);
 
@@ -375,9 +456,9 @@ function Branch() {
           const index = producreponse.findIndex((x) => x._id === pdl._id);
           producreponse[index] = { ...producreponse[index], catName: cateName };
         });
+        fetchbranchList(response.productList);
         console.log(">>producreponse", producreponse);
-        settabledata(producreponse);
-        setfakeProductList(producreponse);
+
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
@@ -403,6 +484,21 @@ function Branch() {
   };
   useEffect(() => {
     loaddatapro();
+    const fetchCategoryList = async () => {
+      // dispatch({ type: "FETCH_INIT" });
+      dispatchCategory(doGetListCategory);
+      try {
+        const response = await categoryApi.getAll();
+        console.log("Fetch cate succesfully: ", response);
+        dispatchCategory(doGetList_successCategory(response.categories));
+        setcateList(response.categories);
+        // fetchProductList(response.categories);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+        dispatchCategory(doGetList_errorCategory);
+      }
+    };
+    fetchCategoryList();
   }, []);
   const handleClick = () => {
     setdetail(null);
@@ -412,39 +508,70 @@ function Branch() {
   return (
     <>
       <CCard>
-        <CCardHeader className="CCardHeader-title ">Product</CCardHeader>
+        <CCardHeader className="CCardHeader-title ">Branch</CCardHeader>
         <Row>
           <Col lg={14}>
-            <CButton
-              style={{
-                width: "200px",
-                height: "50px",
-                margin: "20px 0px 20px 20px",
-              }}
-              shape="pill"
-              color="info"
-              onClick={handleClick}
-            >
-              {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
-              Add Product
-            </CButton>
+            {tabledata.length !== 0 ? (
+              <CButton
+                style={{
+                  width: "200px",
+                  height: "50px",
+                  margin: "20px 0px 20px 20px",
+                }}
+                shape="pill"
+                color="info"
+                onClick={() => setisaddproModal(true)}
+              >
+                {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
+                Add Product
+              </CButton>
+            ) : (
+              <div
+                style={{
+                  width: "200px",
+                  height: "50px",
+                  margin: "20px 0px 20px 20px",
+                }}
+              ></div>
+            )}
           </Col>
-          <Col lg={8}>
-            <Search
-              style={{
-                width: "100%",
-                height: "50px",
-                margin: "30px",
-              }}
-              placeholder="Search product by name"
-              onSearch={onSearch}
-            />
+          <Col lg={8} style={{ display: "flex", alignItems: "center" }}>
+            <Select
+              showSearch
+              style={{ width: "100%" }}
+              placeholder="Select a Branch"
+              onChange={onChangeBranch}
+            >
+              {branchList.map((bl) => (
+                <Select.Option key={bl._id} value={bl._id}>
+                  {`Chi nhánh: ${bl.location}`}
+                </Select.Option>
+              ))}
+            </Select>
+            ,
           </Col>
         </Row>
       </CCard>
       {isLoading ? (
         <div style={{ textAlign: "center" }}>
           <Spin size="large" />
+        </div>
+      ) : tabledata.length === 0 ? (
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            fontSize: "30px",
+            fontWeight: "bold",
+            height: "300px",
+            color: "white",
+            backgroundColor: "RGB(60, 75, 100)",
+          }}
+        >
+          <div style={{ paddingRight: "10px" }}>Please Select Branch First</div>{" "}
+          <SelectOutlined />
         </div>
       ) : (
         <Table columns={columns} dataSource={tabledata} rowKey="_id" />
@@ -599,6 +726,131 @@ function Branch() {
             </Row>
           </Form>
         </Spin>
+      </Modal>
+      <Modal
+        title="ADD PRODUCT"
+        visible={isaddproModal}
+        style={{ margin: "5% 0px 0px 35%" }}
+        onOk={() => {
+          console.log(">>currenbranch", currentBranch);
+
+          let newcurrent = currentBranch;
+          const checkpro = () => {
+            return currentBranch.listProduct.find(
+              (fr) => fr._id === dataadd.da._id
+            );
+          };
+          if (checkpro() === undefined) {
+            newcurrent.listProduct.push(dataadd.da);
+            console.log(">>>chuatontai");
+          } else {
+            console.log(">>datontai");
+
+            for (var i in newcurrent.listProduct) {
+              if (newcurrent.listProduct[i]._id === dataadd.da._id) {
+                newcurrent.listProduct[i].quantity = dataadd.da.quantity;
+                break; //Stop this loop, we found it!
+              }
+            }
+            console.log(">>newcurrent", newcurrent);
+          }
+
+          // setcurrentBranch({
+          //   ...currentBranch,
+          //   listProduct: [...currentBranch.listProduct, ...dataadd],
+          // });
+          console.log(">>dataadd OK", dataadd);
+        }}
+        width={600}
+        onCancel={() => {
+          setisaddproModal(false);
+          setisselectpro(true);
+          setdataadd({ ...dataadd, proname: "" });
+        }}
+      >
+        <Row>
+          <Col span={11}>
+            <Select
+              showSearch
+              style={{ width: "100%" }}
+              placeholder="Select Category"
+              onChange={(value) => {
+                setisselectpro(false);
+                const newpl = productList.data.filter(
+                  (pl) => pl.categoryId === value
+                );
+                if (newpl.length === 0) {
+                  setdataadd({ ...dataadd, proname: "" });
+                  setproListcreate([]);
+                } else {
+                  setdataadd({
+                    ...dataadd,
+                    proname: newpl[0].name,
+                    da: { ...dataadd.da, _id: newpl[0]._id },
+                  });
+                  setproListcreate(newpl);
+                }
+              }}
+            >
+              {cateList.map((cate) => (
+                <Select.Option key={cate._id} value={cate._id}>
+                  {cate.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+          <Col span={1}></Col>
+          <Col span={12}>
+            <Select
+              showSearch
+              style={{ width: "100%" }}
+              placeholder="Select Product"
+              disabled={isselectpro}
+              value={dataadd.proname}
+              onChange={(value) => {
+                setdataadd({
+                  ...dataadd,
+                  proname: value,
+                  da: { ...dataadd.da, _id: value },
+                });
+              }}
+            >
+              {proListcreate.map((pl) => (
+                <Select.Option key={pl._id} value={pl._id}>
+                  {pl.name}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col span={24}>
+            <div style={{ height: "20px" }}></div>
+          </Col>
+        </Row>
+        {dataadd.proname !== "" ? (
+          <Row>
+            <Col span={8}>
+              <InputNumber
+                style={{ width: "95%" }}
+                addonAfter={<div>items</div>}
+                placeholder="Quantity"
+                min={1}
+                max={100}
+                onChange={(value) => {
+                  setdataadd({
+                    ...dataadd,
+                    da: { ...dataadd.da, quantity: value },
+                  });
+                }}
+              />
+            </Col>
+            <Col span={14}>Items</Col>
+          </Row>
+        ) : (
+          ""
+        )}
       </Modal>
     </>
   );
