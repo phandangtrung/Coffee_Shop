@@ -135,6 +135,7 @@ function Branch() {
     previewImage: "",
     fileList: [],
   });
+  const [isaddprod, setisaddprod] = useState(false);
   const [detail, setdetail] = useState(null);
   const [imgfile, setimgfile] = useState(null);
   const [issizeL, setissizL] = useState(true);
@@ -177,6 +178,17 @@ function Branch() {
       previewImage: file.url || file.thumbUrl,
       previewVisible: true,
     });
+  };
+  const fetchupdateproBranch = async (params) => {
+    console.log(">>params", params);
+    try {
+      setisaddprod(true);
+      const response = await branchApi.updateproduct(params);
+      console.log("Fetch update product in branch succesfully: ", response);
+      setisaddprod(false);
+    } catch (error) {
+      console.log("failed to fetch product list: ", error);
+    }
   };
   const deleteProduct = (record) => {
     console.log("Delete: ", record._id);
@@ -755,6 +767,9 @@ function Branch() {
             console.log(">>newcurrent", newcurrent);
           }
 
+          const dataup = { _id: newcurrent._id, data: newcurrent };
+          console.log(">>dataup", dataup);
+          fetchupdateproBranch(dataup);
           // setcurrentBranch({
           //   ...currentBranch,
           //   listProduct: [...currentBranch.listProduct, ...dataadd],
@@ -768,89 +783,91 @@ function Branch() {
           setdataadd({ ...dataadd, proname: "" });
         }}
       >
-        <Row>
-          <Col span={11}>
-            <Select
-              showSearch
-              style={{ width: "100%" }}
-              placeholder="Select Category"
-              onChange={(value) => {
-                setisselectpro(false);
-                const newpl = productList.data.filter(
-                  (pl) => pl.categoryId === value
-                );
-                if (newpl.length === 0) {
-                  setdataadd({ ...dataadd, proname: "" });
-                  setproListcreate([]);
-                } else {
-                  setdataadd({
-                    ...dataadd,
-                    proname: newpl[0].name,
-                    da: { ...dataadd.da, _id: newpl[0]._id },
-                  });
-                  setproListcreate(newpl);
-                }
-              }}
-            >
-              {cateList.map((cate) => (
-                <Select.Option key={cate._id} value={cate._id}>
-                  {cate.name}
-                </Select.Option>
-              ))}
-            </Select>
-          </Col>
-          <Col span={1}></Col>
-          <Col span={12}>
-            <Select
-              showSearch
-              style={{ width: "100%" }}
-              placeholder="Select Product"
-              disabled={isselectpro}
-              value={dataadd.proname}
-              onChange={(value) => {
-                setdataadd({
-                  ...dataadd,
-                  proname: value,
-                  da: { ...dataadd.da, _id: value },
-                });
-              }}
-            >
-              {proListcreate.map((pl) => (
-                <Select.Option key={pl._id} value={pl._id}>
-                  {pl.name}
-                </Select.Option>
-              ))}
-            </Select>
-          </Col>
-        </Row>
-
-        <Row>
-          <Col span={24}>
-            <div style={{ height: "20px" }}></div>
-          </Col>
-        </Row>
-        {dataadd.proname !== "" ? (
+        <Spin size="large" spinning={isaddprod}>
           <Row>
-            <Col span={8}>
-              <InputNumber
-                style={{ width: "95%" }}
-                addonAfter={<div>items</div>}
-                placeholder="Quantity"
-                min={1}
-                max={100}
+            <Col span={11}>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Select Category"
+                onChange={(value) => {
+                  setisselectpro(false);
+                  const newpl = productList.data.filter(
+                    (pl) => pl.categoryId === value
+                  );
+                  if (newpl.length === 0) {
+                    setdataadd({ ...dataadd, proname: "" });
+                    setproListcreate([]);
+                  } else {
+                    setdataadd({
+                      ...dataadd,
+                      proname: newpl[0].name,
+                      da: { ...dataadd.da, _id: newpl[0]._id },
+                    });
+                    setproListcreate(newpl);
+                  }
+                }}
+              >
+                {cateList.map((cate) => (
+                  <Select.Option key={cate._id} value={cate._id}>
+                    {cate.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Col>
+            <Col span={1}></Col>
+            <Col span={12}>
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Select Product"
+                disabled={isselectpro}
+                value={dataadd.proname}
                 onChange={(value) => {
                   setdataadd({
                     ...dataadd,
-                    da: { ...dataadd.da, quantity: value },
+                    proname: value,
+                    da: { ...dataadd.da, _id: value },
                   });
                 }}
-              />
+              >
+                {proListcreate.map((pl) => (
+                  <Select.Option key={pl._id} value={pl._id}>
+                    {pl.name}
+                  </Select.Option>
+                ))}
+              </Select>
             </Col>
-            <Col span={14}>Items</Col>
           </Row>
-        ) : (
-          ""
-        )}
+
+          <Row>
+            <Col span={24}>
+              <div style={{ height: "20px" }}></div>
+            </Col>
+          </Row>
+          {dataadd.proname !== "" ? (
+            <Row>
+              <Col span={8}>
+                <InputNumber
+                  style={{ width: "95%" }}
+                  addonAfter={<div>items</div>}
+                  placeholder="Quantity"
+                  min={1}
+                  max={100}
+                  onChange={(value) => {
+                    setdataadd({
+                      ...dataadd,
+                      da: { ...dataadd.da, quantity: value },
+                    });
+                  }}
+                />
+              </Col>
+              <Col span={14}>Items</Col>
+            </Row>
+          ) : (
+            ""
+          )}
+        </Spin>
       </Modal>
     </>
   );
