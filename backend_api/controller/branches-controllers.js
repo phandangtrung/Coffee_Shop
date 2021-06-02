@@ -56,7 +56,7 @@ const updateBranchesById = async (req, res, next) => {
     console.log(branches);
     return res.status(200).json({
       message: "Update success",
-      branches,
+      branches : updateBranches,
     });
   } catch (error) {
     return res.status(422).send(error);
