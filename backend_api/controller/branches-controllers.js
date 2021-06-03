@@ -54,13 +54,13 @@ const updateBranchesById = async (req, res, next) => {
     let branches;
     branches = await Branch.findByIdAndUpdate(BrId, updateBranches);
     console.log(branches);
-    return res.status(200).json({
-      message: "Update success",
-      branches,
-    });
   } catch (error) {
     return res.status(422).send(error);
   }
+  return res.status(200).json({
+    message: "Update success",
+    branches: updateBranches,
+  });
 };
 
 const getAllBranches = async (req, res, next) => {
