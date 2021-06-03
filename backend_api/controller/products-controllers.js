@@ -29,6 +29,7 @@ const getAlias = (str) => {
 const createProduct = async (req, res, next) => {
   let newProducts;
   let imagesCurrent;
+  let existingProduct;
   if (typeof req.file !== "undefined") {
     imagesCurrent = req.file.path;
   } else imagesCurrent = null;
@@ -109,6 +110,7 @@ const createProduct = async (req, res, next) => {
 const updateProductbyId = async (req, res, next) => {
   const ProId = req.params.pid;
   let imagesCurrent;
+  let existingProduct;
   if (typeof req.file !== "undefined") {
     imagesCurrent = req.file.path;
   } else imagesCurrent = null;

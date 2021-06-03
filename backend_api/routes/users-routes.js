@@ -32,7 +32,7 @@ router.put("/forgotPass/changePass/:token", usersController.changePassword);
 router.use(isAuth);
 
 router.get("/myUser", usersController.getMyUser);
-router.put("/myUser", usersController.updateMyUser);
+router.put("/updateInfor", usersController.updateMyUser);
 
 router.use(isAdmin);
 
