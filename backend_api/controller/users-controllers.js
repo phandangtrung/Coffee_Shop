@@ -545,6 +545,7 @@ const lockUser = async (req, res, next) => {
   };
   try {
     users = await User.findByIdAndUpdate(Userid, userLock);
+    //users = await User.findByIdAndUpdate({Userid}, User.isLock = true);
     console.log(users);
   } catch (err) {
     const error = new HttpError("Something went wrong, can not lock", 500);
@@ -670,9 +671,6 @@ const loginAdmin = async (req, res, next) => {
 const addEmployee = async (req, res, next) => {
   let existingEmployee;
   let newEmployee;
-  // let stringToHash = "s0//P4$$w0rD";
-  // let hashedPassword;
-  // hashedPassword = await brcypt.hash(stringToHash, 9);
   const { email, password } = req.body;
   try {
     existingEmployee = await User.findOne({ email: email });
@@ -727,6 +725,66 @@ const addEmployee = async (req, res, next) => {
     console.log("Email already exist");
     res.status(422).json({ message: "Email already exist" });
   }
+};
+
+const updateEmployeeById = async (req, res, next) => {
+  let existingEmployee;
+  let newEmployee;
+  const { email, password } = req.body;
+  try {
+    existingEmployee = await User.findOne({ email: email });
+    console.log(existingEmployee);
+  } catch (err) {
+    const error = new HttpError("Pls try again", 500);
+    return next(error);
+  }
+  let hashedPassword;
+  try {
+    hashedPassword = await brcypt.hash(password, 9);
+  } catch (err) {
+    const error = new HttpError(
+      "Could not create user, please try again.",
+      500
+    );
+    return next(error);
+  }
+  const updateEmployee = {
+    fName: req.body.fName,
+    email: req.body.email,
+    password: hashedPassword,
+    gender: req.body.gender,
+    birthday: req.body.birthday,
+    phone: req.body.phone,
+    address: req.body.address,
+    isAdmin: false,
+    isEmployee: true,
+    isConfirm: true,
+    isLock: req.body.isLock,
+    branchId: req.body.branchId,
+  };
+  console.log(updateEmployee);
+
+  if (!existingEmployee) {
+    try {
+      newEmployee = new User(createEmployee);
+      await newEmployee.save();
+      console.log(newEmployee);
+    } catch (err) {
+      const error = new HttpError(
+        "Some things went wrong, please try again!!!",
+        500
+      );
+      return next(error);
+    }
+    res.status(201).json({
+      message: "Create success",
+      newEmployee,
+    });
+  } else {
+    console.log("Email already exist");
+    res.status(422).json({ message: "Email already exist" });
+  }
+  
 };
 
 const loginEmployee = async (req, res, next) => {
@@ -785,7 +843,6 @@ const loginEmployee = async (req, res, next) => {
 
 module.exports = {
   register,
-  login,
   forgotPassword,
   changePassword,
   getConfirmation,
@@ -793,12 +850,14 @@ module.exports = {
   unlockUser,
   getMyUser,
   updateMyUser,
+  admin,
+  addEmployee,
+  updateEmployeeById,
   getAllUsers,
   getUserById,
-  admin,
+  login,
   loginAdmin,
   loginEmployee,
-  addEmployee,
   loginGoogle,
   loginFacebook,
 };
