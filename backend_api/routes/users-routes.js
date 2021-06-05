@@ -32,7 +32,7 @@ router.put("/forgotPass/changePass/:token", usersController.changePassword);
 router.use(isAuth);
 
 router.get("/myUser", usersController.getMyUser);
-router.put("/myUser", usersController.updateMyUser);
+router.put("/updateInfor", usersController.updateMyUser);
 
 router.use(isAdmin);
 
@@ -40,6 +40,6 @@ router.post("/addEmployee", usersController.addEmployee);
 router.get("/", usersController.getAllUsers);
 router.get("/:uid", usersController.getUserById);
 router.put("/lock/:uid", usersController.lockUser);
-router.put("/unlock/:uid", usersController.unlockUser);
+router.put("/unlock/userUnlocked/:uid", usersController.unlockUser);
 
 module.exports = router;

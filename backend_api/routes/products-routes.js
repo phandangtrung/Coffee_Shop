@@ -7,6 +7,7 @@ const productsController = require("../controller/products-controllers");
 const router = express.Router();
 
 router.get("/", productsController.getAllProducts);
+router.get("/productInfor", productsController.getProductByName);
 router.get("/:pid", productsController.getProductById);
 router.get("/cate/:cid", productsController.getProductByCateId);
 
