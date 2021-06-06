@@ -111,7 +111,7 @@ const getAllCouponCodeByUser = async (req, res, next) => {
 const getCouponbyCode = async (req, res, next) => {
   let couponcode;
   let currentDate = new Date();
-  const code = req.body.couponCode;
+  const code = req.query.couponCode;
   try {
     couponcode = await CouponCode.findOne({
       couponCode: code,

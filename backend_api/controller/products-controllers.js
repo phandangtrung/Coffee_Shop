@@ -269,8 +269,8 @@ const getProductByCateId = async (req, res, next) => {
 
 const getProductByName = async (req, res, next) => {
   const proInfor = {
-    name: req.body.name,
-    alias: getAlias(req.body.name),
+    name: req.query.name,
+    alias: getAlias(req.query.name),
   };
   //const { name } = req.body;
   console.log(proInfor);
