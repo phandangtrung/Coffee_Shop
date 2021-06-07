@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   CCreateElement,
@@ -11,13 +11,22 @@ import {
   CSidebarNavDropdown,
   CSidebarNavItem,
 } from "@coreui/react";
-
+import Cookies from "js-cookie";
 import CIcon from "@coreui/icons-react";
 
 // sidebar nav config
 import navigation from "./_nav";
-
+import emplnvaigation from "./_navemp";
 const TheSidebar = () => {
+  const [isadnavi, setisadnavi] = useState();
+  useEffect(() => {
+    const isAdmin = Cookies.get("isAdmin") === "true";
+    console.log(">>isAdmin", isAdmin);
+    if (isAdmin) {
+      setisadnavi(navigation);
+    } else setisadnavi(emplnvaigation);
+    console.log(">>emplnvaigation", emplnvaigation);
+  }, []);
   const dispatch = useDispatch();
   const show = useSelector((state) => state.sidebarShow);
 
@@ -43,7 +52,7 @@ const TheSidebar = () => {
       </CSidebarBrand>
       <CSidebarNav>
         <CCreateElement
-          items={navigation}
+          items={isadnavi}
           components={{
             CSidebarNavDivider,
             CSidebarNavDropdown,
@@ -57,4 +66,4 @@ const TheSidebar = () => {
   );
 };
 
-export default React.memo(TheSidebar);
+export default TheSidebar;

@@ -1,8 +1,12 @@
 import axiosClient from "./axiosClient";
 // api/productApi.js
 class UserApi {
-  postUser = (params) => {
+  adminLogin = (params) => {
     const url = "/api/users/login/admin";
+    return axiosClient.post(url, params);
+  };
+  employeeLogin = (params) => {
+    const url = "/api/users/login/employee/loginEmployee";
     return axiosClient.post(url, params);
   };
   getallUser = (token) => {

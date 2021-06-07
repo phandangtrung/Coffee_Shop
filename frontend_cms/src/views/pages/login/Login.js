@@ -24,7 +24,7 @@ import {
   CRow,
   CImg,
 } from "@coreui/react";
-import { Input, Form, Checkbox, Button, notification } from "antd";
+import { Input, Form, Checkbox, Button, notification, Radio } from "antd";
 import {
   UserOutlined,
   LockOutlined,
@@ -41,14 +41,24 @@ const Login = (props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [Directstate, setDirectstate] = useState({ redirectToReferrer: false });
+  const [rolelogin, setrolelogin] = useState("admin");
   // const [state, setstate] = useState({ email: " ", password: "" });
   const onLogin = (values) => {
     console.log(values);
     // setstate({ email: values.email, password: values.password });
     // props.history.push("/dashboard");
     const fetchCreateProduct = async () => {
+      setIsLoading(true);
       try {
-        const response = await userApi.postUser(values);
+        let response;
+        if (rolelogin === "admin") {
+          response = await userApi.adminLogin(values);
+          Cookies.set("isAdmin", true);
+        } else {
+          response = await userApi.employeeLogin(values);
+          Cookies.set("isAdmin", false);
+        }
+
         console.log("Login succesfully: ", response);
         fakeAuth.authenticate(() => {
           setDirectstate(() => ({
@@ -56,11 +66,14 @@ const Login = (props) => {
           }));
         });
         Cookies.set("tokenUser", response.token);
+
         setTimeout(() => {
           Cookies.remove("tokenUser");
         }, 600000);
         // console.log("token: ", response.token);
       } catch (error) {
+        Cookies.remove("isAdmin");
+        setIsLoading(false);
         console.log("failed to fetch login: ", error);
         notification.open({
           message: "Login Fail",
@@ -84,6 +97,10 @@ const Login = (props) => {
   if (redirectToReferrer === true) {
     return <Redirect to={from} />;
   }
+  function onChange(e) {
+    console.log(`radio checked:${e.target.value}`);
+    setrolelogin(e.target.value);
+  }
   return (
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
@@ -99,8 +116,25 @@ const Login = (props) => {
                   }}
                 >
                   <Form form={form} onFinish={onLogin}>
-                    <h1>ADMIN LOGIN</h1>
-                    <p className="text-muted">Sign In to admin account</p>
+                    <h1>CMS LOGIN</h1>
+                    {/* <p className="text-muted">Sign In to admin account</p> */}
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Radio.Group
+                        defaultValue="admin"
+                        buttonStyle="solid"
+                        style={{ marginBottom: 16 }}
+                        onChange={onChange}
+                      >
+                        <Radio.Button value="admin">Admin</Radio.Button>
+                        <Radio.Button value="employ">Employee</Radio.Button>
+                      </Radio.Group>
+                    </div>
+
                     <Form.Item
                       name="email"
                       className="mb-3"
@@ -129,6 +163,7 @@ const Login = (props) => {
                     <CRow>
                       <CCol xs="12">
                         <Button
+                          loading={isLoading}
                           color="primary"
                           style={{
                             width: "100%",
