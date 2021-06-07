@@ -160,29 +160,29 @@ const updateProductbyId = async (req, res, next) => {
       categoryId: req.body.categoryId,
     };
     console.log(updatedProduct);
-    // try {
-    //   existingProduct = await products.findOne({ alias: updatedProduct.alias });
-    // } catch (err) {
-    //   const error = new HttpError("Something wrong!!!", 500);
-    //   return res.status(422).send(error);
-    // }
-    // if (!existingProduct) {
-    //   try {
-    //     let updatedPro;
-    //     updatedPro = await products.findOneAndUpdate(ProId, updatedProduct);
-    //     console.log(updatedPro);
-    //   } catch (err) {
-    //     const error = new HttpError("Something wrong!!!", 500);
-    //     return res.status(422).send(error);
-    //   }
-    //   return res.status(200).json({
-    //     message: "Update Product success",
-    //     updatedPro: updatedProduct,
-    //   });
-    // } else {
-    //   console.log("Product already exist");
-    //   res.status(422).json({ message: "Product already exist" });
-    // }
+    try {
+      existingProduct = await products.findOne({ alias: updatedProduct.alias });
+    } catch (err) {
+      const error = new HttpError("Something wrong!!!", 500);
+      return res.status(422).send(error);
+    }
+    if (!existingProduct) {
+      try {
+        let updatedPro;
+        updatedPro = await products.findOneAndUpdate(ProId, updatedProduct);
+        console.log(updatedPro);
+      } catch (err) {
+        const error = new HttpError("Something wrong!!!", 500);
+        return res.status(422).send(error);
+      }
+      return res.status(200).json({
+        message: "Update Product success",
+        updatedPro: updatedProduct,
+      });
+    } else {
+      console.log("Product already exist");
+      res.status(422).json({ message: "Product already exist" });
+    }
   }
 };
 
@@ -268,14 +268,15 @@ const getProductByCateId = async (req, res, next) => {
 };
 
 const getProductByName = async (req, res, next) => {
-  // const proInfor = {
-  //   name: req.body.name,
-  // };
-  const { name } = req.body;
-  console.log(name);
+  const proInfor = {
+    name: req.query.name,
+    alias: getAlias(req.query.name),
+  };
+  //const { name } = req.body;
+  console.log(proInfor);
   let productInfor;
   try {
-    productInfor = await products.findOne({ name: name });
+    productInfor = await products.findOne({ alias: proInfor.alias });
     console.log(productInfor);
   } catch (err) {
     const error = new HttpError(
