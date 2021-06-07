@@ -46,7 +46,7 @@ import { Backport } from "../../config";
 import { doGetList_error as doGetList_errorCategory } from "../category/action/actionCreater.js";
 import { doGetList_success as doGetList_successCategory } from "../category/action/actionCreater.js";
 import categoryApi from "../../api/categoryApi";
-
+import Cookies from "js-cookie";
 function Branch() {
   const { Search } = Input;
   const columns = [
@@ -130,6 +130,7 @@ function Branch() {
   // upload image
   const [form] = Form.useForm();
   const [fileList, setfileList] = useState([]);
+  const [empBranch, setempBranch] = useState();
   const [state, setstate] = useState({
     previewVisible: false,
     previewImage: "",
@@ -231,45 +232,47 @@ function Branch() {
   const props = {
     onChange: uploadimg,
   };
+  const fetchproductBranchList = async (value) => {
+    try {
+      setIsLoading(true);
+      const response = await branchApi.getbyId(value);
+      setcurrentBranch(response.branches);
+      console.log("Fetch product by branch succesfully: ", response);
+      const responsepro = await productApi.getAll();
+      let producreponse = responsepro.productList;
+      let newBraL = [];
+      let newproLi = { ...response.branches, listProduct: [] };
+      response.branches.listProduct.map((brpro) => {
+        const found = producreponse.find(
+          (element) => element._id === brpro._id
+        );
+        newproLi.listProduct.push({ ...brpro, ...found });
+      });
+      newBraL.push(newproLi);
+      console.log(">>newBraLlistProduct", newBraL);
+      // setproductBranch(response.listProduct);
+      newBraL[0].listProduct.map((pdl) => {
+        const cateName = getCatenamebyid(cateList, pdl.categoryId);
+        const index = newBraL[0].listProduct.findIndex(
+          (x) => x._id === pdl._id
+        );
+        newBraL[0].listProduct[index] = {
+          ...newBraL[0].listProduct[index],
+          catName: cateName,
+        };
+      });
+      settabledata(newBraL[0].listProduct);
+      setfakeProductList(newBraL[0].listProduct);
+      setIsLoading(false);
+    } catch (error) {
+      console.log("failed to fetch product list: ", error);
+      dispatch(doGetList_error);
+    }
+  };
+
   function onChangeBranch(value) {
     console.log(`selected ${value}`);
-    const fetchproductBranchList = async (value) => {
-      try {
-        setIsLoading(true);
-        const response = await branchApi.getbyId(value);
-        setcurrentBranch(response.branches);
-        console.log("Fetch product by branch succesfully: ", response);
-        const responsepro = await productApi.getAll();
-        let producreponse = responsepro.productList;
-        let newBraL = [];
-        let newproLi = { ...response.branches, listProduct: [] };
-        response.branches.listProduct.map((brpro) => {
-          const found = producreponse.find(
-            (element) => element._id === brpro._id
-          );
-          newproLi.listProduct.push({ ...brpro, ...found });
-        });
-        newBraL.push(newproLi);
-        console.log(">>newBraLlistProduct", newBraL);
-        // setproductBranch(response.listProduct);
-        newBraL[0].listProduct.map((pdl) => {
-          const cateName = getCatenamebyid(cateList, pdl.categoryId);
-          const index = newBraL[0].listProduct.findIndex(
-            (x) => x._id === pdl._id
-          );
-          newBraL[0].listProduct[index] = {
-            ...newBraL[0].listProduct[index],
-            catName: cateName,
-          };
-        });
-        settabledata(newBraL[0].listProduct);
-        setfakeProductList(newBraL[0].listProduct);
-        setIsLoading(false);
-      } catch (error) {
-        console.log("failed to fetch product list: ", error);
-        dispatch(doGetList_error);
-      }
-    };
+
     fetchproductBranchList(value);
   }
   const handleOk = (values) => {
@@ -511,6 +514,13 @@ function Branch() {
       }
     };
     fetchCategoryList();
+    const branchIDE = Cookies.get("BranchId");
+    console.log(">>branchIDE", branchIDE);
+
+    setempBranch(branchIDE);
+    if (branchIDE !== "undefined") {
+      fetchproductBranchList(branchIDE);
+    }
   }, []);
   const handleClick = () => {
     setdetail(null);
@@ -548,19 +558,22 @@ function Branch() {
             )}
           </Col>
           <Col lg={8} style={{ display: "flex", alignItems: "center" }}>
-            <Select
-              showSearch
-              style={{ width: "100%" }}
-              placeholder="Select a Branch"
-              onChange={onChangeBranch}
-            >
-              {branchList.map((bl) => (
-                <Select.Option key={bl._id} value={bl._id}>
-                  {`Chi nhánh: ${bl.location}`}
-                </Select.Option>
-              ))}
-            </Select>
-            ,
+            {empBranch === "undefined" ? (
+              <Select
+                showSearch
+                style={{ width: "100%" }}
+                placeholder="Select a Branch"
+                onChange={onChangeBranch}
+              >
+                {branchList.map((bl) => (
+                  <Select.Option key={bl._id} value={bl._id}>
+                    {`Chi nhánh: ${bl.location}`}
+                  </Select.Option>
+                ))}
+              </Select>
+            ) : (
+              ""
+            )}
           </Col>
         </Row>
       </CCard>

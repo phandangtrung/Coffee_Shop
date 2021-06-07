@@ -12,6 +12,7 @@ import Cookies from "js-cookie";
 const TheHeaderDropdown = () => {
   const onlogout = () => {
     Cookies.remove("tokenUser");
+    // Cookies.remove
     window.location.reload();
   };
   return (
