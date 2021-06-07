@@ -13,6 +13,10 @@ class BranchApi {
     const url = `/api/branches/${params._id}`;
     return axiosClient.put(url, params.data);
   };
+  createbranch = (params) => {
+    const url = `/api/branches/`;
+    return axiosClient.post(url, params);
+  };
   deleteproduct = (product_id) => {
     const url = `/api/products/${product_id}`;
     return axiosClient.delete(url);

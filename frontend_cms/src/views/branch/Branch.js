@@ -25,6 +25,7 @@ import {
   DeleteOutlined,
   FilterOutlined,
   SelectOutlined,
+  ReloadOutlined,
 } from "@ant-design/icons";
 // import ImgCrop from "antd-img-crop";
 import "./style.css";
@@ -131,6 +132,7 @@ function Branch() {
   const [form] = Form.useForm();
   const [fileList, setfileList] = useState([]);
   const [empBranch, setempBranch] = useState();
+  const [isloadselect, setisloadselect] = useState(false);
   const [state, setstate] = useState({
     previewVisible: false,
     previewImage: "",
@@ -154,6 +156,7 @@ function Branch() {
   const [loadingmodal, setloadingmodal] = useState(false);
   const [checkaddimg, setcheck] = useState(false);
   const [branchList, setbranchList] = useState([]);
+  const [choosebr, setchoosebr] = useState(false);
   const [proListcreate, setproListcreate] = useState([{ name: "" }]);
   const [dataadd, setdataadd] = useState({
     proname: "",
@@ -164,6 +167,24 @@ function Branch() {
     SetVisible(!isvisible);
     form.resetFields();
     setstate({ ...state, fileList: [] });
+  };
+  const onReloadBr = () => {
+    loaddatapro();
+  };
+  const submitNewBr = (value) => {
+    const fetchcreateBranch = async (params) => {
+      console.log(">>params", params);
+      const datacr = { ...params, listProduct: [] };
+      try {
+        setisaddprod(true);
+        const response = await branchApi.createbranch(datacr);
+        console.log("Fetch create branch succesfully: ", response);
+        setisaddprod(false);
+      } catch (error) {
+        console.log("failed to fetch create branch: ", error);
+      }
+    };
+    fetchcreateBranch(value);
   };
   const handleChange = (fileList) => {
     setstate(fileList);
@@ -213,6 +234,7 @@ function Branch() {
     fetchDeleteProduct();
   };
   const [isaddproModal, setisaddproModal] = useState(false);
+  const [isaddbrModal, setisaddbrModal] = useState(false);
   const [idProdupdate, setidProdupdate] = useState(null);
   const updateProduct = (record) => {
     setdetail(record);
@@ -274,6 +296,7 @@ function Branch() {
     console.log(`selected ${value}`);
 
     fetchproductBranchList(value);
+    setchoosebr(true);
   }
   const handleOk = (values) => {
     if (detail === null) {
@@ -457,7 +480,7 @@ function Branch() {
   };
   const loaddatapro = () => {
     setIsLoading(true);
-
+    setisloadselect(true);
     const fetchProductList = async (cateL) => {
       dispatch(doGetList);
       try {
@@ -473,7 +496,7 @@ function Branch() {
         });
         fetchbranchList(response.productList);
         console.log(">>producreponse", producreponse);
-
+        setisloadselect(false);
         setIsLoading(false);
       } catch (error) {
         console.log("failed to fetch product list: ", error);
@@ -532,8 +555,33 @@ function Branch() {
       <CCard>
         <CCardHeader className="CCardHeader-title ">Branch</CCardHeader>
         <Row>
-          <Col lg={14}>
-            {tabledata.length !== 0 ? (
+          <Col lg={5}>
+            {empBranch === "undefined" ? (
+              <CButton
+                style={{
+                  width: "200px",
+                  height: "50px",
+                  margin: "20px 0px 20px 20px",
+                }}
+                shape="pill"
+                color="info"
+                onClick={() => setisaddbrModal(true)}
+              >
+                {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
+                Add Branch
+              </CButton>
+            ) : (
+              <div
+                style={{
+                  width: "200px",
+                  height: "50px",
+                  margin: "20px 0px 20px 20px",
+                }}
+              ></div>
+            )}
+          </Col>
+          <Col lg={9}>
+            {choosebr !== false ? (
               <CButton
                 style={{
                   width: "200px",
@@ -557,6 +605,7 @@ function Branch() {
               ></div>
             )}
           </Col>
+
           <Col lg={8} style={{ display: "flex", alignItems: "center" }}>
             {empBranch === "undefined" ? (
               <Select
@@ -564,6 +613,7 @@ function Branch() {
                 style={{ width: "100%" }}
                 placeholder="Select a Branch"
                 onChange={onChangeBranch}
+                loading={isloadselect}
               >
                 {branchList.map((bl) => (
                   <Select.Option key={bl._id} value={bl._id}>
@@ -575,13 +625,22 @@ function Branch() {
               ""
             )}
           </Col>
+          <Col
+            style={{ display: "flex", paddingLeft: 10, alignItems: "center" }}
+            span={1}
+          >
+            <ReloadOutlined
+              onClick={onReloadBr}
+              style={{ fontSize: 20, cursor: "pointer" }}
+            />
+          </Col>
         </Row>
       </CCard>
       {isLoading ? (
         <div style={{ textAlign: "center" }}>
           <Spin size="large" />
         </div>
-      ) : tabledata.length === 0 ? (
+      ) : choosebr === false ? (
         <div
           style={{
             width: "100%",
@@ -880,6 +939,50 @@ function Branch() {
           ) : (
             ""
           )}
+        </Spin>
+      </Modal>
+      <Modal
+        title="ADD BRANCH"
+        visible={isaddbrModal}
+        style={{ margin: "5% 0px 0px 35%" }}
+        onOk={() => {}}
+        width={600}
+        onCancel={() => {
+          setisaddbrModal(false);
+        }}
+        footer={[]}
+      >
+        <Spin size="large" spinning={isaddprod}>
+          <Form onFinish={(value) => submitNewBr(value)}>
+            <Row>
+              <Col span={11}>
+                <Form.Item name="name">
+                  <Input placeholder="Branch name" />
+                </Form.Item>
+              </Col>
+
+              <Col span={1}></Col>
+              <Col span={12}>
+                <Form.Item name="location">
+                  <Input placeholder="Address" />
+                </Form.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col span={15}></Col>
+              <Col span={9}>
+                <Form.Item>
+                  <Button
+                    htmlType="submit"
+                    style={{ width: "100%" }}
+                    type="primary"
+                  >
+                    OK
+                  </Button>
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
         </Spin>
       </Modal>
     </>
