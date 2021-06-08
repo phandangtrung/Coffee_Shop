@@ -21,6 +21,12 @@ export default [
   },
   {
     _tag: "CSidebarNavItem",
+    name: "Employee",
+    to: "/employee",
+    icon: "cil-user-follow",
+  },
+  {
+    _tag: "CSidebarNavItem",
     name: "Category",
     to: "/category",
     icon: "cil-layers",
