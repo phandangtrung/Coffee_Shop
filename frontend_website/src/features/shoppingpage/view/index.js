@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import "./style.css";
 import {
   Button,
@@ -29,7 +29,12 @@ import {
   SmileOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
+import markerlog from "../../../84e468a8fff79b66406ef13d3b8653e2-house-location-marker-icon-by-vexels.png";
+import MapGL from "react-map-gl";
+import ReactMapGL, { Marker } from "react-map-gl";
 import Mapstore from "../../../components/Maps/Maps";
+import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
+import Geocoder from "react-map-gl-geocoder";
 import Geocode from "react-geocode";
 import productApi from "../../../api/productApi";
 import orderApi from "../../../api/orderApi";
@@ -38,7 +43,7 @@ import Modal from "antd/lib/modal/Modal";
 function ShoppingPage(props) {
   const { Text, Link } = Typography;
   useEffect(() => {
-    Geocode.setApiKey("AIzaSyCvfJ8y5punvcfwRLV50M_fSPe_vDhKMgk");
+    Geocode.setApiKey("AIzaSyCGncPyxKmV_5JpsaVpg66nw5MuqpL6FT4");
     const fetchProductList = async () => {
       try {
         setisloading(true);
@@ -58,18 +63,57 @@ function ShoppingPage(props) {
       setfaketotal(calculateTotal(JSON.parse(localStorage.getItem("cart"))));
     }
   }, []);
+  const [locamark, setlocamark] = useState({
+    latitude: 10.850753003313997,
+    longitude: 106.77191156811507,
+  });
+  const [viewport, setViewport] = React.useState({
+    latitude: 10.850753003313997,
+    longitude: 106.77191156811507,
+
+    zoom: 14,
+  });
+  const onMapClick = (event) => {
+    // setPosition({ longitude: event.lngLat.lng, latitude: event.lngLat.lat });
+    console.log(">>event.lngLat.lng", event.lngLat[0]);
+    console.log(">>event.lngLat.lat", event.lngLat[1]);
+    setlocamark({
+      latitude: event.lngLat[1],
+      longitude: event.lngLat[0],
+    });
+  };
+
   const [cart, setcart] = useState([]);
   const [productList, setproductList] = useState([]);
   const [isloading, setisloading] = useState(false);
   const [totalPrice, settotalPrice] = useState(0);
   const [codeprice, setcodeprice] = useState(0);
   const [codeloading, setcodeloading] = useState(false);
-
+  const MAPBOX_TOKEN =
+    "pk.eyJ1IjoidHJ1bmdwaGFuOTkiLCJhIjoiY2twb3VybHVrMGN1azJ2cGJ4OXd0Z3V6ayJ9.8XSBVvSrcYdGvt8xOyj-ag";
   const [form] = Form.useForm();
   const [coordinates, setCoordinates] = useState({
     lat: 10.850899,
     lng: 106.771948,
   });
+  const geocoderContainerRef = useRef();
+  const mapRef = useRef();
+  const handleViewportChange = useCallback(
+    (newViewport) => setViewport(newViewport),
+    []
+  );
+  const handleGeocoderViewportChange = useCallback((newViewport) => {
+    const geocoderDefaultOverrides = { transitionDuration: 1000 };
+    console.log(">>geocoderDefaultOverrides", geocoderDefaultOverrides);
+    return handleViewportChange({
+      ...newViewport,
+      ...geocoderDefaultOverrides,
+    });
+  }, []);
+  const handleOnResult = (event) => {
+    console.log(">>result", event.result.place_name);
+    setaddress(event.result.place_name);
+  };
   const [address, setaddress] = useState("");
   const [loadCart, setloadCart] = useState(false);
   const [isloadorder, setisloadorder] = useState(false);
@@ -232,7 +276,7 @@ function ShoppingPage(props) {
       (response) => {
         const { lat, lng } = response.results[0].geometry.location;
         console.log({ lat: lat, lng: lng });
-        setCoordinates({ lat: lat, lng: lng });
+        // setCoordinates({ lat: lat, lng: lng });
       },
       (error) => {
         console.error(error);
@@ -424,26 +468,77 @@ function ShoppingPage(props) {
       >
         <Spin spinning={isloadorder}>
           <div className="modal-order">
-            <Form form={form} onFinish={handleOk}>
+            <Form
+              form={form}
+              onFinish={handleOk}
+              fields={[
+                {
+                  name: ["customerAddress"],
+                  value: address,
+                },
+              ]}
+            >
               <div className="title-modal">HOÀN THÀNH ĐƠN HÀNG</div>
               <Form.Item>
                 <div className="maps-form ">
-                  <Mapstore
+                  {/* <Mapstore
                     lat={coordinates.lat}
                     lng={coordinates.lng}
                     oncheck={oncheck}
-                  />
+                  /> */}
+                  {/* <MapGL
+                    {...viewport}
+                    width="100%"
+                    height="100%"
+                    mapStyle="mapbox://styles/mapbox/light-v9"
+                    onViewportChange={setViewport}
+                    mapboxApiAccessToken={MAPBOX_TOKEN}
+                  /> */}
+                  <MapGL
+                    {...viewport}
+                    ref={mapRef}
+                    width="100%"
+                    height="100%"
+                    onViewportChange={setViewport}
+                    mapboxApiAccessToken={MAPBOX_TOKEN}
+                    // onClick={onMapClick}
+                    mapStyle="mapbox://styles/mapbox/streets-v11"
+                  >
+                    {/* <Marker
+                      latitude={locamark.latitude}
+                      longitude={locamark.longitude}
+                      offsetLeft={-20}
+                      offsetTop={-30}
+                    >
+                      <img style={{ height: 40, width: 40 }} src={markerlog} />
+                    </Marker> */}
+                    <Geocoder
+                      mapRef={mapRef}
+                      containerRef={geocoderContainerRef}
+                      onViewportChange={handleGeocoderViewportChange}
+                      mapboxApiAccessToken={MAPBOX_TOKEN}
+                      position="top-left"
+                      placeholder="Tìm vị trí"
+                      language="vi-VI"
+                      onResult={handleOnResult}
+                    />
+                    {/* <Geocoder
+                      mapRef={ref}
+                      onViewportChange={handleGeocoderViewportChange}
+                      mapboxApiAccessToken={MAPBOX_TOKEN}
+                      position="top-left"
+                    /> */}
+                  </MapGL>
                 </div>
               </Form.Item>
               <Row>
                 <Col span={24}>
                   <Form.Item name="customerAddress">
-                    <Input.Search
-                      enterButton="Find on Map"
+                    <Input
                       prefix={<EnvironmentOutlined />}
-                      placeholder="Address"
+                      placeholder="Địa chỉ"
                       size="large"
-                      onSearch={handleSearch}
+                      defaultValue={address}
                     />
                   </Form.Item>
                 </Col>
