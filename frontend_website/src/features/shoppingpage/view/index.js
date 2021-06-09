@@ -336,7 +336,11 @@ function ShoppingPage(props) {
         console.log("failed to fetch order: ", error);
       }
     };
-    fetchCoupon();
+    if (values.couponCode === undefined) {
+      setalteraplly(`Bạn chưa nhập mã`);
+    } else {
+      fetchCoupon();
+    }
   };
   const [visible, setVisible] = useState(false);
   const showModal = () => {
