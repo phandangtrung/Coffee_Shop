@@ -29,9 +29,10 @@ import {
   SmileOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
+import axios from "axios";
 import markerlog from "../../../84e468a8fff79b66406ef13d3b8653e2-house-location-marker-icon-by-vexels.png";
 import MapGL from "react-map-gl";
-import ReactMapGL, { Marker } from "react-map-gl";
+import ReactMapGL, { Marker, GeolocateControl } from "react-map-gl";
 import Mapstore from "../../../components/Maps/Maps";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import Geocoder from "react-map-gl-geocoder";
@@ -63,6 +64,10 @@ function ShoppingPage(props) {
       setfaketotal(calculateTotal(JSON.parse(localStorage.getItem("cart"))));
     }
   }, []);
+  const geolocateControlStyle = {
+    right: 10,
+    top: 10,
+  };
   const [locamark, setlocamark] = useState({
     latitude: 10.850753003313997,
     longitude: 106.77191156811507,
@@ -82,7 +87,21 @@ function ShoppingPage(props) {
       longitude: event.lngLat[0],
     });
   };
-
+  const testhan = (event) => {
+    console.log(">>latitude", event.coords.latitude);
+    console.log(">>longitude", event.coords.longitude);
+    axios
+      .get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${event.coords.longitude},${event.coords.latitude}.json?access_token=${MAPBOX_TOKEN}`
+      )
+      .then(function (response) {
+        console.log(response.data.features[1].place_name);
+        setaddress(response.data.features[1].place_name);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   const [cart, setcart] = useState([]);
   const [productList, setproductList] = useState([]);
   const [isloading, setisloading] = useState(false);
@@ -525,6 +544,14 @@ function ShoppingPage(props) {
                       placeholder="Tìm vị trí"
                       language="vi-VI"
                       onResult={handleOnResult}
+                    />
+                    <GeolocateControl
+                      style={geolocateControlStyle}
+                      positionOptions={{ enableHighAccuracy: true }}
+                      trackUserLocation={true}
+                      // auto
+                      onGeolocate={testhan}
+                      label="Vị trí của tôi"
                     />
                     {/* <Geocoder
                       mapRef={ref}
