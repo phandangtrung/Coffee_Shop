@@ -23,6 +23,8 @@ router.put("/:oid", ordersController.updateOrderById);
 
 router.delete("/:oid", ordersController.deleteOrderById);
 
+router.use(isAdmin);
+
 router.get("/revenue", ordersController.getRevenue);
 
 module.exports = router;

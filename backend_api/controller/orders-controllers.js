@@ -19,7 +19,7 @@ const payment = async (req, res, next) => {
   console.log(total);
   console.log(itemsList);
   create_payment(itemsList, total);
-  payment.payment.create_payment(
+   paypal.payment.create_payment(
     create_payment_json,
     function (error, payment) {
       if (error) {
@@ -82,7 +82,12 @@ const updateOrderById = async (req, res, next) => {
     //shipperId: req.body.shipperId,
   };
   let orders;
-  orders = await Order.findByIdAndUpdate(OrderId, updatedOrder);
+  try {
+    orders = await Order.findByIdAndUpdate(OrderId, updatedOrder);
+  } catch (err) {
+    const error = new HttpError("Something went wrong, can not update", 500);
+    return next(error);
+  }
   res.status(200).json({ message: "Order is confirmed", orders: updatedOrder });
 };
 
@@ -219,8 +224,8 @@ const getRevenue = async (req, res, next) => {
       $match: {
         branchId: $bill.branchId,
         createAt: {
-          $gt: bill.startDay,
-          $lt: bill.endDay,
+          $gte: bill.startDay,
+          $lte: bill.endDay,
         },
       },
     });
