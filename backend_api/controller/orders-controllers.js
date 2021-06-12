@@ -9,64 +9,64 @@ const HttpError = require("../error-handle/http-error");
 
 const { create_payment, execute_payment } = require("../middleware/paypal");
 
-const payment = async (req, res, next) => {
-  const itemsList = JSON.parse(req.body.itemsList);
-  let total;
-  total = 0;
-  for (i = 0; i < itemsList.length; i++) {
-    total += parseFloat(itemsList[i].price) * parseFloat(itemsList[i].quantity);
-  }
-  console.log(total);
-  console.log(itemsList);
-  create_payment(itemsList, total);
-   paypal.payment.create_payment(
-    create_payment_json,
-    function (error, payment) {
-      if (error) {
-        throw error;
-      } else {
-        for (let i = 0; i < payment.links.length; i++) {
-          if (payment.links[i].rel === "approval_url") {
-            res.status(200).json({ link: payment.links[i].href });
-          }
-        }
-      }
-    }
-  );
-};
+// const payment = async (req, res, next) => {
+//   const itemsList = JSON.parse(req.body.itemsList);
+//   let total;
+//   total = 0;
+//   for (i = 0; i < itemsList.length; i++) {
+//     total += parseFloat(itemsList[i].price) * parseFloat(itemsList[i].quantity);
+//   }
+//   console.log(total);
+//   console.log(itemsList);
+//   create_payment(itemsList, total);
+//    paypal.payment.create_payment(
+//     create_payment_json,
+//     function (error, payment) {
+//       if (error) {
+//         throw error;
+//       } else {
+//         for (let i = 0; i < payment.links.length; i++) {
+//           if (payment.links[i].rel === "approval_url") {
+//             res.status(200).json({ link: payment.links[i].href });
+//           }
+//         }
+//       }
+//     }
+//   );
+// };
 
-const success = async (req, res, next) => {
-  const payerId = req.params.payerID;
-  const paymentId = req.params.paymentId;
-  4;
+// const success = async (req, res, next) => {
+//   const payerId = req.params.payerID;
+//   const paymentId = req.params.paymentId;
+//   4;
 
-  execute_payment(payerId);
-  paypal.payment.execute(
-    paymentId,
-    execute_payment_json,
-    function (error, payment) {
-      if (error) {
-        console.log(error.response);
-        throw error;
-      } else {
-        var responseHTML =
-          '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "*");window.close();</script></html>';
-        responseHTML = responseHTML.replace(
-          "%value%",
-          JSON.stringify({
-            message: "Success",
-            errorCode: 0,
-          })
-        );
-        res.status(200).send(responseHTML);
-      }
-    }
-  );
-};
+//   execute_payment(payerId);
+//   paypal.payment.execute(
+//     paymentId,
+//     execute_payment_json,
+//     function (error, payment) {
+//       if (error) {
+//         console.log(error.response);
+//         throw error;
+//       } else {
+//         var responseHTML =
+//           '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "*");window.close();</script></html>';
+//         responseHTML = responseHTML.replace(
+//           "%value%",
+//           JSON.stringify({
+//             message: "Success",
+//             errorCode: 0,
+//           })
+//         );
+//         res.status(200).send(responseHTML);
+//       }
+//     }
+//   );
+// };
 
-const cancel = async (req, res, next) => {
-  res.status(200).json({ message: "Cancel", errorCode: 1 });
-};
+// const cancel = async (req, res, next) => {
+//   res.status(200).json({ message: "Cancel", errorCode: 1 });
+// };
 
 const updateOrderById = async (req, res, next) => {
   const errors = validationResult(req);
@@ -79,7 +79,6 @@ const updateOrderById = async (req, res, next) => {
   const updatedOrder = {
     status: req.body.status,
     doneAt: req.body.doneAt,
-    //shipperId: req.body.shipperId,
   };
   let orders;
   try {
@@ -243,9 +242,6 @@ module.exports = {
   getOrderById,
   getAllOrder,
   getOrderByUserId,
-  payment,
-  success,
-  cancel,
   createOrderNew,
   getRevenue,
 };

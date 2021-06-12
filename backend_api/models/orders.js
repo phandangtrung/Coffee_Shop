@@ -7,7 +7,7 @@ const ordersSchema = new mongoose.Schema(
     customerPhone: { type: String, required: false },
     customerAddress: { type: String, require: false },
     totalPrices: { type: Number, require: false },
-    status: { type: Boolean, default: true },
+    status: { type: Boolean, default: false },
     note: { type: String, required: false },
     doneAt: { type: Date, require: false },
     productList: [

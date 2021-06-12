@@ -7,9 +7,9 @@ const router = express.Router();
 
 router.get("/", ordersController.getAllOrder);
 
-router.get("/payment/pay", ordersController.payment);
-router.get("/payment/success", ordersController.success);
-router.get("/payment/cancel", ordersController.cancel);
+// router.get("/payment/pay", ordersController.payment);
+// router.get("/payment/success", ordersController.success);
+// router.get("/payment/cancel", ordersController.cancel);
 
 router.get("/:oid", ordersController.getOrderById);
 router.get("/user/:uid", ordersController.getOrderByUserId);
