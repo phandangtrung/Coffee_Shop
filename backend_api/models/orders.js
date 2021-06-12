@@ -10,6 +10,9 @@ const ordersSchema = new mongoose.Schema(
     status: { type: Boolean, default: false },
     note: { type: String, required: false },
     doneAt: { type: Date, require: false },
+    couponCodeId: { type: mongoose.Schema.Types.ObjectId, ref: "CouponCode" },
+    branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch" },
+    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     productList: [
       {
         _id: false,
@@ -17,9 +20,6 @@ const ordersSchema = new mongoose.Schema(
         quantity: { type: Number, require: false },
       },
     ],
-    branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch" },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-    //shipperId: { type: String, required: false },
   },
   {
     timestamps: true,

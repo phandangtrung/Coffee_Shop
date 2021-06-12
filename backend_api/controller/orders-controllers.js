@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Order = require("../models/orders");
 const { products } = require("../models/products");
 const Branch = require("../models/branches");
-
+const Coupon = require("../models/couponcode");
 const { validationResult } = require("express-validator");
 
 const HttpError = require("../error-handle/http-error");
@@ -176,6 +176,8 @@ const createOrderNew = async (req, res, next) => {
     customerAddress: req.body.customerAddress,
     customerPhone: req.body.customerPhone,
     totalPrices: req.body.totalPrices,
+    couponCodeId: req.body.couponCodeId,
+    userId: req.body.userId,
     branchId: req.body.branchId,
   };
 
@@ -200,6 +202,18 @@ const createOrderNew = async (req, res, next) => {
         }
       }
     }
+    let couponCodeInfor;
+    couponCodeInfor = await Coupon.findById(createOrder.couponCodeId);
+    console.log(couponCodeInfor);
+    let updateAmountCoupon;
+    updateAmountCoupon = couponCodeInfor.amount - 1;
+    console.log(updateAmountCoupon);
+    let couponUpdate;
+    const AmountUpdate = {
+      amount: updateAmountCoupon,
+    };
+    couponUpdate = await Coupon.findByIdAndUpdate(createOrder.couponCodeId, AmountUpdate);
+
     await branchById.save();
     await newOrder.save();
     res.status(200).json({
