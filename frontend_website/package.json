@@ -25,6 +25,7 @@
     "react-map-gl": "^6.1.16",
     "react-map-gl-geocoder": "^2.1.6",
     "react-moment": "^1.1.1",
+    "react-paypal-button-v2": "^2.6.3",
     "react-phone-number-input": "^3.1.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",

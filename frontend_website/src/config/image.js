@@ -18,6 +18,7 @@ export const Images = {
   BCFF: IMAGE_URL + "/static/img/breadcoffee_tranpa.png",
   BBG: IMAGE_URL + "/static/img/BANHMI-bg_2.jpg",
   ADS: IMAGE_URL + "/static/img/ads.png",
+  BCFF: IMAGE_URL + "/static/img/buy_cff.gif",
   CPIM:
     IMAGE_URL +
     "/static/img/coffee-seamless-pattern-coffee-beans-hand-drawn-sketch-hot-drink-coffee-background-vector.jpg",

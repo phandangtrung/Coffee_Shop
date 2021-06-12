@@ -12,6 +12,7 @@ import {
   Alert,
   Select,
   Popconfirm,
+  Form,
   message,
 } from "antd";
 import { CaretUpOutlined, CompassOutlined } from "@ant-design/icons";
@@ -48,6 +49,7 @@ function Product() {
     isError: false,
     data: [],
   });
+  const [form] = Form.useForm();
   const { Search } = Input;
   const fetchBranchList = async () => {
     try {
@@ -69,7 +71,24 @@ function Product() {
       });
       console.log(">>newBraL", newBraL);
       setBraProList(newBraL);
-      setProductList(newBraL[0].listProduct);
+
+      const checkidb = JSON.parse(localStorage.getItem("branchID"));
+      console.log(">>checkidb", checkidb);
+      if (checkidb === null) {
+        localStorage.setItem("branchID", JSON.stringify(newBraL[0]._id));
+        form.setFieldsValue({
+          selectBrid: newBraL[0].name,
+        });
+        setProductList(newBraL[0].listProduct);
+      } else {
+        const bralready = newBraL.filter((nb) => nb._id === checkidb);
+        console.log(">>bralready", bralready);
+        form.setFieldsValue({
+          selectBrid: bralready[0].name,
+        });
+        setProductList(bralready[0].listProduct);
+      }
+
       setDfSelect(String(newBraL[0].name));
       console.log(">>newBraL[0].name", newBraL[0].name);
       setfakeProductList(newBraL[0].listProduct);
@@ -138,6 +157,7 @@ function Product() {
     console.log(">>found", found);
     setProductList(found.listProduct);
     setfakeProductList(found.listProduct);
+    localStorage.setItem("branchID", JSON.stringify(found._id));
     localStorage.removeItem("cart");
     // localStorage.removeItem("branchId");
     warning();
@@ -242,28 +262,38 @@ function Product() {
               >
                 <img
                   alt="icon_location"
-                  style={{ width: "35px" }}
+                  style={{ width: "40px", height: "40px" }}
                   src={Images.LOCATE}
                 />
-
-                <Select
-                  defaultValue="Chi Nhanh Thu Duc"
-                  style={{ width: "90%", textAlign: "start" }}
-                  onChange={(values) => handleChangeLoca(values)}
+                <Form
+                  style={{
+                    // justifyContent: "space-between",
+                    display: "flex",
+                    alignItems: "center",
+                    width: "90%",
+                  }}
+                  form={form}
                 >
-                  {BraProList.map((bp) => (
-                    <Select.Option
-                      key={bp._id}
-                      value={bp.name}
-                    >{`${bp.name} - ${bp.location}`}</Select.Option>
-                  ))}
-                </Select>
+                  <Form.Item name="selectBrid">
+                    <Select
+                      style={{ width: "100%" }}
+                      onChange={(values) => handleChangeLoca(values)}
+                    >
+                      {BraProList.map((bp) => (
+                        <Select.Option
+                          key={bp._id}
+                          value={bp.name}
+                        >{`${bp.name} - ${bp.location}`}</Select.Option>
+                      ))}
+                    </Select>
+                  </Form.Item>
+                </Form>
               </div>
 
               <Search
                 placeholder="Tìm sản phẩm"
                 onSearch={onSearch}
-                style={{ width: "30%" }}
+                style={{ width: "30%", height: 35 }}
               />
             </div>
           )}

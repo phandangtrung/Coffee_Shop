@@ -17,6 +17,8 @@ import {
 import Moment from "react-moment";
 import moment from "moment";
 import { Images } from "../../../config/image";
+import PayPalBtn from "../../../components/PayPalBtn/PayPalBtn";
+import { PayPalButton } from "react-paypal-button-v2";
 import CurrencyFormat from "react-currency-format";
 import {
   ShoppingCartOutlined,
@@ -62,16 +64,20 @@ function ShoppingPage(props) {
       setcart(JSON.parse(localStorage.getItem("cart")));
       settotalPrice(calculateTotal(JSON.parse(localStorage.getItem("cart"))));
       setfaketotal(calculateTotal(JSON.parse(localStorage.getItem("cart"))));
+      setischeckcart(false);
+      setbranchID(JSON.parse(localStorage.getItem("branchID")));
     }
   }, []);
   const geolocateControlStyle = {
     right: 10,
     top: 10,
   };
+  const [branchID, setbranchID] = useState("");
   const [locamark, setlocamark] = useState({
     latitude: 10.850753003313997,
     longitude: 106.77191156811507,
   });
+  const [paymodal, setpaymodal] = useState(false);
   const [viewport, setViewport] = React.useState({
     latitude: 10.850753003313997,
     longitude: 106.77191156811507,
@@ -88,14 +94,14 @@ function ShoppingPage(props) {
     });
   };
   const testhan = (event) => {
-    console.log(">>latitude", event.coords.latitude);
-    console.log(">>longitude", event.coords.longitude);
+    // console.log(">>latitude", event.coords.latitude);
+    // console.log(">>longitude", event.coords.longitude);
     axios
       .get(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${event.coords.longitude},${event.coords.latitude}.json?access_token=${MAPBOX_TOKEN}`
       )
       .then(function (response) {
-        console.log(response.data.features[1].place_name);
+        // console.log(response.data.features[1].place_name);
         setaddress(response.data.features[1].place_name);
       })
       .catch(function (error) {
@@ -107,6 +113,7 @@ function ShoppingPage(props) {
   const [isloading, setisloading] = useState(false);
   const [totalPrice, settotalPrice] = useState(0);
   const [codeprice, setcodeprice] = useState(0);
+  const [usprice, setusprice] = useState(0);
   const [codeloading, setcodeloading] = useState(false);
   const MAPBOX_TOKEN =
     "pk.eyJ1IjoidHJ1bmdwaGFuOTkiLCJhIjoiY2twb3VybHVrMGN1azJ2cGJ4OXd0Z3V6ayJ9.8XSBVvSrcYdGvt8xOyj-ag";
@@ -133,6 +140,20 @@ function ShoppingPage(props) {
     console.log(">>result", event.result.place_name);
     setaddress(event.result.place_name);
   };
+  // Code paypal
+  // const paypalSubscribe = (data, actions) => {
+  //   return actions.subscription.create({
+  //     plan_id: "P-2M468883C7728194CMDBUSWA",
+  //   });
+  // };
+  // const paypalOnError = (err) => {
+  //   console.log("Error");
+  // };
+
+  // const paypalOnApprove = (data, detail) => {
+  //   console.log("Payapl approved");
+  // };
+  const [ischeckcart, setischeckcart] = useState(true);
   const [address, setaddress] = useState("");
   const [loadCart, setloadCart] = useState(false);
   const [isloadorder, setisloadorder] = useState(false);
@@ -175,28 +196,28 @@ function ShoppingPage(props) {
     setfaketotal(calculateTotal(newCart));
     localStorage.setItem("cart", JSON.stringify(newCart));
   };
-  const handleOk = (values) => {
-    console.log("form value", values);
-    const timeorder = moment().format();
-    const orderdata = {
-      ...values,
-      createAt: timeorder,
+  const saveorder = () => {
+    console.log("form value", datasve);
+    let orderdata = {
+      ...datasve,
       userId: "",
       totalPrices: totalPrice,
-      productlist: cart,
+      productList: cart,
+      branchId: branchID,
     };
+    delete orderdata.couponCode;
     console.log(">>>data order", orderdata);
     const fetchOrder = async () => {
       try {
-        setisloadorder(true);
+        // setisloadorder(true);
         const response = await orderApi.createorder(orderdata);
         console.log("Fetch order succesfully: ", response);
-        setisloadorder(false);
+        // setisloadorder(false);
         localStorage.removeItem("cart");
         setcart([]);
         notification.open({
-          message: "Order Successfully",
-          description: "Thanks you verry much",
+          message: "Đặt hàng thành công",
+          description: "Cảm ơn bạn đã ủng hộ TheCoffeeShop",
           icon: <SmileOutlined style={{ color: "#108ee9" }} />,
         });
       } catch (error) {
@@ -204,6 +225,11 @@ function ShoppingPage(props) {
       }
     };
     fetchOrder();
+  };
+  const [datasve, setdatasve] = useState({});
+  const handleOk = (values) => {
+    setpaymodal(true);
+    setdatasve(values);
   };
   const calculateTotal = (cart) => {
     if (cart.length > 0) {
@@ -214,6 +240,19 @@ function ShoppingPage(props) {
       return totalprice;
     }
     return 0;
+  };
+  const openbuyNotification = () => {
+    notification.open({
+      message: "Thanh toán thành công",
+      description: (
+        <div style={{ width: 300, height: 250 }}>
+          <img style={{ width: "100%", height: "100%" }} src={Images.BCFF} />
+        </div>
+      ),
+      onClick: () => {
+        console.log("Notification Clicked!");
+      },
+    });
   };
   const columns = [
     {
@@ -423,6 +462,7 @@ function ShoppingPage(props) {
                 </Form.Item>
 
                 <Button
+                  disabled={ischeckcart}
                   htmlType="submit"
                   className="button-apply"
                   type="dashed"
@@ -475,8 +515,16 @@ function ShoppingPage(props) {
             ) : (
               ""
             )}
-
-            <Button className="button-checkout" onClick={showModal}>
+            <Button
+              disabled={ischeckcart}
+              className="button-checkout"
+              onClick={() => {
+                showModal();
+                const usp = faketotal * 0.000043;
+                setusprice(usp.toFixed(2));
+                console.log(">>usp", usp.toFixed(2));
+              }}
+            >
               THANH TOÁN
             </Button>
           </div>
@@ -564,7 +612,15 @@ function ShoppingPage(props) {
               </Form.Item>
               <Row>
                 <Col span={24}>
-                  <Form.Item name="customerAddress">
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Nhập địa chỉ của bạn.",
+                      },
+                    ]}
+                    name="customerAddress"
+                  >
                     <Input
                       prefix={<EnvironmentOutlined />}
                       placeholder="Địa chỉ"
@@ -576,20 +632,36 @@ function ShoppingPage(props) {
               </Row>
               <Row>
                 <Col span={12} style={{ paddingRight: "5px" }}>
-                  <Form.Item name="customerName">
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Nhập tên người đặt hàng.",
+                      },
+                    ]}
+                    name="customerName"
+                  >
                     <Input
                       prefix={<UserOutlined />}
                       className="input-modal"
-                      placeholder="Name of consignee"
+                      placeholder="Tên đầy đủ người đặt hàng"
                     />
                   </Form.Item>
                 </Col>
                 <Col span={12} style={{ paddingLeft: "5px" }}>
-                  <Form.Item name="customerPhone">
+                  <Form.Item
+                    rules={[
+                      {
+                        required: true,
+                        message: "Nhập số điện thoại của bạn.",
+                      },
+                    ]}
+                    name="customerPhone"
+                  >
                     <Input
                       prefix={<PhoneOutlined />}
                       className="input-modal"
-                      placeholder="Phone"
+                      placeholder="Số điện thoại"
                     />
                   </Form.Item>
                 </Col>
@@ -626,11 +698,42 @@ function ShoppingPage(props) {
                 type="primary"
                 htmlType="submit"
               >
-                Submit
+                Thanh toán
               </Button>
             </Form>
           </div>
         </Spin>
+      </Modal>
+      <Modal
+        title="Thanh toán với PayPal"
+        visible={paymodal}
+        style={{ marginTop: "10%" }}
+        onCancel={() => {
+          setpaymodal(false);
+        }}
+        footer={[]}
+      >
+        <PayPalButton
+          amount={usprice}
+          // shippingPreference="NO_SHIPPING" // default is "GET_FROM_FILE"
+          onSuccess={(details, data) => {
+            // alert("Transaction completed by " + details.payer.name.given_name);
+
+            saveorder();
+
+            // OPTIONAL: Call your server to save the transaction
+            // return fetch("/paypal-transaction-complete", {
+            //   method: "post",
+            //   body: JSON.stringify({
+            //     orderId: data.orderID,
+            //   }),
+            // });
+          }}
+          options={{
+            clientId:
+              "AQ-ayr-c98Wf9fMdr07vzQ-iLBEtWuLf7f3XqQdVg5n7FuaJj6O0WZs1mqmPLfLfBIuJKZ8HDVfoO8qO",
+          }}
+        />
       </Modal>
     </>
   );

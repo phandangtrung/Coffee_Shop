@@ -6,7 +6,7 @@ class OrderApi {
     return axiosClient.get(url);
   };
   createorder = (params) => {
-    const url = "/api/orders";
+    const url = "/api/orders/create/order";
     return axiosClient.post(url, params);
   };
 }
