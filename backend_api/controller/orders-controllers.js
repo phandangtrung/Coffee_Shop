@@ -177,7 +177,6 @@ const createOrderNew = async (req, res, next) => {
     customerPhone: req.body.customerPhone,
     totalPrices: req.body.totalPrices,
     couponCodeId: req.body.couponCodeId,
-    userId: req.body.userId,
     branchId: req.body.branchId,
   };
 
