@@ -10,7 +10,7 @@ const BranchesSchema = new mongoose.Schema(
     status: { type: Boolean, default: true },
     listProduct: [
       {
-        _id: { type: mongoose.Schema.Types.ObjectId, ref: "products" },
+        _id: { type: String, require: false },
         quantity: { type: Number, require: false },
       },
     ],
