@@ -187,7 +187,7 @@ const createOrderNew = async (req, res, next) => {
     //Run for loop for the listProduct in Order
     for (const i in listProduct) {
       let product;
-      product = await products.findById(listProduct[i].productId);
+      product = await products.findById(listProduct[i].product_id);
       console.log(product);
       //Adding an embedded document to an array
       newOrder.productList.push({
@@ -196,7 +196,7 @@ const createOrderNew = async (req, res, next) => {
       });
       //Run for loop for the listProduct in Branch
       for (const j in branchById.listProduct) {
-        if (listProduct[i].productId == branchById.listProduct[j]._id) {
+        if (listProduct[i].product_id == branchById.listProduct[j]._id) {
           branchById.listProduct[j].quantity -= listProduct[i].quantity;
         }
       }
