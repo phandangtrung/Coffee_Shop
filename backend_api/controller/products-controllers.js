@@ -125,29 +125,31 @@ const updateProductbyId = async (req, res, next) => {
       categoryId: req.body.categoryId,
     };
     console.log(updatedProduct);
+    // try {
+    //   existingProduct = await products.findOne({ name: updatedProduct.name });
+    // } catch (err) {
+    //   const error = new HttpError("Something wrong here!", 500);
+    //   return res.status(422).send(error);
+    // }
     try {
-      existingProduct = await products.findOne({ alias: updatedProduct.alias });
+      let updatedPro;
+      updatedPro = await products.findByIdAndUpdate(ProId, updatedProduct);
+      console.log(updatedPro);
     } catch (err) {
-      const error = new HttpError("Something wrong!!!", 500);
-      return res.send(error);
+      const error = new HttpError("Update fail! ", 500);
+      return next(error);
     }
-    if (!existingProduct) {
-      try {
-        let updatedPro;
-        updatedPro = await products.findByIdAndUpdate(ProId, updatedProduct);
-        console.log(updatedPro);
-        return res.status(200).json({
-          message: "Update Product success",
-          updatedPro: updatedProduct,
-        });
-      } catch (err) {
-        const error = new HttpError("Something wrong!!!", 500);
-        return res.status(422).send(error);
-      }
-    } else {
-      console.log("Product already exist");
-      res.status(422).json({ message: "Product already exist" });
-    }
+    // try {
+    //   existingProduct = await products.findOne({ alias: updatedProduct.alias });
+    //   console.log(existingProduct);
+    // } catch (err) {
+    //   const error = new HttpError("Product already exist", 500);
+    //   return next(error);
+    // }
+    return res.status(200).json({
+      message: "Update Product success",
+      updatedPro: updatedProduct,
+    });
   } else {
     const updatedProduct = {
       name: req.body.name,
@@ -160,29 +162,31 @@ const updateProductbyId = async (req, res, next) => {
       categoryId: req.body.categoryId,
     };
     console.log(updatedProduct);
+    // try {
+    //   existingProduct = await products.findOne({ alias: updatedProduct.alias });
+    // } catch (err) {
+    //   const error = new HttpError("Product already exist", 500);
+    //   return next(error);
+    // }
     try {
-      existingProduct = await products.findOne({ alias: updatedProduct.alias });
+      let updatedPro;
+      updatedPro = await products.findByIdAndUpdate(ProId, updatedProduct);
+      console.log(updatedPro);
     } catch (err) {
-      const error = new HttpError("Something wrong!!!", 500);
-      return res.status(422).send(error);
+      const error = new HttpError("Update fail! ", 500);
+      return next(error);
     }
-    if (!existingProduct) {
-      try {
-        let updatedPro;
-        updatedPro = await products.findOneAndUpdate(ProId, updatedProduct);
-        console.log(updatedPro);
-      } catch (err) {
-        const error = new HttpError("Something wrong!!!", 500);
-        return res.status(422).send(error);
-      }
-      return res.status(200).json({
-        message: "Update Product success",
-        updatedPro: updatedProduct,
-      });
-    } else {
-      console.log("Product already exist");
-      res.status(422).json({ message: "Product already exist" });
-    }
+    // try {
+    //   existingProduct = await products.findOne({ alias: updatedProduct.alias });
+    //   console.log(existingProduct);
+    // } catch (err) {
+    //   const error = new HttpError("Product already exist", 500);
+    //   return next(error);
+    // }
+    return res.status(200).json({
+      message: "Update Product success",
+      updatedPro: updatedProduct,
+    });
   }
 };
 

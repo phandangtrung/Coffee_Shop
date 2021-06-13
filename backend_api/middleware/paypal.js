@@ -14,8 +14,8 @@ const create_payment = (items, total) => {
       payment_method: "paypal",
     },
     redirect_urls: {
-      return_url: `${PORT}/api/orders/paypal/success`,
-      cancel_url: `${PORT}/api/orders/paypal/cancel`,
+      return_url: `${process.env.CLIENT_URL}/api/orders/paypal/success`,
+      cancel_url: `${process.env.CLIENT_URL}/api/orders/paypal/cancel`,
     },
     transactions: [
       {

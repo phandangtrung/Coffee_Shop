@@ -7,9 +7,9 @@ const router = express.Router();
 
 router.get("/", ordersController.getAllOrder);
 
-router.get("/payment/pay", ordersController.payment);
-router.get("/payment/success", ordersController.success);
-router.get("/payment/cancel", ordersController.cancel);
+// router.get("/payment/pay", ordersController.payment);
+// router.get("/payment/success", ordersController.success);
+// router.get("/payment/cancel", ordersController.cancel);
 
 router.get("/:oid", ordersController.getOrderById);
 router.get("/user/:uid", ordersController.getOrderByUserId);
@@ -22,6 +22,8 @@ router.use(isEmployee, isAdmin);
 router.put("/:oid", ordersController.updateOrderById);
 
 router.delete("/:oid", ordersController.deleteOrderById);
+
+router.use(isAdmin);
 
 router.get("/revenue", ordersController.getRevenue);
 

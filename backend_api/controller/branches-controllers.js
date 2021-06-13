@@ -28,6 +28,7 @@ const createBranches = async (req, res, next) => {
     alias: getAlias(req.body.name),
     location: req.body.location,
     listProduct: req.body.listProduct,
+    status: req.body.status,
   };
   try {
     const newbranch = new Branch(createBranches);
@@ -53,6 +54,31 @@ const updateBranchesById = async (req, res, next) => {
   try {
     let branches;
     branches = await Branch.findByIdAndUpdate(BrId, updateBranches);
+    console.log(branches);
+  } catch (error) {
+    return res.status(422).send(error);
+  }
+  return res.status(200).json({
+    message: "Update success",
+    branches: updateBranches,
+  });
+};
+
+const addNewProduct = async (req, res, next) => {
+  const BrId = req.params.bid;
+  const updateBranches = {
+    // name: req.body.name,
+    // alias: getAlias(req.body.name),
+    // location: req.body.location,
+    listProduct: req.body.listProduct,
+  };
+  try {
+    let branches;
+    branches = await Branch.findByIdAndUpdate(
+      BrId,
+      { $push: { listProduct: updateBranches.listProduct } },
+      { upsert: true, multi : true}
+    );
     console.log(branches);
   } catch (error) {
     return res.status(422).send(error);
@@ -107,6 +133,7 @@ const getBranchById = async (req, res, next) => {
 module.exports = {
   createBranches,
   updateBranchesById,
+  addNewProduct,
   getAllBranches,
   getBranchById,
 };

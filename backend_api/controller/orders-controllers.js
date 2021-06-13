@@ -2,71 +2,71 @@ const mongoose = require("mongoose");
 const Order = require("../models/orders");
 const { products } = require("../models/products");
 const Branch = require("../models/branches");
-
+const Coupon = require("../models/couponcode");
 const { validationResult } = require("express-validator");
 
 const HttpError = require("../error-handle/http-error");
 
 const { create_payment, execute_payment } = require("../middleware/paypal");
 
-const payment = async (req, res, next) => {
-  const itemsList = JSON.parse(req.body.itemsList);
-  let total;
-  total = 0;
-  for (i = 0; i < itemsList.length; i++) {
-    total += parseFloat(itemsList[i].price) * parseFloat(itemsList[i].quantity);
-  }
-  console.log(total);
-  console.log(itemsList);
-  create_payment(itemsList, total);
-  payment.payment.create_payment(
-    create_payment_json,
-    function (error, payment) {
-      if (error) {
-        throw error;
-      } else {
-        for (let i = 0; i < payment.links.length; i++) {
-          if (payment.links[i].rel === "approval_url") {
-            res.status(200).json({ link: payment.links[i].href });
-          }
-        }
-      }
-    }
-  );
-};
+// const payment = async (req, res, next) => {
+//   const itemsList = JSON.parse(req.body.itemsList);
+//   let total;
+//   total = 0;
+//   for (i = 0; i < itemsList.length; i++) {
+//     total += parseFloat(itemsList[i].price) * parseFloat(itemsList[i].quantity);
+//   }
+//   console.log(total);
+//   console.log(itemsList);
+//   create_payment(itemsList, total);
+//    paypal.payment.create_payment(
+//     create_payment_json,
+//     function (error, payment) {
+//       if (error) {
+//         throw error;
+//       } else {
+//         for (let i = 0; i < payment.links.length; i++) {
+//           if (payment.links[i].rel === "approval_url") {
+//             res.status(200).json({ link: payment.links[i].href });
+//           }
+//         }
+//       }
+//     }
+//   );
+// };
 
-const success = async (req, res, next) => {
-  const payerId = req.params.payerID;
-  const paymentId = req.params.paymentId;
-  4;
+// const success = async (req, res, next) => {
+//   const payerId = req.params.payerID;
+//   const paymentId = req.params.paymentId;
+//   4;
 
-  execute_payment(payerId);
-  paypal.payment.execute(
-    paymentId,
-    execute_payment_json,
-    function (error, payment) {
-      if (error) {
-        console.log(error.response);
-        throw error;
-      } else {
-        var responseHTML =
-          '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "*");window.close();</script></html>';
-        responseHTML = responseHTML.replace(
-          "%value%",
-          JSON.stringify({
-            message: "Success",
-            errorCode: 0,
-          })
-        );
-        res.status(200).send(responseHTML);
-      }
-    }
-  );
-};
+//   execute_payment(payerId);
+//   paypal.payment.execute(
+//     paymentId,
+//     execute_payment_json,
+//     function (error, payment) {
+//       if (error) {
+//         console.log(error.response);
+//         throw error;
+//       } else {
+//         var responseHTML =
+//           '<html><head><title>Main</title></head><body></body><script>res = %value%; window.opener.postMessage(res, "*");window.close();</script></html>';
+//         responseHTML = responseHTML.replace(
+//           "%value%",
+//           JSON.stringify({
+//             message: "Success",
+//             errorCode: 0,
+//           })
+//         );
+//         res.status(200).send(responseHTML);
+//       }
+//     }
+//   );
+// };
 
-const cancel = async (req, res, next) => {
-  res.status(200).json({ message: "Cancel", errorCode: 1 });
-};
+// const cancel = async (req, res, next) => {
+//   res.status(200).json({ message: "Cancel", errorCode: 1 });
+// };
 
 const updateOrderById = async (req, res, next) => {
   const errors = validationResult(req);
@@ -79,10 +79,14 @@ const updateOrderById = async (req, res, next) => {
   const updatedOrder = {
     status: req.body.status,
     doneAt: req.body.doneAt,
-    //shipperId: req.body.shipperId,
   };
   let orders;
-  orders = await Order.findByIdAndUpdate(OrderId, updatedOrder);
+  try {
+    orders = await Order.findByIdAndUpdate(OrderId, updatedOrder);
+  } catch (err) {
+    const error = new HttpError("Something went wrong, can not update", 500);
+    return next(error);
+  }
   res.status(200).json({ message: "Order is confirmed", orders: updatedOrder });
 };
 
@@ -172,6 +176,7 @@ const createOrderNew = async (req, res, next) => {
     customerAddress: req.body.customerAddress,
     customerPhone: req.body.customerPhone,
     totalPrices: req.body.totalPrices,
+    couponCodeId: req.body.couponCodeId,
     branchId: req.body.branchId,
   };
 
@@ -182,7 +187,7 @@ const createOrderNew = async (req, res, next) => {
     //Run for loop for the listProduct in Order
     for (const i in listProduct) {
       let product;
-      product = await products.findById(listProduct[i].productId);
+      product = await products.findById(listProduct[i].product_id);
       console.log(product);
       //Adding an embedded document to an array
       newOrder.productList.push({
@@ -191,11 +196,23 @@ const createOrderNew = async (req, res, next) => {
       });
       //Run for loop for the listProduct in Branch
       for (const j in branchById.listProduct) {
-        if (listProduct[i].productId == branchById.listProduct[j]._id) {
+        if (listProduct[i].product_id == branchById.listProduct[j]._id) {
           branchById.listProduct[j].quantity -= listProduct[i].quantity;
         }
       }
     }
+    let couponCodeInfor;
+    couponCodeInfor = await Coupon.findById(createOrder.couponCodeId);
+    console.log(couponCodeInfor);
+    let updateAmountCoupon;
+    updateAmountCoupon = couponCodeInfor.amount - 1;
+    console.log(updateAmountCoupon);
+    let couponUpdate;
+    const AmountUpdate = {
+      amount: updateAmountCoupon,
+    };
+    couponUpdate = await Coupon.findByIdAndUpdate(createOrder.couponCodeId, AmountUpdate);
+
     await branchById.save();
     await newOrder.save();
     res.status(200).json({
@@ -219,8 +236,8 @@ const getRevenue = async (req, res, next) => {
       $match: {
         branchId: $bill.branchId,
         createAt: {
-          $gt: bill.startDay,
-          $lt: bill.endDay,
+          $gte: bill.startDay,
+          $lte: bill.endDay,
         },
       },
     });
@@ -238,9 +255,6 @@ module.exports = {
   getOrderById,
   getAllOrder,
   getOrderByUserId,
-  payment,
-  success,
-  cancel,
   createOrderNew,
   getRevenue,
 };

@@ -9,5 +9,6 @@ router.get("/", branchesControllers.getAllBranches);
 router.get("/:bid", branchesControllers.getBranchById);
 
 router.put("/:bid",branchesControllers.updateBranchesById);
+router.put("/addProduct/:bid",branchesControllers.addNewProduct);
 
 module.exports = router;
