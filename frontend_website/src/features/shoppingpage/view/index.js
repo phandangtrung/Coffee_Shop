@@ -194,6 +194,7 @@ function ShoppingPage(props) {
     setcart(newCart);
     setcodeprice(0);
     setfaketotal(calculateTotal(newCart));
+    settotalPrice(calculateTotal(newCart));
     localStorage.setItem("cart", JSON.stringify(newCart));
   };
   const saveorder = () => {
@@ -204,6 +205,7 @@ function ShoppingPage(props) {
       totalPrices: totalPrice,
       productList: cart,
       branchId: branchID,
+      couponCodeId: couponId,
     };
     delete orderdata.couponCode;
     console.log(">>>data order", orderdata);
@@ -364,6 +366,7 @@ function ShoppingPage(props) {
   };
   const [alteraplly, setalteraplly] = useState(null);
   const [faketotal, setfaketotal] = useState(0);
+  const [couponId, setcouponId] = useState("");
   const applycode = (values) => {
     console.log(">>values", values);
     const fetchCoupon = async () => {
@@ -378,6 +381,7 @@ function ShoppingPage(props) {
         if (getbycoupon.length > 0) {
           const perse = Number(getbycoupon[0].percentage);
           const totlapr = faketotal - faketotal * (perse / 100);
+          setcouponId(getbycoupon[0]._id);
           settotalPrice(totlapr);
           setcodeprice(faketotal * (perse / 100));
           setalteraplly(
@@ -386,6 +390,7 @@ function ShoppingPage(props) {
           setcodeloading(false);
         } else {
           setalteraplly("Mã không hợp lệ");
+          setcouponId("");
           settotalPrice(faketotal);
           setcodeprice(0);
           setcodeloading(false);
@@ -520,7 +525,7 @@ function ShoppingPage(props) {
               className="button-checkout"
               onClick={() => {
                 showModal();
-                const usp = faketotal * 0.000043;
+                const usp = totalPrice * 0.000043;
                 setusprice(usp.toFixed(2));
                 console.log(">>usp", usp.toFixed(2));
               }}
