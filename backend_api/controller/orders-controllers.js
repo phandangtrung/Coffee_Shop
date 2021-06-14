@@ -171,55 +171,103 @@ const getOrderByUserId = async (req, res, next) => {
 };
 
 const createOrderNew = async (req, res, next) => {
-  const createOrder = {
-    customerName: req.body.customerName,
-    customerAddress: req.body.customerAddress,
-    customerPhone: req.body.customerPhone,
-    totalPrices: req.body.totalPrices,
-    couponCodeId: req.body.couponCodeId,
-    branchId: req.body.branchId,
-  };
+  let couponCurrent;
+  if (req.body.couponCodeId === "") {
+    const createOrder = {
+      customerName: req.body.customerName,
+      customerAddress: req.body.customerAddress,
+      customerPhone: req.body.customerPhone,
+      totalPrices: req.body.totalPrices,
+      //couponCodeId: req.body.couponCodeId,
+      branchId: req.body.branchId,
+    };
 
-  const listProduct = req.body.productList;
-  const branchById = await Branch.findById(createOrder.branchId);
-  try {
+    const listProduct = req.body.productList;
+    const branchById = await Branch.findById(createOrder.branchId);
     const newOrder = new Order(createOrder);
-    //Run for loop for the listProduct in Order
-    for (const i in listProduct) {
-      let product;
-      product = await products.findById(listProduct[i].product_id);
-      console.log(product);
-      //Adding an embedded document to an array
-      newOrder.productList.push({
-        pro: product,
-        quantity: listProduct[i].quantity,
-      });
-      //Run for loop for the listProduct in Branch
-      for (const j in branchById.listProduct) {
-        if (listProduct[i].product_id == branchById.listProduct[j]._id) {
-          branchById.listProduct[j].quantity -= listProduct[i].quantity;
+
+    try {
+      //Run for loop for the listProduct in Order
+      for (const i in listProduct) {
+        let product;
+        product = await products.findById(listProduct[i].product_id);
+        console.log(product);
+        //Adding an embedded document to an array
+        newOrder.productList.push({
+          pro: product,
+          quantity: listProduct[i].quantity,
+        });
+        //Run for loop for the listProduct in Branch
+        for (const j in branchById.listProduct) {
+          if (listProduct[i].product_id == branchById.listProduct[j]._id) {
+            branchById.listProduct[j].quantity -= listProduct[i].quantity;
+          }
         }
       }
-    }
-    let couponCodeInfor;
-    couponCodeInfor = await Coupon.findById(createOrder.couponCodeId);
-    console.log(couponCodeInfor);
-    let updateAmountCoupon;
-    updateAmountCoupon = couponCodeInfor.amount - 1;
-    console.log(updateAmountCoupon);
-    let couponUpdate;
-    const AmountUpdate = {
-      amount: updateAmountCoupon,
-    };
-    couponUpdate = await Coupon.findByIdAndUpdate(createOrder.couponCodeId, AmountUpdate);
 
-    await branchById.save();
-    await newOrder.save();
+      await branchById.save();
+      await newOrder.save();
+    } catch (error) {
+      return res.status(422).send(error);
+    }
     res.status(200).json({
       newOrder,
     });
-  } catch (error) {
-    return res.status(422).send(error);
+  } else {
+    const createOrder = {
+      customerName: req.body.customerName,
+      customerAddress: req.body.customerAddress,
+      customerPhone: req.body.customerPhone,
+      totalPrices: req.body.totalPrices,
+      couponCodeId: req.body.couponCodeId,
+      branchId: req.body.branchId,
+    };
+
+    const listProduct = req.body.productList;
+    const branchById = await Branch.findById(createOrder.branchId);
+    const newOrder = new Order(createOrder);
+
+    try {
+      const couponCodeInfor = await Coupon.findById(createOrder.couponCodeId);
+      let updateAmountCoupon;
+      updateAmountCoupon = couponCodeInfor.amount - 1;
+      console.log(updateAmountCoupon);
+
+      let couponUpdate;
+      const AmountUpdate = {
+        amount: updateAmountCoupon,
+      };
+      couponUpdate = await Coupon.findByIdAndUpdate(
+        createOrder.couponCodeId,
+        AmountUpdate
+      );
+
+      //Run for loop for the listProduct in Order
+      for (const i in listProduct) {
+        let product;
+        product = await products.findById(listProduct[i].product_id);
+        console.log(product);
+        //Adding an embedded document to an array
+        newOrder.productList.push({
+          pro: product,
+          quantity: listProduct[i].quantity,
+        });
+        //Run for loop for the listProduct in Branch
+        for (const j in branchById.listProduct) {
+          if (listProduct[i].product_id == branchById.listProduct[j]._id) {
+            branchById.listProduct[j].quantity -= listProduct[i].quantity;
+          }
+        }
+      }
+
+      await branchById.save();
+      await newOrder.save();
+    } catch (error) {
+      return res.status(422).send(error);
+    }
+    res.status(200).json({
+      newOrder,
+    });
   }
 };
 

@@ -4,13 +4,13 @@ const { productsSchema } = require("./products");
 const ordersSchema = new mongoose.Schema(
   {
     customerName: { type: String, require: false },
-    customerPhone: { type: String, required: false },
+    customerPhone: { type: String, require: false },
     customerAddress: { type: String, require: false },
     totalPrices: { type: Number, require: false },
-    status: { type: Boolean, default: false },
-    note: { type: String, required: false },
-    doneAt: { type: Date, require: false },
-    couponCodeId: { type: mongoose.Schema.Types.ObjectId, ref: "CouponCode" },
+    note: { type: String, require: false },
+    status: { type: Boolean, require: false, default: false },
+    doneAt: { type: Boolean, require: false, default: false },
+    couponCodeId: { type: mongoose.Schema.Types.ObjectId, ref: "CouponCode"},
     branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch" },
     userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     productList: [
