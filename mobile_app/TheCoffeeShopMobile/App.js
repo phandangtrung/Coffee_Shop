@@ -18,6 +18,7 @@ import Home from './src/screens/Home/index';
 import Profile from './src/screens/Profile/index';
 import Product from './src/screens/Product/index';
 import Checkout from './src/screens/Checkout/index';
+import Paypal from './src/screens/Paypal/Paypal';
 import Login from './src/screens/Login/index';
 import {Overlay} from 'react-native-elements';
 import {Button} from 'react-native';
@@ -167,6 +168,13 @@ const App = () => {
       <Stack.Screen
         name="Checkout"
         component={Checkout}
+        options={{
+          headerTitle: 'Thanh toán',
+        }}
+      />
+      <Stack.Screen
+        name="Paypal"
+        component={Paypal}
         options={{
           headerTitle: 'Thanh toán',
         }}

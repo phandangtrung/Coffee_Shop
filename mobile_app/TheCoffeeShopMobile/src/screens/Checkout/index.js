@@ -331,8 +331,18 @@ const Checkout = (props) => {
             </View>
           </View>
         </Card>
+
         <View style={{padding: 15}}>
-          <Button title="Đặt hàng" color="#ffb460" />
+          <Button
+            onPress={() =>
+              props.navigation.navigate('Paypal', {
+                price: 86,
+              })
+            }
+            style={{fontSize: 20}}
+            color="#ffb460"
+            title="Thanh Toán"
+          />
         </View>
 
         <View style={{height: 5}}></View>
