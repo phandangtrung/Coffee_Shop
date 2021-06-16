@@ -68,26 +68,27 @@ const updateCategoryById = async (req, res, next) => {
     alias: getAlias(req.body.name),
   };
   console.log(updateCategory);
-  try {
-    existingCategory = await Category.findOne({ alias: updateCategory.alias });
-  } catch (err) {
-    const error = new HttpError("Something Wrong!!!", 500);
+  //Tìm loại sp theo alias
+  existingCategory = await Category.findOne({ alias: updateCategory.alias });
+  //Tìm loại sp theo id
+  categoryId = await Category.findById(CateId);
+  //Nếu loại sp khác null và tên đang có khác với tên trong csdl thì báo lỗi
+  if (
+    existingCategory !== null &&
+    existingCategory.name !== updateCategory.name
+  ) {
+    const error = new HttpError("Duplicate name", 422);
     return next(error);
   }
-  if (!existingCategory) {
-    try {
-      categories = await Category.findByIdAndUpdate(CateId, updateCategory);
-    } catch (error) {
-      return res.status(422).send(error);
-    }
-    res.status(200).json({
-      message: "update success",
-      categories: updateCategory,
-    });
-  } else {
-    console.log("Category already exist");
-    res.status(422).json({ message: "Category already exist" });
+  try {
+    categories = await Category.findByIdAndUpdate(CateId, updateCategory);
+  } catch (error) {
+    return res.status(422).send(error);
   }
+  res.status(200).json({
+    message: "update Category Success!",
+    categories: updateCategory,
+  });
 };
 
 const deleteCategoryById = async (req, res, next) => {

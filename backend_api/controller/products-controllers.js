@@ -143,7 +143,7 @@ const updateProductbyId = async (req, res, next) => {
       return next(error);
     }
     return res.status(200).json({
-      message: "Update Product success",
+      message: "Update Product Success!",
       updatedPro: updatedProduct,
     });
   } else {
@@ -157,18 +157,26 @@ const updateProductbyId = async (req, res, next) => {
       imagesProduct: imagesCurrent,
       categoryId: req.body.categoryId,
     };
+    //Tìm sản phẩm theo alias (alias thay đổi theo tên)
     existingProduct = await products.findOne({ alias: updatedProduct.alias });
+    //Tìm sản phẩm theo id
     productByid = await products.findById(ProId);
+    console.log(existingProduct);
+    //Nếu khác null và tên của sản phẩm khác với sản phẩm trong CSDL thì báo lỗi trùng tên 
+    if (existingProduct !== null && existingProduct.name !== productByid.name) {
+      const error = new HttpError("Duplicate name", 500);
+      return next(error);
+    }
     try {
       let updatedPro;
       updatedPro = await products.findByIdAndUpdate(ProId, updatedProduct);
-      console.log(updatedPro);
+      //console.log(updatedPro);
     } catch (err) {
       const error = new HttpError("Update fail! ", 500);
       return next(error);
     }
     return res.status(200).json({
-      message: "Update Product success",
+      message: "Update Product Success!",
       updatedPro: updatedProduct,
     });
   }
