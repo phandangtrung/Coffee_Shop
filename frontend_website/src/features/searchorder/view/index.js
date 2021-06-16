@@ -21,6 +21,8 @@ import {
 import Moment from "react-moment";
 import { Images } from "../../../config/image";
 import orderApi from "../../../api/orderApi";
+import CurrencyFormat from "react-currency-format";
+import productApi from "../../../api/productApi";
 function Searchorder() {
   const { Search } = Input;
   const [data, setdata] = useState([]);
@@ -28,6 +30,7 @@ function Searchorder() {
   const [isloading, setisloading] = useState(false);
   const [visible, setvisible] = useState(false);
   const [currentOd, setcurrentOd] = useState({ productList: [] });
+  const [branchList, setbranchList] = useState([]);
   const showModal = (dt) => {
     setcurrentOd(dt);
     setvisible(true);
@@ -35,7 +38,11 @@ function Searchorder() {
   const hideModal = () => {
     setvisible(false);
   };
-
+  const getBranchName = (_id) => {
+    const curbr = branchList.filter((br) => br._id === _id);
+    console.log(">>curbr", curbr);
+    return curbr[0]?.location;
+  };
   useEffect(() => {
     const fetchOrderList = async () => {
       try {
@@ -46,6 +53,16 @@ function Searchorder() {
         console.log("failed to fetch product list: ", error);
       }
     };
+    const fetchBranchList = async () => {
+      try {
+        const response = await productApi.getBranch();
+        console.log("Fetch branch succesfully: ", response);
+        setbranchList(response.branches);
+      } catch (error) {
+        console.log("failed to fetch branchList list: ", error);
+      }
+    };
+    fetchBranchList();
     fetchOrderList();
   }, []);
   const onSearch = (value) => {
@@ -75,12 +92,22 @@ function Searchorder() {
         ]}
       >
         <div>
-          <div>{`TỔNG ĐƠN HÀNG: ${currentOd.totalPrices} VNĐ`}</div>
+          <div>
+            {`TỔNG ĐƠN HÀNG: `}{" "}
+            <CurrencyFormat
+              value={currentOd.totalPrices}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+            VNĐ
+          </div>
+          <div>{`Chi nhánh: ${getBranchName(currentOd.branchId)}`}</div>
+
           <div
             style={{ marginTop: "10px", height: "300px", overflowY: "scroll" }}
           >
             <div style={{ width: "100%" }}>
-              <Row style={{ display: "flex", justifyContent: "center" }}>
+              <Row style={{ display: "flex" }}>
                 {currentOd.productList.map((product) => (
                   <Col span={11} style={{ padding: "20px" }}>
                     <Card
@@ -95,9 +122,10 @@ function Searchorder() {
                     >
                       <Card.Meta
                         title={product.pro.name}
-                        description="Số lượng: 3"
+                        description={`Số lượng: ${product.quantity}`}
                       />
-                      <Card.Meta description="Giá: 4000vnd" />
+
+                      <Card.Meta description={`Giá: ${product.pro.prices}`} />
                     </Card>
                   </Col>
                 ))}
