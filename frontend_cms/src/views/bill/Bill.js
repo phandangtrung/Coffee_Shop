@@ -119,34 +119,40 @@ function Bill() {
   };
   const onViewdetail = (record) => {
     SetVisible(!isvisible);
+    console.log(">>record.productList", record.productList);
     // form.setFieldsValue(record);
     if (record.userId !== "") setuserId(record.userId);
     else setuserId("Guess");
-    const fetchShipperList = async () => {
-      try {
-        const response = await shippersApi.getAll();
-        console.log("Fetch shipper succesfully: ", response);
-        const shipperfreeList = response.shippers.filter(
-          (spf) => spf._id === record.shipperId
-        );
-        console.log(">>>shipperfreeList", shipperfreeList);
-        if (shipperfreeList !== []) setShId(shipperfreeList[0].name);
-        else setShId("None");
-      } catch (error) {
-        setShId("None");
-        console.log("failed to fetch shipper list: ", error);
-      }
-    };
-    fetchShipperList();
+    // const fetchShipperList = async () => {
+    //   try {
+    //     const response = await shippersApi.getAll();
+    //     console.log("Fetch shipper succesfully: ", response);
+    //     const shipperfreeList = response.shippers.filter(
+    //       (spf) => spf._id === record.shipperId
+    //     );
+    //     console.log(">>>shipperfreeList", shipperfreeList);
+    //     if (shipperfreeList !== []) setShId(shipperfreeList[0].name);
+    //     else setShId("None");
+    //   } catch (error) {
+    //     setShId("None");
+    //     console.log("failed to fetch shipper list: ", error);
+    //   }
+    // };
+    // fetchShipperList();
     setaddress(record.customerAddress);
-    setdetaildata(record.productlist);
+    let newprolist = [];
+    record.productList.map((pd) =>
+      newprolist.push({ ...pd.pro, quantity: pd.quantity })
+    );
+    console.log(">>newprolist", newprolist);
+    setdetaildata([...newprolist]);
   };
   const columnsDetail = [
     {
       title: "PRODUCT ID",
-      dataIndex: "product_id",
+      dataIndex: "_id",
       key: "_id",
-      // render: (text) => <a>{text}</a>,
+      // render: (text) => <a>{text.pro._id}</a>,
     },
     {
       title: "NAME",
@@ -154,21 +160,22 @@ function Bill() {
       key: "name",
       // render: (text) => <a>{text}</a>,
     },
-    {
-      title: "SIZE",
-      dataIndex: "size",
-      key: "size",
-      // render: (text) => <a>{text}</a>,
-    },
+    // {
+    //   title: "SIZE",
+    //   dataIndex: "size",
+    //   key: "size",
+    //   // render: (text) => <a>{text}</a>,
+    // },
     {
       title: "PRICE",
-      dataIndex: "price",
-      key: "price",
+      dataIndex: "prices",
+      key: "prices",
     },
     {
       title: "QUANTITY",
       dataIndex: "quantity",
       key: "quantity",
+      // render: () => <a>{detaildata.quantity}</a>,
     },
   ];
   const columns = [

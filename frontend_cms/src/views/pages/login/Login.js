@@ -67,6 +67,7 @@ const Login = (props) => {
         });
         Cookies.set("tokenUser", response.token);
         Cookies.set("BranchId", response.branchId);
+        Cookies.set("UserId", response.userId);
         setTimeout(() => {
           Cookies.remove("tokenUser");
         }, 600000);
