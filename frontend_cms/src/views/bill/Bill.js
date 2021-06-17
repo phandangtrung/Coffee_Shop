@@ -96,15 +96,17 @@ function Bill() {
     let randomshipper = "";
 
     const fetchConfirmOrder = async () => {
+      setIsLoading(true);
       const params = {
         orderid: record._id,
-        data: { status: true, doneAt: CurrentDate, shipperId: randomshipper },
+        data: { status: true, doneAt: CurrentDate },
       };
       try {
         const response = await orderApi.confirmorder(params);
         console.log("Fetch update status succesfully: ", response);
-        fetchUpdateShipper(randomshipper);
+        // fetchUpdateShipper(randomshipper);
         fetchOrderList();
+        setIsLoading(false);
         notification.info({
           message: `Confirm Successfully`,
           placement: "bottomRight",
@@ -113,30 +115,31 @@ function Bill() {
         console.log("failed to fetch update status : ", error);
       }
     };
-    const fetchShipperList = async () => {
-      try {
-        setIsLoading(true);
-        const response = await shippersApi.getAll();
-        console.log("Fetch shipper succesfully: ", response);
-        const shipperfreeList = response.shippers.filter(
-          (spf) => spf.status === false
-        );
-        if (shipperfreeList.length > 0) {
-          randomshipper =
-            shipperfreeList[Math.floor(Math.random() * shipperfreeList.length)]
-              ._id;
-          console.log(">>randomshipper", randomshipper);
-          fetchConfirmOrder();
-        } else
-          notification.info({
-            message: `All delivery staff are currently busy`,
-            placement: "bottomRight",
-          });
-      } catch (error) {
-        console.log("failed to fetch shipper list: ", error);
-      }
-    };
-    fetchShipperList();
+    fetchConfirmOrder();
+    // const fetchShipperList = async () => {
+    //   try {
+    //     setIsLoading(true);
+    //     const response = await shippersApi.getAll();
+    //     console.log("Fetch shipper succesfully: ", response);
+    //     const shipperfreeList = response.shippers.filter(
+    //       (spf) => spf.status === false
+    //     );
+    //     if (shipperfreeList.length > 0) {
+    //       randomshipper =
+    //         shipperfreeList[Math.floor(Math.random() * shipperfreeList.length)]
+    //           ._id;
+    //       console.log(">>randomshipper", randomshipper);
+    //       fetchConfirmOrder();
+    //     } else
+    //       notification.info({
+    //         message: `All delivery staff are currently busy`,
+    //         placement: "bottomRight",
+    //       });
+    //   } catch (error) {
+    //     console.log("failed to fetch shipper list: ", error);
+    //   }
+    // };
+    // fetchShipperList();
   };
   const onViewdetail = (record) => {
     SetVisible(!isvisible);
