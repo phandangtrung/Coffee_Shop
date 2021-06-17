@@ -102,7 +102,7 @@ function Comment() {
       try {
         const response = await productApi.getAll();
         console.log("Fetch product succesfully: ", response);
-        setproList(response.products);
+        setproList(response.productList);
       } catch (error) {
         console.log("failed to delete comment: ", error);
       }
