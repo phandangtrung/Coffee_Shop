@@ -30,6 +30,7 @@ import "./style.css";
 import CIcon from "@coreui/icons-react";
 import moment from "moment";
 import Moment from "react-moment";
+import Cookies from "js-cookie";
 import orderApi from "../../api/orderApi";
 import shippersApi from "../../api/shippersApi";
 function Bill() {
@@ -37,6 +38,8 @@ function Bill() {
   const [tabledata, settabledata] = useState([]);
   const [fakedata, setfakedata] = useState([]);
   const [isvisible, SetVisible] = useState(false);
+  const [branchId, setbranchId] = useState("");
+  const [employeeId, setemployeeId] = useState("");
   const [form] = Form.useForm();
   useEffect(() => {
     fetchOrderList();
@@ -50,7 +53,25 @@ function Bill() {
       setIsLoading(true);
       const response = await orderApi.getAll();
       console.log("Fetch order succesfully: ", response);
-      settabledata(response.orders);
+      const branchIDE = Cookies.get("BranchId");
+
+      const isAdmin = Cookies.get("isAdmin");
+      if (!isAdmin) {
+        const userIDE = Cookies.get("UserId");
+        setemployeeId(userIDE);
+      } else {
+        setemployeeId("admin");
+      }
+      setbranchId(branchIDE);
+      const neworList = response.orders.filter(
+        (od) => od.branchId === branchIDE
+      );
+      if (isAdmin) {
+        settabledata(response.orders);
+      } else {
+        settabledata(neworList);
+      }
+
       setfakedata(response.orders);
       setIsLoading(false);
     } catch (error) {

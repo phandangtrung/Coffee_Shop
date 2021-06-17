@@ -543,6 +543,7 @@ function Branch() {
     setempBranch(branchIDE);
     if (branchIDE !== "undefined") {
       fetchproductBranchList(branchIDE);
+      setchoosebr(true);
     }
   }, []);
   const handleClick = () => {
