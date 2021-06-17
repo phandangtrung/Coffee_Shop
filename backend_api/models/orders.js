@@ -9,10 +9,10 @@ const ordersSchema = new mongoose.Schema(
     totalPrices: { type: Number, require: false },
     note: { type: String, require: false },
     status: { type: Boolean, require: false, default: false },
-    doneAt: { type: Boolean, require: false, default: false },
-    couponCodeId: { type: mongoose.Schema.Types.ObjectId, ref: "CouponCode"},
+    doneAt: { type: String, require: false },
+    userId: { type: String, require: false },
+    couponCodeId: { type: mongoose.Schema.Types.ObjectId, ref: "CouponCode" },
     branchId: { type: mongoose.Schema.Types.ObjectId, ref: "Branch" },
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     productList: [
       {
         _id: false,
