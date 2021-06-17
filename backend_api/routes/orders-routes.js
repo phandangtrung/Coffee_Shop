@@ -17,7 +17,7 @@ router.get("/user/:uid", ordersController.getOrderByUserId);
 // router.post("/", ordersController.createOrder);
 router.post("/create/order", ordersController.createOrderNew);
 
-router.use(isEmployee, isAdmin);
+//router.use(isEmployee, isAdmin);
 
 router.put("/:oid", ordersController.updateOrderById);
 

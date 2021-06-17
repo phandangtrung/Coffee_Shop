@@ -835,6 +835,7 @@ const loginEmployee = async (req, res, next) => {
   }
 
   res.status(200).json({
+    userId : existingEmployee._id,
     email: existingEmployee.email,
     branchId: existingEmployee.branchId,
     isEmployee: existingEmployee.isEmployee,

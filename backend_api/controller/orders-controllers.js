@@ -79,6 +79,7 @@ const updateOrderById = async (req, res, next) => {
   const updatedOrder = {
     status: req.body.status,
     doneAt: req.body.doneAt,
+    userId: req.body.userId,
   };
   let orders;
   try {
@@ -177,6 +178,8 @@ const createOrderNew = async (req, res, next) => {
       customerName: req.body.customerName,
       customerAddress: req.body.customerAddress,
       customerPhone: req.body.customerPhone,
+      note: req.body.note,
+      status: req.body.status,
       totalPrices: req.body.totalPrices,
       //couponCodeId: req.body.couponCodeId,
       branchId: req.body.branchId,
