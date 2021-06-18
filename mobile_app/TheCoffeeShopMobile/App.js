@@ -205,7 +205,7 @@ const App = () => {
               name="Home"
               component={MyStack}
               options={{
-                tabBarLabel: 'Home',
+                tabBarLabel: 'Trang chủ',
                 tabBarIcon: ({color}) => (
                   <FontAwesome5
                     style={{fontSize: 20}}
@@ -225,7 +225,7 @@ const App = () => {
               name="Profile"
               component={Profile}
               options={{
-                tabBarLabel: 'Profile',
+                tabBarLabel: 'Cá nhân',
                 tabBarIcon: ({color}) => (
                   <FontAwesome5
                     style={{fontSize: 20}}

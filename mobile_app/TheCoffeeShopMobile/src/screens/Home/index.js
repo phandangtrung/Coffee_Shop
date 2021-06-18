@@ -11,10 +11,10 @@ import {
   TouchableOpacity,
   FlatList,
 } from 'react-native';
-import {SearchBar} from 'react-native-elements';
+import {SearchBar, SpeedDial} from 'react-native-elements';
 import DropShadow from 'react-native-drop-shadow';
 import LinearGradient from 'react-native-linear-gradient';
-
+import {Picker} from '@react-native-picker/picker';
 import styles from './style';
 
 import ProductTag from '../../components/productTag/index';
@@ -28,7 +28,7 @@ import Loading from '../../components/loading/Loading';
 
 import connect1 from '../../api/connect1.tsx';
 import {connect} from 'react-redux';
-import {serport} from '../../config/port';
+import {serport, Backport} from '../../config/port';
 
 const Home = (props) => {
   const [search, setsearch] = useState('');
@@ -38,8 +38,7 @@ const Home = (props) => {
   const [probyCate, setProByCate] = useState({});
   const [isloading, setIsloading] = useState(false);
   useEffect(() => {
-    getListCategory();
-    return () => {};
+    fetchBranchList();
   }, []);
   const formatCurrency = (monney) => {
     const mn = String(monney);
@@ -50,8 +49,8 @@ const Home = (props) => {
         return (index % 3 ? next : next + '.') + prev;
       });
   };
-  const getListCategory = () => {
-    const apiURL = `${serport}/categories`;
+  const getListCategory = (productList) => {
+    const apiURL = `${Backport}/categories`;
     setIsloading(true);
     fetch(apiURL)
       .then((res) => res.json())
@@ -60,52 +59,88 @@ const Home = (props) => {
         return resJson.categories;
       })
       .then((_categories) => {
-        getListProduct(_categories);
+        getListProduct(_categories, productList);
       })
       .catch((error) => {
         console.log('Error: ', error);
       });
   };
+  const [BraProList, setBraProList] = useState([]);
+  const [productList, setProductList] = useState([]);
+  const [fakeproductList, setfakeProductList] = useState([]);
+  const [dfSelect, setDfSelect] = useState('');
 
-  const getListProduct = (_categories) => {
-    const apiURL = `${serport}/products`;
-    fetch(apiURL)
+  const fetchBranchList = async () => {
+    const apiproURL = `${Backport}/products`;
+    const apibrURL = `${Backport}/branches`;
+    let Brresponse;
+    let Prresponse;
+    fetch(apiproURL)
       .then((res) => res.json())
       .then((resJson) => {
-        let productsByCat = {};
-        resJson.products.map((_product) => {
-          let title = '';
-          _categories.forEach((cate) => {
-            console.log(
-              '>>cate._id',
-              cate._id,
-              '_product.categoryId',
-              _product.categoryId,
-            );
-            if (cate._id === _product.categoryId) {
-              title = cate.name;
-              console.log('>>title', title);
-            }
+        Prresponse = resJson.productList;
+        fetch(apibrURL)
+          .then((res) => res.json())
+          .then((resJson) => {
+            Brresponse = resJson.branches;
+            let newBraL = [];
+            Brresponse.map((bl) => {
+              let newproLi = {...bl, listProduct: []};
+              bl.listProduct.map((brpro) => {
+                const found = Prresponse.find(
+                  (element) => element._id === brpro._id,
+                );
+                newproLi.listProduct.push({...brpro, ...found});
+              });
+              newBraL.push(newproLi);
+            });
+            setBraProList(newBraL);
+            setProductList(newBraL[0].listProduct);
+            setDfSelect(String(newBraL[0].name));
+            console.log('>>newBraL', newBraL);
+            getListCategory(newBraL[0].listProduct);
           });
-
-          productsByCat = {
-            ...productsByCat,
-            [_product.categoryId]:
-              _product.categoryId in productsByCat
-                ? [
-                    ...productsByCat[_product.categoryId],
-                    {..._product, catName: title},
-                  ]
-                : [{..._product, catName: title}],
-          };
-        });
-        setProduct(resJson.products);
-        setProByCate(productsByCat);
-        setIsloading(false);
-      })
-      .catch((error) => {
-        console.log('Error: ', error);
       });
+  };
+  const getListProduct = (_categories, productList) => {
+    // const apiURL = `${serport}/products`;
+    // fetch(apiURL)
+    //   .then((res) => res.json())
+    //   .then((resJson) => {
+    let productsByCat = {};
+    productList.map((_product) => {
+      let title = '';
+      _categories.forEach((cate) => {
+        // console.log(
+        //   '>>cate._id',
+        //   cate._id,
+        //   '_product.categoryId',
+        //   _product.categoryId,
+        // );
+        if (cate._id === _product.categoryId) {
+          title = cate.name;
+          // console.log('>>title', title);
+        }
+      });
+
+      productsByCat = {
+        ...productsByCat,
+        [_product.categoryId]:
+          _product.categoryId in productsByCat
+            ? [
+                ...productsByCat[_product.categoryId],
+                {..._product, catName: title},
+              ]
+            : [{..._product, catName: title}],
+      };
+    });
+    setProduct(productList);
+    setProByCate(productsByCat);
+    setIsloading(false);
+    // })
+    // .catch((error) => {
+    //   console.log('Error: ', error);
+    // });
   };
 
   const renderProduct = (proByCate) => {
@@ -286,7 +321,7 @@ const Home = (props) => {
                 flexDirection: 'column',
                 height: 250,
                 zIndex: 1,
-                marginBottom: -70,
+                marginBottom: 0,
               }}>
               <View>
                 <View style={styles.banner}>
@@ -324,8 +359,42 @@ const Home = (props) => {
                     />
                   </DropShadow>
                 </View>
+                <View
+                  style={{
+                    paddingLeft: 20,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text style={{color: 'white', fontSize: 15}}>
+                    {'Chi Nhánh'}
+                  </Text>
+                  <Picker
+                    // selectedValue={selectedValue}
+                    style={{height: 50, width: 270, color: 'white'}}
+                    onValueChange={(itemValue, itemIndex) => {
+                      const brfilt = BraProList.filter(
+                        (br) => br._id === itemValue,
+                      );
+                      setProductList(brfilt);
+                      console.log('>>brfilt', brfilt[0].listProduct);
+                      getListCategory(brfilt[0].listProduct);
+                    }}>
+                    {BraProList.map((bl) => (
+                      <Picker.Item
+                        label={bl.location}
+                        value={bl._id}
+                        key={bl._id}
+                      />
+                    ))}
+                    {/* <Picker.Item label="Nam" value="java" />
+                    <Picker.Item label="Nữ" value="js" />
+                    <Picker.Item label="Khác" value="js" /> */}
+                  </Picker>
+                </View>
               </View>
             </LinearGradient>
+
             {renderProduct(probyCate)}
           </ScrollView>
         )}
