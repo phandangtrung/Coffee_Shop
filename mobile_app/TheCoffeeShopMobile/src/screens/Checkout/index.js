@@ -143,6 +143,7 @@ const Checkout = (props) => {
                 />
               </View> */}
             </View>
+            <Text>{props.branchID}</Text>
             <ScrollView
               style={{paddingLeft: 10, paddingRight: 10}}
               horizontal={true}>
@@ -374,6 +375,7 @@ const mapStateToProps = (state) => {
   return {
     cart: state.cart.cartAr,
     totalprice: state.cart.totalprice,
+    branchID: state.branch.branchID,
   };
 };
 

@@ -75,6 +75,8 @@ const cartReducer = (state = initialState, action) => {
       pricet = 0;
       newcartpro.map((pr) => (pricet = pricet + pr.prices * pr.quantity));
       return {cartAr: [...newcartpro], totalprice: pricet};
+    case actionType.DELALL_PRODUCT:
+      return {cartAr: [], totalprice: 0};
     default:
       return state;
   }

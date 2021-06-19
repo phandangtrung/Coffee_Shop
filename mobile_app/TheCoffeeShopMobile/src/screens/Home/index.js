@@ -16,12 +16,13 @@ import DropShadow from 'react-native-drop-shadow';
 import LinearGradient from 'react-native-linear-gradient';
 import {Picker} from '@react-native-picker/picker';
 import styles from './style';
-
+import {chooseBranch} from './actions/index';
 import ProductTag from '../../components/productTag/index';
 import {
   decreaseProduct,
   deleteProduct,
   increaseProduct,
+  delallProduct,
 } from '../../components/productTag/actions/index';
 import ProductCart from '../../components/productCart/index';
 import Loading from '../../components/loading/Loading';
@@ -97,6 +98,7 @@ const Home = (props) => {
             setBraProList(newBraL);
             setProductList(newBraL[0].listProduct);
             setDfSelect(String(newBraL[0].name));
+            props.chooseBranch(newBraL[0]._id);
             console.log('>>newBraL', newBraL);
             getListCategory(newBraL[0].listProduct);
           });
@@ -377,8 +379,10 @@ const Home = (props) => {
                         (br) => br._id === itemValue,
                       );
                       setProductList(brfilt);
+                      props.chooseBranch(brfilt[0]._id);
                       console.log('>>brfilt', brfilt[0].listProduct);
                       getListCategory(brfilt[0].listProduct);
+                      props.delallProduct();
                     }}>
                     {BraProList.map((bl) => (
                       <Picker.Item
@@ -452,6 +456,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(increaseProduct(product_current)),
     decreaseProduct: (product_current) =>
       dispatch(decreaseProduct(product_current)),
+    delallProduct: () => dispatch(delallProduct()),
+    chooseBranch: (branch_current) => dispatch(chooseBranch(branch_current)),
   };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -25,3 +25,8 @@ export const decreaseProduct = (product) => {
     payload: product,
   };
 };
+export const delallProduct = () => {
+  return {
+    type: actionType.DELALL_PRODUCT,
+  };
+};
