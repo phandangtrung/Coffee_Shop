@@ -29,7 +29,7 @@ const ProductCheckout = (props) => {
           <Text style={{color: 'grey', fontSize: 17, paddingBottom: 5}}>
             {props.name}
           </Text>
-          <Text style={{color: 'black', fontSize: 20}}>{'50.000đ'}</Text>
+          <Text style={{color: 'black', fontSize: 20}}>{props.prices}</Text>
         </View>
         <View style={{paddingTop: 45}}>
           <Text style={{color: 'grey'}}>{`${props.quantity}x`}</Text>

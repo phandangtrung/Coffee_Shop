@@ -15,6 +15,7 @@ import {Avatar, Card, Input, Icon, Overlay} from 'react-native-elements';
 import {connect} from 'react-redux';
 import ProductCheckout from '../../components/productCheckout/index';
 import {Backport} from '../../config/port';
+import AsyncStorage from '@react-native-community/async-storage';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 const Checkout = (props) => {
   const formatCurrency = (monney) => {
@@ -39,8 +40,70 @@ const Checkout = (props) => {
   const [addRess, setaddRess] = useState('Nhập địa chỉ giao hàng');
   const [inputadd, setinputadd] = useState('');
   const [visible, setVisible] = useState(false);
+  const [plphone, setplphone] = useState(false);
+  const [pladdr, setpladdr] = useState(false);
   const toggleOverlay = () => {
     setVisible(!visible);
+  };
+  const toggleplOverlay = () => {
+    setplphone(!visible);
+  };
+  const togglepladdrOverlay = () => {
+    setpladdr(!visible);
+  };
+  const getuserinfo = async () => {
+    if (inputadd === '') {
+      togglepladdrOverlay();
+    } else {
+      const apiURL = `${Backport}/users/myUser`;
+      const userToken = await AsyncStorage.getItem('userToken');
+      fetch(apiURL, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      })
+        .then((response) => response.json())
+        .then((responseJson) => {
+          const dataorder = {
+            customerName: responseJson.users.fName,
+            customerPhone: responseJson.users?.phone,
+            customerAddress: inputadd,
+            totalPrices: price,
+            couponCodeId: couponcodeID,
+            userId: responseJson.users._id,
+            branchId: props.branchID,
+          };
+          if (dataorder.customerPhone === undefined) {
+            toggleplOverlay();
+          } else {
+            saveordata(dataorder);
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+  const saveordata = (data) => {
+    let customproli = [];
+    props.cart.map((pc) => {
+      const newprobj = {product_id: pc.id, quantity: pc.quantity};
+      customproli.push(newprobj);
+    });
+    props.navigation.navigate('Paypal', {
+      price: price,
+      datap: {...data, productList: customproli},
+    });
+    // const apiURL = `${Backport}/orders/create/order`;
+    // fetch(apiURL, {
+    //   method: 'POST',
+    //   body: JSON.stringify({
+    //     ...data,
+    //     productList: customproli,
+    //   }),
+    // });
+    // console.log('>>customproli', customproli);
   };
   const getListCode = () => {
     const apiURL = `${Backport}/couponCode/discount/user`;
@@ -59,8 +122,10 @@ const Checkout = (props) => {
         console.log('Error: ', error);
       });
   };
+  const [couponcodeID, setcouponcodeID] = useState('');
   const addCode = (code) => {
     const percentage = code.percentage;
+    setcouponcodeID(code._id);
     const disprice = fakeprice - fakeprice * (percentage / 100);
     setprice(disprice);
   };
@@ -143,7 +208,6 @@ const Checkout = (props) => {
                 />
               </View> */}
             </View>
-            <Text>{props.branchID}</Text>
             <ScrollView
               style={{paddingLeft: 10, paddingRight: 10}}
               horizontal={true}>
@@ -335,11 +399,9 @@ const Checkout = (props) => {
 
         <View style={{padding: 15}}>
           <Button
-            onPress={() =>
-              props.navigation.navigate('Paypal', {
-                price: 86,
-              })
-            }
+            onPress={() => {
+              getuserinfo();
+            }}
             style={{fontSize: 20}}
             color="#ffb460"
             title="Thanh Toán"
@@ -365,6 +427,54 @@ const Checkout = (props) => {
             color="#ffb460"
             title="OK"
           />
+        </View>
+      </Overlay>
+      <Overlay isVisible={plphone} onBackdropPress={toggleplOverlay}>
+        <View
+          style={{
+            width: 200,
+            height: 100,
+            justifyContent: 'center',
+          }}>
+          <View style={{width: '100%', paddingBottom: 20}}>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 15,
+                textAlign: 'center',
+                color: '#ffae5d',
+              }}>
+              {'Cập nhật số điện thoại để đặt hàng'}
+            </Text>
+          </View>
+
+          <Button
+            color="#ffae5d"
+            title="OK"
+            onPress={() => setplphone(false)}
+          />
+        </View>
+      </Overlay>
+      <Overlay isVisible={pladdr} onBackdropPress={togglepladdrOverlay}>
+        <View
+          style={{
+            width: 200,
+            height: 100,
+            justifyContent: 'center',
+          }}>
+          <View style={{width: '100%', paddingBottom: 20}}>
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 15,
+                textAlign: 'center',
+                color: '#ffae5d',
+              }}>
+              {'Vui lòng nhập địa chỉ nhận hàng'}
+            </Text>
+          </View>
+
+          <Button color="#ffae5d" title="OK" onPress={() => setpladdr(false)} />
         </View>
       </Overlay>
     </SafeAreaView>

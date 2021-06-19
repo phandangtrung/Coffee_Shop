@@ -29,14 +29,14 @@ import {WebView} from 'react-native-webview';
 
 const Paypal = (props) => {
   let myWebView;
-  const [price, setprice] = useState(0);
+  const [ordata, setordata] = useState({});
   useEffect(() => {
-    setprice(props.route.params.price);
+    setordata(props.route.params);
   }, []);
   return (
     <WebView
       ref={(el) => (myWebView = el)}
-      onLoadEnd={() => myWebView.postMessage(price)}
+      onLoadEnd={() => myWebView.postMessage(ordata)}
       source={{uri: 'https://tcspaypal.herokuapp.com/'}}
     />
   );
