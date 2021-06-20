@@ -19,6 +19,7 @@ import Profile from './src/screens/Profile/index';
 import Product from './src/screens/Product/index';
 import Checkout from './src/screens/Checkout/index';
 import Paypal from './src/screens/Paypal/Paypal';
+import SuccessPage from './src/screens/SuccessPage';
 import Login from './src/screens/Login/index';
 import {Overlay} from 'react-native-elements';
 import {Button} from 'react-native';
@@ -176,7 +177,14 @@ const App = () => {
         name="Paypal"
         component={Paypal}
         options={{
-          headerTitle: 'Thanh toán',
+          headerTitle: 'Paypal',
+        }}
+      />
+      <Stack.Screen
+        name="SuccessPage"
+        component={SuccessPage}
+        options={{
+          headerShown: false,
         }}
       />
       <Stack.Screen
