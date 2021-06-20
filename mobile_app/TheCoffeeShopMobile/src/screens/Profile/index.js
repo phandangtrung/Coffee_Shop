@@ -12,7 +12,7 @@ import {
   // Picker,
 } from 'react-native';
 import axios from 'axios';
-import {serport} from '../../config/port';
+import {Backport} from '../../config/port';
 // import {Picker} from '@react-native-community/picker';
 import {Picker} from '@react-native-picker/picker';
 import {Avatar, Card, Input, Icon} from 'react-native-elements';
@@ -22,7 +22,11 @@ import {AuthContext} from '../../config/context';
 
 const Profile = () => {
   const [search, setsearch] = useState('');
-  const [userProfile, setuserProfile] = useState({});
+  const [userProfile, setuserProfile] = useState({
+    fName: 'Nguyen Van A',
+    email: 'abc@gmail.com',
+  });
+  const [dataupdate, setdataupdate] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
   const drawer = useRef(null);
   const {signOut} = React.useContext(AuthContext);
@@ -32,7 +36,7 @@ const Profile = () => {
       if (userToken !== null) {
         // We have data!!
         axios
-          .get(`${serport}/users/myUser`, {
+          .get(`${Backport}/users/myUser`, {
             headers: {
               Authorization: `token ${userToken}`,
             },
@@ -45,6 +49,7 @@ const Profile = () => {
               trandata = {...res.data.users, gender: 'Nữ'};
             } else trandata = {...res.data.users, gender: 'Nam'};
             setuserProfile(trandata);
+            setdataupdate(trandata);
           })
           .catch((error) => {
             console.error(error);
@@ -53,6 +58,24 @@ const Profile = () => {
     } catch (error) {
       // Error retrieving data
     }
+  };
+  const updateProfile = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    const requestOptions = {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userToken}`,
+      },
+      body: JSON.stringify(dataupdate),
+    };
+    fetch(`${Backport}/users/updateInfor`, requestOptions)
+      .then((response) => response.json())
+      .then((datare) => {
+        console.log('>>data', datare);
+        _storeData();
+        setModalVisible(false);
+      });
   };
   useEffect(() => {
     _storeData();
@@ -175,27 +198,26 @@ const Profile = () => {
                   {'Họ và tên'}
                 </Card.Title>
                 <Card.Divider />
-                <Input placeholder="Phan Đăng Trung" />
+                <Input
+                  onChangeText={(value) =>
+                    setdataupdate({...dataupdate, fName: value})
+                  }
+                  placeholder={userProfile.fName}
+                />
                 <Card.Divider />
                 <Card.Title style={{textAlign: 'left', fontSize: 18}}>
                   {'Ngày sinh'}
                 </Card.Title>
                 <Card.Divider />
                 <View style={{flexDirection: 'row'}}>
-                  <View style={{width: '25%'}}>
-                    <Input keyboardType="numeric" placeholder="01" />
-                  </View>
-                  <Text style={{fontSize: 20, paddingTop: 10, color: 'grey'}}>
-                    {'/'}
-                  </Text>
-                  <View style={{width: '25%'}}>
-                    <Input keyboardType="numeric" placeholder="01" />
-                  </View>
-                  <Text style={{fontSize: 20, paddingTop: 10, color: 'grey'}}>
-                    {'/'}
-                  </Text>
-                  <View style={{width: '30%'}}>
-                    <Input keyboardType="numeric" placeholder="19999" />
+                  <View style={{width: '100%'}}>
+                    <Input
+                      onChangeText={(value) =>
+                        setdataupdate({...dataupdate, birthday: value})
+                      }
+                      keyboardType="numeric"
+                      placeholder={userProfile.birthday}
+                    />
                   </View>
                 </View>
 
@@ -204,7 +226,12 @@ const Profile = () => {
                   {'Số điện thoại'}
                 </Card.Title>
                 <Card.Divider />
-                <Input placeholder="0566439754" />
+                <Input
+                  onChangeText={(value) =>
+                    setdataupdate({...dataupdate, phone: value})
+                  }
+                  placeholder={userProfile.phone}
+                />
                 <Card.Divider />
                 <Card.Title style={{textAlign: 'left', fontSize: 18}}>
                   {'Giới tính'}
@@ -213,17 +240,17 @@ const Profile = () => {
                 <Picker
                   // selectedValue={selectedValue}
                   style={{height: 50, width: 150}}
-                  // onValueChange={(itemValue, itemIndex) =>
-                  //   setSelectedValue(itemValue)}
-                >
-                  <Picker.Item label="Nam" value="java" />
-                  <Picker.Item label="Nữ" value="js" />
-                  <Picker.Item label="Khác" value="js" />
+                  onValueChange={(itemValue, itemIndex) =>
+                    setdataupdate({...dataupdate, gender: itemValue})
+                  }>
+                  <Picker.Item label="Nam" value="Nam" />
+                  <Picker.Item label="Nữ" value="Nữ" />
+                  <Picker.Item label="Khác" value="Khác" />
                 </Picker>
               </Card>
             </ScrollView>
 
-            <Button title="Cập nhật" color="#4a5d54" />
+            <Button onPress={updateProfile} title="Cập nhật" color="#4a5d54" />
           </View>
         </View>
       </Modal>

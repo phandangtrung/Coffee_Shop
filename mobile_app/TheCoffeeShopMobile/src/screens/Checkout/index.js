@@ -407,10 +407,7 @@ const Checkout = (props) => {
             title="Thanh Toán"
           />
         </View>
-        <Button
-          title="go go"
-          onPress={() => props.navigation.navigate('SuccessPage')}
-        />
+
         <View style={{height: 5}}></View>
       </ScrollView>
       <Overlay isVisible={visible} onBackdropPress={toggleOverlay}>
