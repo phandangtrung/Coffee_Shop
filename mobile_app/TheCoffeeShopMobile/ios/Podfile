@@ -8,6 +8,8 @@ target 'TheCoffeeShopMobile' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'RNKommunicateChat', :path => '../node_modules/react-native-kommunicate-chat'
+
   target 'TheCoffeeShopMobileTests' do
     inherit! :complete
     # Pods for testing
