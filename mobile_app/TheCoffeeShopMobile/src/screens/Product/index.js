@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {
   SafeAreaView,
   View,
@@ -11,14 +11,15 @@ import {
   TouchableOpacity,
   Modal,
 } from 'react-native';
-import {SearchBar, Avatar, Rating} from 'react-native-elements';
+import {SearchBar, Input, Avatar, Rating} from 'react-native-elements';
 import {imgport} from '../../config/port';
 import DropShadow from 'react-native-drop-shadow';
 import LinearGradient from 'react-native-linear-gradient';
-
+import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 import {connect} from 'react-redux';
 import {buyProduct} from '../../components/productTag/actions/index';
-
+import {Backport} from '../../config/port';
 import CommentTag from '../../components/commentTag/index';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
@@ -26,7 +27,11 @@ import styles from './style';
 
 const Product = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [comlist, setcomlist] = useState([]);
+  const [isloadcm, setisloadcm] = useState(true);
+  const [datapost, setdatapost] = useState({rating: 4});
   const productID = props.route.params._id;
+
   const dataProduct = {...props.route.params, id: productID};
   const formatCurrency = (monney) => {
     const mn = String(monney);
@@ -37,6 +42,69 @@ const Product = (props) => {
         return (index % 3 ? next : next + '.') + prev;
       });
   };
+  const getemail = async () => {
+    const userToken = await AsyncStorage.getItem('userToken');
+    if (userToken !== null) {
+      // We have data!!
+      axios
+        .get(`${Backport}/users/myUser`, {
+          headers: {
+            Authorization: `token ${userToken}`,
+          },
+        })
+        .then((res) => {
+          console.log(res.data.users.email);
+          setdatapost({
+            ...datapost,
+            email: res.data.users.email,
+            productId: productID,
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+  const getallComment = () => {
+    const apiURL = `${Backport}/comments`;
+    setisloadcm(true);
+    let cmarr = [];
+    fetch(apiURL)
+      .then((res) => res.json())
+      .then((resJson) => {
+        cmarr = [...resJson.comments];
+        const cmmbpro = cmarr.filter((cm) => cm.productId === productID);
+        console.log('>>cmmbpro', cmmbpro);
+        setcomlist(cmmbpro);
+        setisloadcm(false);
+      })
+      .catch((error) => {
+        console.log('Error: ', error);
+      });
+  };
+  const onComment = () => {
+    console.log('>>datapst', datapost);
+    if (datapost.content !== undefined) {
+      const requestOptions = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(datapost),
+      };
+      fetch(`${Backport}/comments`, requestOptions)
+        .then((response) => response.json())
+        .then((datare) => {
+          console.log('>>data', datare);
+
+          getallComment();
+          setModalVisible(!modalVisible);
+        });
+    }
+  };
+  useEffect(() => {
+    getemail();
+
+    getallComment();
+  }, []);
   return (
     <SafeAreaView>
       <View
@@ -109,6 +177,7 @@ const Product = (props) => {
               }}>
               {`${formatCurrency(props.route.params.prices)} đ`}
             </Text>
+
             <View
               style={{
                 flexDirection: 'row',
@@ -148,9 +217,7 @@ const Product = (props) => {
             paddingRight: 20,
           }}>
           <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-            <Text style={{color: 'grey', fontSize: 17}}>
-              {'Đánh giá/Bình luận'}
-            </Text>
+            <Text style={{color: 'grey', fontSize: 17}}>{'Đánh giá'}</Text>
 
             <TouchableOpacity
               onPress={() => {
@@ -202,11 +269,20 @@ const Product = (props) => {
 
                   <Rating
                     type="heart"
-                    showRating={true}
-                    // onFinishRating={this.ratingCompleted}
+                    showRating={false}
+                    onFinishRating={(rating) =>
+                      setdatapost({...datapost, rating: rating})
+                    }
                     style={{paddingVertical: 10}}
-                    imageSize={40}
-                    defaultRating={4}
+                    imageSize={30}
+                    defaultRating={5}
+                  />
+                  <Input
+                    placeholder="Bình luận"
+                    leftIcon={{type: 'font-awesome', name: 'comments'}}
+                    onChangeText={(value) =>
+                      setdatapost({...datapost, content: value})
+                    }
                   />
                   <View
                     style={{
@@ -217,9 +293,7 @@ const Product = (props) => {
                     }}>
                     <View style={{width: '80%', paddingTop: 10}}>
                       <Button
-                        onPress={() => {
-                          setModalVisible(!modalVisible);
-                        }}
+                        onPress={() => onComment()}
                         color="#ffb460"
                         title="Đánh giá"
                       />
@@ -228,13 +302,31 @@ const Product = (props) => {
                 </View>
               </View>
             </Modal>
-            <ScrollView>
-              <CommentTag accname="Trung phan" cmmdate="01/01/2020" />
-              <CommentTag accname="Duy Nguyễn" cmmdate="01/01/2020" />
-              <CommentTag accname="Cường Phi" cmmdate="01/01/2020" />
-              <CommentTag accname="Trung phan" cmmdate="01/01/2020" />
-              <CommentTag accname="Trung phan" cmmdate="01/01/2020" />
-            </ScrollView>
+            {comlist.length === 0 ? (
+              <View
+                style={{
+                  width: '100%',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: 100,
+                }}>
+                <Text style={{fontSize: 20, fontWeight: 'bold', opacity: 0.4}}>
+                  Chưa có đánh giá nào
+                </Text>
+              </View>
+            ) : (
+              <ScrollView>
+                {comlist.map((cm) => (
+                  <CommentTag
+                    key={cm._id}
+                    accname={cm.email}
+                    content={cm.content}
+                    rates={cm.rating}
+                  />
+                ))}
+              </ScrollView>
+            )}
           </View>
         </View>
       </View>

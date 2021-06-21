@@ -4,6 +4,15 @@ import {SafeAreaView, View, Text, TouchableOpacity, Image} from 'react-native';
 import styles from './style';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 const ProductCart = (props) => {
+  const formatCurrency = (monney) => {
+    const mn = String(monney);
+    return mn
+      .split('')
+      .reverse()
+      .reduce((prev, next, index) => {
+        return (index % 3 ? next : next + '.') + prev;
+      });
+  };
   return (
     <View>
       <View style={styles.cart_tag}>
@@ -35,7 +44,9 @@ const ProductCart = (props) => {
             </TouchableOpacity>
           </View>
         </View>
-        <Text style={styles.text_cart}>{`${props.prices}đ`}</Text>
+        <Text style={styles.text_cart}>{`${formatCurrency(
+          props.prices,
+        )}đ`}</Text>
         <TouchableOpacity onPress={() => props.ondeleteProduct()}>
           <FontAwesome5
             style={{color: 'white', fontSize: 20, color: 'white'}}

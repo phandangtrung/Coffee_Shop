@@ -5,6 +5,15 @@ import styles from './style';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {imgport} from '../../config/port';
 const ProductCheckout = (props) => {
+  const formatCurrency = (monney) => {
+    const mn = String(monney);
+    return mn
+      .split('')
+      .reverse()
+      .reduce((prev, next, index) => {
+        return (index % 3 ? next : next + '.') + prev;
+      });
+  };
   return (
     <View style={{width: '100%', height: '100%', flexDirection: 'row'}}>
       <View>
@@ -29,7 +38,9 @@ const ProductCheckout = (props) => {
           <Text style={{color: 'grey', fontSize: 17, paddingBottom: 5}}>
             {props.name}
           </Text>
-          <Text style={{color: 'black', fontSize: 20}}>{props.prices}</Text>
+          <Text style={{color: 'black', fontSize: 20}}>
+            {`${formatCurrency(props.prices)}đ`}
+          </Text>
         </View>
         <View style={{paddingTop: 45}}>
           <Text style={{color: 'grey'}}>{`${props.quantity}x`}</Text>
