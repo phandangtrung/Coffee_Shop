@@ -128,6 +128,18 @@ function Branch() {
       ),
     },
   ];
+  const columnsmb = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Location",
+      dataIndex: "location",
+      key: "location",
+    },
+  ];
   // upload image
   const [form] = Form.useForm();
   const [fileList, setfileList] = useState([]);
@@ -162,6 +174,7 @@ function Branch() {
     proname: "",
     da: { _id: "", quantity: 0 },
   });
+  const [ismabr, setismabr] = useState(false);
   const [productBranch, setproductBranch] = useState([]);
   const toggle = () => {
     SetVisible(!isvisible);
@@ -564,6 +577,19 @@ function Branch() {
         <Row>
           <Col lg={5}>
             {empBranch === "undefined" ? (
+              // <CButton
+              //   style={{
+              //     width: "200px",
+              //     height: "50px",
+              //     margin: "20px 0px 20px 20px",
+              //   }}
+              //   shape="pill"
+              //   color="info"
+              //   onClick={() => setisaddbrModal(true)}
+              // >
+              //   {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
+              //   Add Branch
+              // </CButton>
               <CButton
                 style={{
                   width: "200px",
@@ -572,10 +598,10 @@ function Branch() {
                 }}
                 shape="pill"
                 color="info"
-                onClick={() => setisaddbrModal(true)}
+                onClick={() => setismabr(true)}
               >
                 {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
-                Add Branch
+                Manage Branch
               </CButton>
             ) : (
               <div
@@ -991,6 +1017,29 @@ function Branch() {
             </Row>
           </Form>
         </Spin>
+      </Modal>
+      <Modal
+        title="MANAGE BRANCH"
+        style={{ margin: "5% 0px 0px 35%" }}
+        visible={ismabr}
+        onOk={handleOk}
+        onCancel={() => setismabr(false)}
+      >
+        <CButton
+          style={{
+            width: "150px",
+            height: "50px",
+            marginBottom: 10,
+          }}
+          shape="pill"
+          color="info"
+          onClick={() => setisaddbrModal(true)}
+        >
+          {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
+          Add Branch
+        </CButton>
+
+        <Table dataSource={branchList} columns={columnsmb} />
       </Modal>
     </>
   );
