@@ -88,7 +88,10 @@ const updateOrderById = async (req, res, next) => {
     const error = new HttpError("Something went wrong, can not update", 500);
     return next(error);
   }
-  res.status(200).json({ message: "Order is confirmed", orders: updatedOrder });
+  res.status(200).json({
+    message: "Order is confirmed",
+    orders: updatedOrder,
+  });
 };
 
 const deleteOrderById = async (req, res, next) => {

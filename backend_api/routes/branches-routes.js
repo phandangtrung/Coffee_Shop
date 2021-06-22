@@ -10,4 +10,6 @@ router.get("/:bid", branchesControllers.getBranchById);
 
 router.put("/:bid", branchesControllers.updateBranchesById);
 
+router.delete("/:bid", branchesControllers.deleteBranchById);
+
 module.exports = router;
