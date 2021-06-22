@@ -145,7 +145,8 @@ function Bill() {
     SetVisible(!isvisible);
     console.log(">>record.productList", record.productList);
     // form.setFieldsValue(record);
-    if (record.userId !== "") setuserId(record.userId);
+    if (record.userId !== undefined && record.userId !== null)
+      setuserId(record.userId);
     else setuserId("Guess");
     // const fetchShipperList = async () => {
     //   try {
@@ -351,11 +352,11 @@ function Bill() {
                 <a>Address: {address}</a>
               </Col>
             </Row>
-            <Row>
+            {/* <Row>
               <Col span={12}>
                 <a>Shipper: {ShId}</a>
               </Col>
-            </Row>
+            </Row> */}
             <Row style={{ paddingBottom: "20px" }}>
               <Col span={24}>
                 <Table
