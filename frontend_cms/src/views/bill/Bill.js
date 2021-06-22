@@ -240,29 +240,29 @@ function Bill() {
       ),
     },
 
-    {
-      title: "Done at",
-      dataIndex: "doneAt",
-      key: "doneAt",
-      width: 200,
-      render: (time) => (
-        <>
-          {time === undefined ? (
-            <Tag color="#f50">UNFINISHED</Tag>
-          ) : (
-            <>
-              <Tag color="#87d068">
-                <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
-              </Tag>
-            </>
-          )}
-        </>
-      ),
-    },
+    // {
+    //   title: "Done at",
+    //   dataIndex: "doneAt",
+    //   key: "doneAt",
+    //   width: 200,
+    //   render: (time) => (
+    //     <>
+    //       {time === undefined ? (
+    //         <Tag color="#f50">UNFINISHED</Tag>
+    //       ) : (
+    //         <>
+    //           <Tag color="#87d068">
+    //             <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
+    //           </Tag>
+    //         </>
+    //       )}
+    //     </>
+    //   ),
+    // },
     {
       title: "Create at",
-      dataIndex: "createAt",
-      key: "createAt",
+      dataIndex: "createdAt",
+      key: "createdAt",
       width: 200,
       render: (time) => (
         <p>
@@ -308,7 +308,7 @@ function Bill() {
     } else {
       console.log(">>fakedata", fakedata);
       const newdatafilter = fakedata.filter(
-        (fd) => fd.createAt.substring(0, 10) === dateString
+        (fd) => fd.createdAt.substring(0, 10) === dateString
       );
       settabledata(newdatafilter);
       console.log(">>newdatafilter", newdatafilter);
