@@ -67,6 +67,11 @@ function Coupon() {
       render: (text) => <a>{text}%</a>,
     },
     {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+    },
+    {
       title: "Start Date",
       dataIndex: "startTime",
       key: "startTime",

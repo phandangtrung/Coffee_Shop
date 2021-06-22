@@ -202,10 +202,16 @@ function Branch() {
     });
   };
   const fetchupdateproBranch = async (params) => {
-    console.log(">>params", params);
+    let dataupdate = params;
+    delete dataupdate.data["_id"];
+    delete dataupdate.data["alias"];
+    delete dataupdate.data["createdAt"];
+    delete dataupdate.data["updatedAt"];
+    delete dataupdate.data["__v"];
+    console.log(">>dataupdate.formdata", dataupdate.data);
     try {
       setisaddprod(true);
-      const response = await branchApi.updateproduct(params);
+      const response = await branchApi.updateproductib(dataupdate);
       console.log("Fetch update product in branch succesfully: ", response);
       setisaddprod(false);
     } catch (error) {

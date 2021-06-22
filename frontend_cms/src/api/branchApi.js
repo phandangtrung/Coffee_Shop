@@ -9,7 +9,7 @@ class BranchApi {
     const url = `/api/branches/${product_id}`;
     return axiosClient.get(url);
   };
-  updateproduct = (params) => {
+  updateproductib = (params) => {
     const url = `/api/branches/${params._id}`;
     return axiosClient.put(url, params.data);
   };
