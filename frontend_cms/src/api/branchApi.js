@@ -9,6 +9,10 @@ class BranchApi {
     const url = `/api/branches/${product_id}`;
     return axiosClient.get(url);
   };
+  deletebranch = (branch_id) => {
+    const url = `/api/branches/${branch_id}`;
+    return axiosClient.delete(url);
+  };
   updateproductib = (params) => {
     const url = `/api/branches/${params._id}`;
     return axiosClient.put(url, params.data);

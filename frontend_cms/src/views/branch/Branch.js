@@ -139,6 +139,28 @@ function Branch() {
       dataIndex: "location",
       key: "location",
     },
+    {
+      title: "Action",
+      key: "action",
+      width: 50,
+      render: (text, record) => (
+        <Space size="middle">
+          <Popconfirm
+            title="Are you sure？"
+            icon={<DeleteOutlined style={{ color: "red" }} />}
+            onConfirm={() => {
+              console.log(">>record", record);
+              fetchdeletebranch(record._id);
+            }}
+          >
+            <Button type="primary" danger>
+              Delete
+            </Button>
+          </Popconfirm>
+          ,
+        </Space>
+      ),
+    },
   ];
   // upload image
   const [form] = Form.useForm();
@@ -192,6 +214,7 @@ function Branch() {
         setisaddprod(true);
         const response = await branchApi.createbranch(datacr);
         console.log("Fetch create branch succesfully: ", response);
+
         setisaddprod(false);
       } catch (error) {
         console.log("failed to fetch create branch: ", error);
@@ -495,6 +518,16 @@ function Branch() {
     } catch (error) {
       console.log("failed to fetch product list: ", error);
       dispatch(doGetList_error);
+    }
+  };
+  const fetchdeletebranch = async (br_id) => {
+    try {
+      const response = await branchApi.deletebranch(br_id);
+      console.log("Fetch branch succesfully: ", response);
+      const newbrlist = branchList.filter((br) => br._id !== br_id);
+      setbranchList(newbrlist);
+    } catch (error) {
+      console.log("failed to fetch product list: ", error);
     }
   };
   const loaddatapro = () => {
