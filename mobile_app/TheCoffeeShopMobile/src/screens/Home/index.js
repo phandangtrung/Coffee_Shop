@@ -38,6 +38,7 @@ const Home = (props) => {
   const [categories, setCategories] = useState([]);
   const [probyCate, setProByCate] = useState({});
   const [isloading, setIsloading] = useState(false);
+
   useEffect(() => {
     fetchBranchList();
   }, []);

@@ -23,6 +23,7 @@ import SuccessPage from './src/screens/SuccessPage';
 import Login from './src/screens/Login/index';
 import {Overlay} from 'react-native-elements';
 import {Button} from 'react-native';
+import ChatBot from './src/screens/ChatBot';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -239,6 +240,21 @@ const App = () => {
                     style={{fontSize: 20}}
                     color={color}
                     name={'user'}
+                    solid
+                  />
+                ),
+              }}
+            />
+            <Tab.Screen
+              name="Chatbot"
+              component={ChatBot}
+              options={{
+                tabBarLabel: 'Chat Bot',
+                tabBarIcon: ({color}) => (
+                  <FontAwesome5
+                    style={{fontSize: 20}}
+                    color={color}
+                    name={'robot'}
                     solid
                   />
                 ),
