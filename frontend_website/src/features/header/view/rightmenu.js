@@ -32,7 +32,7 @@ import {
 import userApi from "../../../api/userApi";
 import axios from "axios";
 import GoogleLogin from "react-google-login";
-
+import FacebookLogin from "react-facebook-login";
 import Cookies from "js-cookie";
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
