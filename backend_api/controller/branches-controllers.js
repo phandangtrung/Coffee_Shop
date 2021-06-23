@@ -105,9 +105,23 @@ const getBranchById = async (req, res, next) => {
   res.status(200).json({ branches });
 };
 
+const deleteBranchById = async (req, res, next) => {
+  const BrId = req.params.bid;
+  let branches;
+  try {
+    branches = await Branch.findByIdAndRemove(BrId);
+    //await Category.findByIdAndDelete(CateId);
+  } catch (err) {
+    const error = new HttpError("Something went wrong, can not delete", 500);
+    return next(error);
+  }
+  res.status(200).json({ message: "Deleted successfull" });
+};
+
 module.exports = {
   createBranches,
   updateBranchesById,
   getAllBranches,
   getBranchById,
+  deleteBranchById,
 };
