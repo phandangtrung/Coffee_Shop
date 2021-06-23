@@ -105,28 +105,28 @@ function Branch() {
         </p>
       ),
     },
-    {
-      title: "Action",
-      key: "action",
-      width: 50,
-      render: (text, record) => (
-        <Space size="middle">
-          <Button onClick={() => updateProduct(record)} type="primary">
-            Edit
-          </Button>
-          <Popconfirm
-            title="Are you sure？"
-            icon={<DeleteOutlined style={{ color: "red" }} />}
-            onConfirm={() => deleteProduct(record)}
-          >
-            <Button type="primary" danger>
-              Delete
-            </Button>
-          </Popconfirm>
-          ,
-        </Space>
-      ),
-    },
+    // {
+    //   title: "Action",
+    //   key: "action",
+    //   width: 50,
+    //   render: (text, record) => (
+    //     <Space size="middle">
+    //       <Button onClick={() => updateProduct(record)} type="primary">
+    //         Edit
+    //       </Button>
+    //       <Popconfirm
+    //         title="Are you sure？"
+    //         icon={<DeleteOutlined style={{ color: "red" }} />}
+    //         onConfirm={() => deleteProduct(record)}
+    //       >
+    //         <Button type="primary" danger>
+    //           Delete
+    //         </Button>
+    //       </Popconfirm>
+    //       ,
+    //     </Space>
+    //   ),
+    // },
   ];
   const columnsmb = [
     {

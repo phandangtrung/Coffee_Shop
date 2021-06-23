@@ -106,9 +106,23 @@ function Account() {
       render: (text) => (
         <>
           {text === false ? (
-            <Tag color="#87d068">USER</Tag>
+            <Tag color="#87d068"></Tag>
           ) : (
             <Tag color="#f50">ADMIN</Tag>
+          )}
+        </>
+      ),
+    },
+    {
+      title: "isEmployee",
+      dataIndex: "isEmployee",
+      key: "isEmployee",
+      render: (text, record) => (
+        <>
+          {text === false ? (
+            <Tag color="#87d068"></Tag>
+          ) : (
+            <Tag color="#f50">EMPLOYEE</Tag>
           )}
         </>
       ),

@@ -47,6 +47,7 @@ function Bill() {
   const [userId, setuserId] = useState("Guess");
   const [ShId, setShId] = useState("None");
   const [address, setaddress] = useState("");
+  const [totalpricaed, settotalpricaed] = useState(0);
   const [detaildata, setdetaildata] = useState([]);
   const fetchOrderList = async () => {
     try {
@@ -89,7 +90,15 @@ function Bill() {
       console.log("failed to fetch update shipper list: ", error);
     }
   };
-
+  const formatCurrency = (monney) => {
+    const mn = String(monney);
+    return mn
+      .split("")
+      .reverse()
+      .reduce((prev, next, index) => {
+        return (index % 3 ? next : next + ".") + prev;
+      });
+  };
   const onConfirmorder = (record) => {
     var CurrentDate = moment().toISOString();
 
@@ -143,7 +152,7 @@ function Bill() {
   };
   const onViewdetail = (record) => {
     SetVisible(!isvisible);
-    console.log(">>record.productList", record.productList);
+    console.log(">>record.productList", record);
     // form.setFieldsValue(record);
     if (record.userId !== undefined && record.userId !== null)
       setuserId(record.userId);
@@ -165,6 +174,7 @@ function Bill() {
     // };
     // fetchShipperList();
     setaddress(record.customerAddress);
+    settotalpricaed(record.totalPrices);
     let newprolist = [];
     record.productList.map((pd) =>
       newprolist.push({ ...pd.pro, quantity: pd.quantity })
@@ -241,25 +251,25 @@ function Bill() {
       ),
     },
 
-    // {
-    //   title: "Done at",
-    //   dataIndex: "doneAt",
-    //   key: "doneAt",
-    //   width: 200,
-    //   render: (time) => (
-    //     <>
-    //       {time === undefined ? (
-    //         <Tag color="#f50">UNFINISHED</Tag>
-    //       ) : (
-    //         <>
-    //           <Tag color="#87d068">
-    //             <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
-    //           </Tag>
-    //         </>
-    //       )}
-    //     </>
-    //   ),
-    // },
+    {
+      title: "Done at",
+      dataIndex: "doneAt",
+      key: "doneAt",
+      width: 200,
+      render: (time) => (
+        <>
+          {time === undefined ? (
+            <Tag color="#f50">UNFINISHED</Tag>
+          ) : (
+            <>
+              <Tag color="#87d068">
+                <Moment format="DD/MM/YYYY hh:mm">{time}</Moment>
+              </Tag>
+            </>
+          )}
+        </>
+      ),
+    },
     {
       title: "Create at",
       dataIndex: "createdAt",
@@ -350,6 +360,11 @@ function Bill() {
               </Col>
               <Col span={12}>
                 <a>Address: {address}</a>
+              </Col>
+            </Row>
+            <Row style={{ paddingBottom: "10px" }}>
+              <Col span={12}>
+                <a>Total Price: {`${formatCurrency(totalpricaed)}đ`}</a>
               </Col>
             </Row>
             {/* <Row>
