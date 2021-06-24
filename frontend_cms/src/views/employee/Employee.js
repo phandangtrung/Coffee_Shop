@@ -24,9 +24,11 @@ import userApi from "../../api/userApi";
 import branchApi from "../../api/branchApi";
 import employeeApi from "../../api/employeeApi";
 function Employee() {
+  const { Search } = Input;
   const [isLoading, setIsLoading] = useState(false);
   const [tabledata, settabledata] = useState([]);
   const [iscreatemp, setiscreatemp] = useState(false);
+  const [fakeempList, setfakeempList] = useState([]);
   const unlockUser = (record) => {
     console.log("record: ", record);
     const fetchLockUser = async () => {
@@ -43,8 +45,9 @@ function Employee() {
             setIsLoading(true);
             const tokenUser = Cookies.get("tokenUser");
             const response = await userApi.getallUser(tokenUser);
-            console.log("Fetch products succesfully: ", response);
+            console.log("Fetch user succesfully: ", response);
             settabledata(response.users);
+
             setIsLoading(false);
           } catch (error) {
             console.log("failed to fetch product list: ", error);
@@ -61,6 +64,12 @@ function Employee() {
   };
   const columns = [
     {
+      title: "EmployeeID",
+      dataIndex: "_id",
+      key: "_id",
+      // render: (text) => <a>{text}</a>,
+    },
+    {
       title: "Email",
       dataIndex: "email",
       key: "email",
@@ -72,20 +81,20 @@ function Employee() {
       key: "fName",
       // render: (text) => <a>{text}</a>,
     },
-    {
-      title: "isAdmin",
-      dataIndex: "isAdmin",
-      key: "isAdmin",
-      render: (text) => (
-        <>
-          {text === false ? (
-            <Tag color="#87d068">USER</Tag>
-          ) : (
-            <Tag color="#f50">ADMIN</Tag>
-          )}
-        </>
-      ),
-    },
+    // {
+    //   title: "isAdmin",
+    //   dataIndex: "isAdmin",
+    //   key: "isAdmin",
+    //   render: (text) => (
+    //     <>
+    //       {text === false ? (
+    //         <Tag color="#87d068">USER</Tag>
+    //       ) : (
+    //         <Tag color="#f50">ADMIN</Tag>
+    //       )}
+    //     </>
+    //   ),
+    // },
     {
       title: "Status",
       dataIndex: "isLock",
@@ -95,25 +104,25 @@ function Employee() {
           {text === true ? (
             <Tag color="#f50">BLOCKED</Tag>
           ) : (
-            <Tag color="#87d068">ACTIVE</Tag>
+            <Tag color="#87d068">STILL WORKING</Tag>
           )}
         </>
       ),
     },
-    {
-      title: "isConfirm",
-      dataIndex: "isConfirm",
-      key: "isConfirm",
-      render: (text) => (
-        <>
-          {text === false ? (
-            <Tag color="#f50">UNVERIFIED</Tag>
-          ) : (
-            <Tag color="#87d068">VERIFIED</Tag>
-          )}
-        </>
-      ),
-    },
+    // {
+    //   title: "isConfirm",
+    //   dataIndex: "isConfirm",
+    //   key: "isConfirm",
+    //   render: (text) => (
+    //     <>
+    //       {text === false ? (
+    //         <Tag color="#f50">UNVERIFIED</Tag>
+    //       ) : (
+    //         <Tag color="#87d068">VERIFIED</Tag>
+    //       )}
+    //     </>
+    //   ),
+    // },
   ];
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [datacus, setdatacus] = useState({
@@ -144,6 +153,7 @@ function Employee() {
       console.log("Fetch products succesfully: ", response);
       const emparr = response.users.filter((us) => us.isEmployee === true);
       settabledata(emparr);
+      setfakeempList(emparr);
       setIsLoading(false);
     } catch (error) {
       console.log("failed to fetch product list: ", error);
@@ -185,25 +195,52 @@ function Employee() {
     };
     fetchcreateemp(dataparams);
   };
-
+  const onSearch = (values) => {
+    console.log(">>value", values);
+    if (values === "") {
+      settabledata(fakeempList);
+    } else {
+      const filteredEMp = fakeempList.filter((emp) => {
+        console.log(">>emp._id", emp._id);
+        return emp._id.indexOf(values.toLowerCase()) !== -1;
+      });
+      console.log(">>>filteredProduct", filteredEMp);
+      if (filteredEMp.length > 0) settabledata(filteredEMp);
+    }
+  };
   return (
     <>
       <CCard>
         <CCardHeader className="CCardHeader-title ">Employee</CCardHeader>
-        <CButton
-          style={{
-            width: "200px",
-            height: "50px",
-            marginTop: "20px",
-            marginLeft: "20px",
-          }}
-          shape="pill"
-          color="info"
-          onClick={toggle}
-        >
-          {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
-          Add Employee
-        </CButton>
+        <Row>
+          <Col lg={14}>
+            <CButton
+              style={{
+                width: "200px",
+                height: "50px",
+                marginTop: "20px",
+                marginLeft: "20px",
+              }}
+              shape="pill"
+              color="info"
+              onClick={toggle}
+            >
+              {/* <i style={{ fontSize: "20px" }} class="cil-playlist-add"></i>  */}
+              Add Employee
+            </CButton>
+          </Col>
+          <Col lg={8}>
+            <Search
+              style={{
+                width: "100%",
+                height: "50px",
+                margin: "30px",
+              }}
+              placeholder="Search Employee by ID"
+              onSearch={onSearch}
+            />
+          </Col>
+        </Row>
         {isLoading ? (
           <div style={{ textAlign: "center" }}>
             <Spin size="large" />
@@ -243,7 +280,7 @@ function Employee() {
               <Col span={1}></Col>
               <Col span={12}>
                 <Form.Item name="address">
-                  <Input placeholder="Adress" />
+                  <Input placeholder="Address" />
                 </Form.Item>
               </Col>
             </Row>

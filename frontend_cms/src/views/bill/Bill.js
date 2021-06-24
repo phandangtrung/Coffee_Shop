@@ -102,13 +102,12 @@ function Bill() {
   const onConfirmorder = (record) => {
     var CurrentDate = moment().toISOString();
 
-    let randomshipper = "";
-
+    let employeeID = Cookies.get("UserId");
     const fetchConfirmOrder = async () => {
       setIsLoading(true);
       const params = {
         orderid: record._id,
-        data: { status: true, doneAt: CurrentDate },
+        data: { status: true, doneAt: CurrentDate, userId: employeeID },
       };
       try {
         const response = await orderApi.confirmorder(params);
@@ -156,7 +155,7 @@ function Bill() {
     // form.setFieldsValue(record);
     if (record.userId !== undefined && record.userId !== null)
       setuserId(record.userId);
-    else setuserId("Guess");
+    else setuserId("Admin");
     // const fetchShipperList = async () => {
     //   try {
     //     const response = await shippersApi.getAll();
@@ -335,7 +334,7 @@ function Bill() {
 
         <CCardBody>
           <span style={{ float: "right", paddingBottom: "20px" }}>
-            Filter by day <DatePicker onChange={onChange} />
+            Filter by date <DatePicker onChange={onChange} />
           </span>
           {isLoading ? (
             <div style={{ textAlign: "center" }}>
@@ -356,7 +355,7 @@ function Bill() {
           <Form form={form} size={"large"}>
             <Row style={{ paddingBottom: "20px" }}>
               <Col span={12}>
-                <a>UserID: {userId}</a>
+                <a>EmployeeID: {userId}</a>
               </Col>
               <Col span={12}>
                 <a>Address: {address}</a>
