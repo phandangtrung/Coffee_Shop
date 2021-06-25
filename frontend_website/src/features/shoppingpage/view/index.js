@@ -243,6 +243,32 @@ function ShoppingPage(props) {
     }
     return 0;
   };
+  const onChangePrice = (values, pro) => {
+    console.log("<value>", values);
+    console.log("<pro.price_L>", pro.price_L);
+
+    let newprice = 0;
+
+    let newcart = cart;
+    for (var i in cart) {
+      if (newcart[i].product_id === pro.product_id) {
+        newcart[i].size = values;
+        if (values === "L") newcart[i].price = pro.price + pro.price_L;
+        else newcart[i].price = pro.price - pro.price_L;
+        break;
+      }
+    }
+    console.log(">>newcart", newcart);
+    settotalPrice(calculateTotal(newcart));
+    form.setFieldsValue({
+      couponCode: "",
+    });
+    setcart(newcart);
+    localStorage.setItem("cart", JSON.stringify(newcart));
+    setalteraplly(null);
+    setcodeprice(0);
+    setfaketotal(calculateTotal(newcart));
+  };
   const openbuyNotification = () => {
     notification.open({
       message: "Thanh toán thành công",
@@ -284,20 +310,33 @@ function ShoppingPage(props) {
       title: "KÍCH CỠ",
       dataIndex: "size",
       key: "size",
-      render: (size) => (
-        <Select
-          className="productname"
-          defaultValue="m"
-          style={{ width: 80, textAlign: "center" }}
-        >
-          <Select.Option className="productname" value="m">
-            M
-          </Select.Option>
-          <Select.Option className="productname" value="l">
-            L
-          </Select.Option>
-        </Select>
-      ),
+      render: (size, row) =>
+        row.price_L !== -1 ? (
+          <Select
+            className="productname"
+            defaultValue={size}
+            onChange={(e) => onChangePrice(e, row)}
+            style={{ width: 80, textAlign: "center" }}
+          >
+            <Select.Option className="productname" value="M">
+              M
+            </Select.Option>
+            <Select.Option className="productname" value="L">
+              L
+            </Select.Option>
+          </Select>
+        ) : (
+          <Select
+            className="productname"
+            defaultValue={size}
+            style={{ width: 80, textAlign: "center" }}
+            onChange={(e) => onChangePrice(e, row.product_id)}
+          >
+            <Select.Option className="productname" value="M">
+              M
+            </Select.Option>
+          </Select>
+        ),
     },
     {
       title: "SỐ LƯỢNG",
