@@ -53,13 +53,13 @@ function ProductTag(props) {
       console.log("Cart>>", localStorage.cart);
       notification.open({
         message: `${props.name}`,
-        description: `${props.name} has been added to your cart`,
+        description: `${props.name} đã được thêm vào giỏ hàng`,
         placement: "bottomRight",
         icon: <ShoppingCartOutlined style={{ color: "# rgb(164, 115, 67)" }} />,
       });
     } catch {
       notification.open({
-        message: "Add is Error",
+        message: "Thêm vào giỏ không thành công",
         description: "Something went wrong",
         icon: <ExclamationCircleFilled style={{ color: "#red" }} />,
       });
@@ -83,9 +83,11 @@ function ProductTag(props) {
                 namepro: props.name,
                 pricepro: props.price,
                 despro: props.description,
+                size_L: props.size_L,
                 img: props.img,
                 quantity: props.quantity,
               },
+              addtoCart: () => addtoCart(),
             }}
           >
             <div className="title-name">{props.name}</div>

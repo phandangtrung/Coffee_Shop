@@ -39,7 +39,8 @@ function SingleProduct({ props }) {
   }, []);
   const handleSubmit = (values) => {
     console.log("Value: ", values);
-    console.log(">>productname: ", location.state.namepro);
+    console.log(">>productname: ", location.state);
+    location.addtoCart();
   };
   const changePage = (values) => {
     if (values <= 1) {
