@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 
 function ProductTag(props) {
-  console.log(props);
+  console.log("props", props);
   const addtoCart = () => {
     // console.log(">>>product : ", props.name, " ", props._id, " ", props.price);
     // localStorage.clear();
@@ -23,6 +23,7 @@ function ProductTag(props) {
           product_id: props._id,
           name: props.name,
           size: "M",
+          price_L: props.size_L,
           quantity: 1,
           price: props.price,
           storequantity: props.storequantity,
@@ -42,6 +43,7 @@ function ProductTag(props) {
             name: props.name,
             size: "M",
             quantity: 1,
+            price_L: props.size_L,
             price: props.price,
             storequantity: props.storequantity,
           });

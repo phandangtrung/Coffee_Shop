@@ -255,7 +255,7 @@ function Product() {
               <div
                 style={{
                   width: "60%",
-                  marginRight: "20px",
+                  marginRight: "40px",
                   display: "flex",
                   justifyContent: "space-between",
                 }}
@@ -326,6 +326,7 @@ function Product() {
                     img={product.imagesProduct}
                     price={product.prices}
                     quantity={product.quantity}
+                    size_L={product.size_L}
                     description={product.description}
                     storequantity={product.quantity}
                   />
