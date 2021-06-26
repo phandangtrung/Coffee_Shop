@@ -53,7 +53,7 @@ function index() {
         style={{ backgroundImage: `url(${Images.BBG})` }}
       >
         <Col lg={10}>
-          <img src={Images.BCFF} />
+          <img src={Images.BCFFS} />
         </Col>
         <Col lg={12} className="text-form">
           <div className="big_title ">BÁNH MÌ</div>

@@ -118,7 +118,7 @@ const RightMenu = (props) => {
     console.log(">> này nè", response);
     axios({
       method: "POST",
-      url: "http://localhost:5000/api/users/googlelogin",
+      url: "https://backendcfs.herokuapp.com/api/users/googlelogin",
       data: { tokenId: response.tokenId },
     }).then((response) => {
       console.log("Google Login Success", response);
@@ -162,7 +162,7 @@ const RightMenu = (props) => {
     Cookies.remove("tokenCustomer");
 
     notification.open({
-      message: "You have logged out",
+      message: "Bạn đã đăng xuất",
       icon: <LogoutOutlined style={{ color: "red" }} />,
       placement: "bottomRight",
     });
