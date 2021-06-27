@@ -84,7 +84,9 @@ function Shipper() {
     else setidShupdate({ id: record._id, status: record.status });
     setstate({
       ...state,
-      fileList: [{ url: `http://localhost:3000/${record.imagesShipper}` }],
+      fileList: [
+        { url: `https://backendcfs.herokuapp.com/${record.imagesShipper}` },
+      ],
     });
     form.setFieldsValue(record);
     SetVisible(!isvisible);
@@ -105,7 +107,7 @@ function Shipper() {
       render: (img) => (
         <img
           style={{ width: "100%", height: "auto" }}
-          src={`http://localhost:3000/${img}`}
+          src={`https://backendcfs.herokuapp.com/${img}`}
         />
       ),
     },

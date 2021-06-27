@@ -16,6 +16,7 @@ import {
   notification,
   Popconfirm,
   InputNumber,
+  Tag,
 } from "antd";
 import moment from "moment";
 import Moment from "react-moment";
@@ -26,6 +27,7 @@ import {
   FilterOutlined,
   SelectOutlined,
   ReloadOutlined,
+  UnlockOutlined,
 } from "@ant-design/icons";
 // import ImgCrop from "antd-img-crop";
 import "./style.css";
@@ -140,6 +142,20 @@ function Branch() {
       key: "location",
     },
     {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (text) => (
+        <>
+          {text === false ? (
+            <Tag color="#f50">CLOSED</Tag>
+          ) : (
+            <Tag color="#87d068">OPENING</Tag>
+          )}
+        </>
+      ),
+    },
+    {
       title: "Action",
       key: "action",
       width: 50,
@@ -157,6 +173,25 @@ function Branch() {
               Delete
             </Button>
           </Popconfirm>
+          {record.status ? (
+            <Popconfirm
+              title="Are you sure？"
+              icon={<UnlockOutlined style={{ color: "red" }} />}
+              onConfirm={() => csttbranch(record._id, false)}
+            >
+              <Button type="primary" danger>
+                Close
+              </Button>
+            </Popconfirm>
+          ) : (
+            <Popconfirm
+              title="Are you sure？"
+              icon={<UnlockOutlined style={{ color: "blue" }} />}
+              onConfirm={() => csttbranch(record._id, true)}
+            >
+              <Button type="primary">Open</Button>
+            </Popconfirm>
+          )}
           ,
         </Space>
       ),
@@ -205,6 +240,33 @@ function Branch() {
   };
   const onReloadBr = () => {
     loaddatapro();
+  };
+  const csttbranch = (brid, statusbr) => {
+    console.log(">>id", brid);
+    console.log(">>statusbr", statusbr);
+    const indxa = branchList.findIndex((br) => br._id === brid);
+    console.log(">>indxa", branchList[indxa]);
+    const dataupdate = {
+      _id: brid,
+      data: { ...branchList[indxa], status: statusbr },
+    };
+    const updatesttbr = async () => {
+      try {
+        const response = await branchApi.updateproductib(dataupdate);
+        console.log("Fetch update stt in branch succesfully: ", response);
+        let newbr = [...branchList];
+        for (var i in newbr) {
+          if (newbr[i]._id == brid) {
+            newbr[i].status = statusbr;
+            break;
+          }
+        }
+        setbranchList([...newbr]);
+      } catch (error) {
+        console.log("failed to fetch product list: ", error);
+      }
+    };
+    updatesttbr();
   };
   const submitNewBr = (value) => {
     const fetchcreateBranch = async (params) => {
@@ -1053,7 +1115,8 @@ function Branch() {
       </Modal>
       <Modal
         title="MANAGE BRANCH"
-        style={{ margin: "5% 0px 0px 35%" }}
+        style={{ margin: "2% 0px 0px 25%" }}
+        width={900}
         visible={ismabr}
         onOk={handleOk}
         onCancel={() => setismabr(false)}
