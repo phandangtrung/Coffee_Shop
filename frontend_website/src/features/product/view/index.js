@@ -44,6 +44,7 @@ function Product() {
   const [fakeproductList, setfakeProductList] = useState([]);
   const [BraProList, setBraProList] = useState([]);
   const [dfSelect, setDfSelect] = useState("");
+  const [statusbr, setstatusbr] = useState(true);
   const [categoryList, dispatchCategory] = useReducer(dataFetchCategory, {
     isLoading: false,
     isError: false,
@@ -80,6 +81,7 @@ function Product() {
           selectBrid: newBraL[0].name,
         });
         setProductList(newBraL[0].listProduct);
+        setstatusbr(newBraL[0].status);
       } else {
         const bralready = newBraL.filter((nb) => nb._id === checkidb);
         console.log(">>bralready", bralready);
@@ -87,6 +89,7 @@ function Product() {
           selectBrid: bralready[0].name,
         });
         setProductList(bralready[0].listProduct);
+        setstatusbr(bralready[0].status);
       }
 
       setDfSelect(String(newBraL[0].name));
@@ -156,6 +159,7 @@ function Product() {
     console.log(">>BraProList", BraProList);
     console.log(">>found", found);
     setProductList(found.listProduct);
+    setstatusbr(found.status);
     setfakeProductList(found.listProduct);
     localStorage.setItem("branchID", JSON.stringify(found._id));
     localStorage.removeItem("cart");
@@ -276,7 +280,7 @@ function Product() {
                 >
                   <Form.Item name="selectBrid">
                     <Select
-                      style={{ width: "100%" }}
+                      style={{ width: "420px" }}
                       onChange={(values) => handleChangeLoca(values)}
                     >
                       {BraProList.map((bp) => (
@@ -302,7 +306,7 @@ function Product() {
             {isalter === true ? (
               <Alert
                 className="altersearch"
-                message="Could not find any Products"
+                message="Không tìm thấy sản phẩm"
                 type="warning"
                 showIcon
                 closable
@@ -317,7 +321,7 @@ function Product() {
               <div style={{ width: "100%", textAlign: "center" }}>
                 <Spin size="large" />
               </div>
-            ) : (
+            ) : statusbr ? (
               productList.map((product) => (
                 <Col lg={8} xs={24} sm={24} key={product._id}>
                   <ProductTag
@@ -332,6 +336,14 @@ function Product() {
                   />
                 </Col>
               ))
+            ) : (
+              <div style={{ width: "100%" }}>
+                <img
+                  style={{ width: "100%", borderRadius: "5px" }}
+                  alt="picture"
+                  src={`https://img.freepik.com/free-photo/barista-waitress-woman-wearing-protection-face-mask-turning-close-sign-board-glass-door-modern-cafe-coffee-shop-cafe-restaurant-retail-store-small-business-owner-food-drink-concept_33829-333.jpg?size=626&ext=jpg`}
+                />
+              </div>
             )}
           </Row>
 
