@@ -311,6 +311,8 @@ function Branch() {
       setisaddprod(true);
       const response = await branchApi.updateproductib(dataupdate);
       console.log("Fetch update product in branch succesfully: ", response);
+      fetchproductBranchList(currentBranch._idd);
+      // console.log(">>currentBranch", currentBranch);
       setisaddprod(false);
     } catch (error) {
       console.log("failed to fetch product list: ", error);
@@ -362,7 +364,9 @@ function Branch() {
     try {
       setIsLoading(true);
       const response = await branchApi.getbyId(value);
-      setcurrentBranch(response.branches);
+      console.log(">>đay nè", value);
+      const crb = { ...response.branches, _idd: value };
+      setcurrentBranch(crb);
       console.log("Fetch product by branch succesfully: ", response);
       const responsepro = await productApi.getAll();
       let producreponse = responsepro.productList;
@@ -961,7 +965,7 @@ function Branch() {
             for (var i in newcurrent.listProduct) {
               if (newcurrent.listProduct[i]._id === dataadd.da._id) {
                 newcurrent.listProduct[i].quantity = dataadd.da.quantity;
-                break; //Stop this loop, we found it!
+                break;
               }
             }
             console.log(">>newcurrent", newcurrent);
@@ -1118,7 +1122,7 @@ function Branch() {
         style={{ margin: "2% 0px 0px 25%" }}
         width={900}
         visible={ismabr}
-        onOk={handleOk}
+        onOk={() => setismabr(false)}
         onCancel={() => setismabr(false)}
       >
         <CButton
