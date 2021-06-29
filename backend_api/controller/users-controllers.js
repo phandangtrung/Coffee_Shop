@@ -16,10 +16,10 @@ const { getToken } = require("../middleware/uilt");
 const client = new OAuth2Client(process.env.google_client_ID);
 
 const transporter = nodemailer.createTransport({
-  // host: "smtp.gmail.com",
-  // port: 465,
-  service: "Gmail",
-  secure: true,
+  host: "smtp.gmail.com",
+  port: 465,
+  service: "gmail",
+  //secure: true,
   auth: {
     user: process.env.GMAIL,
     pass: process.env.PASS,
@@ -96,9 +96,10 @@ const register = async (req, res, next) => {
   });
   const url = `http://localhost:5000/api/users/confirmation/${token}`;
   transporter.sendMail({
-    to: createdUser.email,
+    from: `"The Coffee Shop" <process.env.GMAIL> `,
+    to: email,
     subject: "Confirm Email",
-    html: `Please click this email to confirm your email: <a href="${url}">Click here</a>`,
+    html: `<b>Please <a href="${url}">Click here</a> to confirm your email</b>`,
   });
 };
 
@@ -190,33 +191,53 @@ const forgotPassword = async (req, res, next) => {
 };
 
 const changePassword = async (req, res, next) => {
-  const token = req.params.token;
-  const decodedToken = jwt.verify(token, process.env.CHANGE_PASS_KEY);
-  const userData = {
-    email: decodedToken.email,
-  };
-  console.log(user.email);
-  const changePass = {
-    password: req.body.password,
-  };
-  let existingUser;
+  let users;
+  const { password } = req.body;
+  const userCurrent = req.userData.email;
   try {
-    existingUser = await User.updateOne({ email: userData.email }, changePass);
-    console.log(existingUser);
+    users = await User.findOne({ email: userCurrent });
   } catch (err) {
-    const error = new HttpError("request time out", 500);
+    const error = new HttpError("You are not log in. Pls login", 500);
     return next(error);
   }
-  if (!existingUser) {
+  console.log(users);
+  if (!users) {
     const error = new HttpError("Could not find any users", 404);
     return next(error);
   }
+  let hashedPassword;
+  try {
+    hashedPassword = await brcypt.hash(password, 9);
+  } catch (err) {
+    const error = new HttpError(
+      "Could not create user, please try again.",
+      500
+    );
+    return next(error);
+  }
+  const changePass = {
+    password: hashedPassword,
+  };
 
+  let userUpdate;
+  try {
+    userUpdate = await User.findOneAndUpdate(
+      { email: userCurrent },
+      changePass
+    );
+  } catch (err) {
+    console.log(err);
+    const error = new HttpError("Update Fail", 500);
+    return next(error);
+  }
+
+  if (!userUpdate) {
+    const error = new HttpError("Could not find any users", 404);
+    return next(error);
+  }
   res.status(200).json({
     message: "Update Successfully!",
-    existingUser,
   });
-  return res.redirect("http://localhost:3000/api/users/forgotPass/updatePass/");
 };
 
 const loginGoogle = async (req, res, next) => {
@@ -556,7 +577,7 @@ const lockUser = async (req, res, next) => {
     return next(error);
   }
   res.status(200).json({
-    message: "lock user successful",
+    message: "Lock User Successful",
     users: userLock,
   });
 };
@@ -580,7 +601,7 @@ const unlockUser = async (req, res, next) => {
     return next(error);
   }
   res.status(200).json({
-    message: "lock user successful",
+    message: "Unlock User Successful",
     users: userunLock,
   });
 };
@@ -727,66 +748,6 @@ const addEmployee = async (req, res, next) => {
   }
 };
 
-const updateEmployeeById = async (req, res, next) => {
-  let existingEmployee;
-  let newEmployee;
-  const { email, password } = req.body;
-  try {
-    existingEmployee = await User.findOne({ email: email });
-    console.log(existingEmployee);
-  } catch (err) {
-    const error = new HttpError("Pls try again", 500);
-    return next(error);
-  }
-  let hashedPassword;
-  try {
-    hashedPassword = await brcypt.hash(password, 9);
-  } catch (err) {
-    const error = new HttpError(
-      "Could not create user, please try again.",
-      500
-    );
-    return next(error);
-  }
-  const updateEmployee = {
-    fName: req.body.fName,
-    email: req.body.email,
-    password: hashedPassword,
-    gender: req.body.gender,
-    birthday: req.body.birthday,
-    phone: req.body.phone,
-    address: req.body.address,
-    isAdmin: false,
-    isEmployee: true,
-    isConfirm: true,
-    isLock: req.body.isLock,
-    branchId: req.body.branchId,
-  };
-  console.log(updateEmployee);
-
-  if (!existingEmployee) {
-    try {
-      newEmployee = new User(createEmployee);
-      await newEmployee.save();
-      console.log(newEmployee);
-    } catch (err) {
-      const error = new HttpError(
-        "Some things went wrong, please try again!!!",
-        500
-      );
-      return next(error);
-    }
-    res.status(201).json({
-      message: "Create success",
-      newEmployee,
-    });
-  } else {
-    console.log("Email already exist");
-    res.status(422).json({ message: "Email already exist" });
-  }
-  
-};
-
 const loginEmployee = async (req, res, next) => {
   const { email, password } = req.body;
   console.log(email, password);
@@ -835,7 +796,7 @@ const loginEmployee = async (req, res, next) => {
   }
 
   res.status(200).json({
-    userId : existingEmployee._id,
+    userId: existingEmployee._id,
     email: existingEmployee.email,
     branchId: existingEmployee.branchId,
     isEmployee: existingEmployee.isEmployee,
@@ -854,7 +815,6 @@ module.exports = {
   updateMyUser,
   admin,
   addEmployee,
-  updateEmployeeById,
   getAllUsers,
   getUserById,
   login,

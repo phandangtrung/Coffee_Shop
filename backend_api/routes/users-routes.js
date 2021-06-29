@@ -26,13 +26,11 @@ router.post("/login/employee/loginEmployee", usersController.loginEmployee);
 
 router.get("/confirmation/:token", usersController.getConfirmation);
 
-router.post("/forgotPass/", usersController.forgotPassword);
-router.put("/forgotPass/changePass/:token", usersController.changePassword);
-
 router.use(isAuth);
 
 router.get("/myUser", usersController.getMyUser);
 router.put("/updateInfor", usersController.updateMyUser);
+router.put("/changePassword", usersController.changePassword);
 
 router.use(isAdmin);
 
