@@ -15,6 +15,7 @@ import {
 import CIcon from "@coreui/icons-react";
 
 import MainChartExample from "../charts/MainChartExample.js";
+import ChartBarSimple from "../charts/ChartBarSimple.js";
 import userApi from "../../api/userApi";
 import categoryApi from "../../api/categoryApi";
 import productApi from "../../api/productApi";
@@ -27,6 +28,7 @@ const Dashboard = () => {
   return (
     <>
       <WidgetsDropdown />
+      <MainChartExample />
       {/* <CCard>
         <CCardBody>
           <CRow>
