@@ -44,7 +44,7 @@ const MainChartExample = (attributes) => {
         let newbr = response.branches;
         newbr.map((nb) => {
           const bder = orderdata.filter((od) => od.branchId === nb._id);
-          console.log(">>orderdata", orderdata);
+          console.log(">>bder", bder);
           let sumto = 0;
           bder.map((bd) => {
             if (bd.status) sumto += bd.totalPrices;
