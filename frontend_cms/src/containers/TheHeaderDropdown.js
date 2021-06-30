@@ -7,6 +7,7 @@ import {
   CDropdownToggle,
   CImg,
 } from "@coreui/react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import CIcon from "@coreui/icons-react";
 import Cookies from "js-cookie";
 const TheHeaderDropdown = () => {
@@ -87,6 +88,12 @@ const TheHeaderDropdown = () => {
           </CBadge>
         </CDropdownItem> */}
         <CDropdownItem divider />
+        <CDropdownItem>
+          <Link style={{ color: "#747f90" }} to="/changepass">
+            <CIcon name="cil-task" className="mfe-2" />
+            Change Password
+          </Link>
+        </CDropdownItem>
         <CDropdownItem onClick={onlogout}>
           <CIcon name="cil-lock-locked" className="mfe-2" />
           Lock Account

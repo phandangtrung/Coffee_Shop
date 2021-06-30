@@ -33,6 +33,14 @@ class UserApi {
       },
     });
   };
+  changePass = (params) => {
+    const url = `/api/users/changePassword`;
+    return axiosClient.put(url, params.data, {
+      headers: {
+        Authorization: `Bearer ${params.token}`,
+      },
+    });
+  };
 }
 const userApi = new UserApi();
 export default userApi;

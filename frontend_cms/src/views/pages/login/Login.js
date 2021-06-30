@@ -30,6 +30,7 @@ import {
   LockOutlined,
   InfoCircleFilled,
 } from "@ant-design/icons";
+import { keyp } from "../../../config";
 import { fakeAuth } from "../../../fakeAuth";
 import CIcon from "@coreui/icons-react";
 const setUserSession = (token, user) => {
@@ -44,7 +45,7 @@ const Login = (props) => {
   const [rolelogin, setrolelogin] = useState("admin");
   // const [state, setstate] = useState({ email: " ", password: "" });
   const onLogin = (values) => {
-    console.log(values);
+    // console.log(values);
     // setstate({ email: values.email, password: values.password });
     // props.history.push("/dashboard");
     const fetchCreateProduct = async () => {
@@ -65,6 +66,8 @@ const Login = (props) => {
             redirectToReferrer: true,
           }));
         });
+        let pwc = `${keyp}${values.password}`;
+        Cookies.set("yassuozed", pwc);
         Cookies.set("tokenUser", response.token);
         Cookies.set("BranchId", response.branchId);
         Cookies.set("UserId", response.userId);

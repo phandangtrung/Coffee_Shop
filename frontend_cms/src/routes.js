@@ -53,6 +53,7 @@ const Branch = React.lazy(() => import("./views/branch/Branch.js"));
 const Employee = React.lazy(() => import("./views/employee/Employee"));
 const Comment = React.lazy(() => import("./views/comment/Comment"));
 const Coupon = React.lazy(() => import("./views/coupon/Coupon"));
+const ChangePass = React.lazy(() => import("./views/changePass/ChangePass.js"));
 const CoreUIIcons = React.lazy(() =>
   import("./views/icons/coreui-icons/CoreUIIcons")
 );
@@ -80,6 +81,7 @@ const routes = [
   { path: "/order", name: "Order", component: Order },
   { path: "/shipper", name: "Shipper", component: Shipper },
   { path: "/coupon", name: "Coupon", component: Coupon },
+  { path: "/changepass", name: "ChangPassword", component: ChangePass },
   { path: "/dashboard", name: "Dashboard", component: Dashboard },
   { path: "/theme", name: "Theme", component: Colors, exact: true },
   { path: "/theme/colors", name: "Colors", component: Colors },

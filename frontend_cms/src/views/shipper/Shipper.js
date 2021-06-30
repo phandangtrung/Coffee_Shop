@@ -85,7 +85,7 @@ function Shipper() {
     setstate({
       ...state,
       fileList: [
-        { url: `https://backendcfs.herokuapp.com/${record.imagesShipper}` },
+        { url: `https://betcsvn.herokuapp.com/${record.imagesShipper}` },
       ],
     });
     form.setFieldsValue(record);
@@ -107,7 +107,7 @@ function Shipper() {
       render: (img) => (
         <img
           style={{ width: "100%", height: "auto" }}
-          src={`https://backendcfs.herokuapp.com/${img}`}
+          src={`https://betcsvn.herokuapp.com/${img}`}
         />
       ),
     },
