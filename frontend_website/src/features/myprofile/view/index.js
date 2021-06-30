@@ -74,7 +74,7 @@ function MyProfile() {
         setopendate(!opendate);
         setIsLoading(false);
         notification.open({
-          message: "Update Success",
+          message: "Cập nhật thành công",
           icon: <SmileOutlined style={{ color: "#108ee9" }} />,
         });
       } catch (error) {
@@ -97,7 +97,7 @@ function MyProfile() {
       <Spin spinning={isLoading}>
         <div className="myprofile-form">
           <Card
-            title="MY PROFILE"
+            title="THÔNG TIN CÁ NHÂN"
             style={{ width: "100%", textAlign: "start" }}
           >
             <Row>
@@ -115,25 +115,25 @@ function MyProfile() {
                     // initialValue={userinfo.fName}
                     key="fName"
                     name="fName"
-                    label="Full name"
+                    label="Họ và tên"
                   >
                     <Input />
                   </Form.Item>
-                  <Form.Item name="phone" label="Phone">
+                  <Form.Item name="phone" label="Số điện thoại">
                     <Input />
                   </Form.Item>
-                  <Form.Item label="Gender">
+                  <Form.Item label="Giới tính">
                     <Radio.Group
                       defaultValue={genderpick}
                       onChange={onChange}
                       value={genderpick}
                     >
-                      <Radio value="male">Male</Radio>
-                      <Radio value="female">Female</Radio>
-                      <Radio value="other">Other</Radio>
+                      <Radio value="male">Nam</Radio>
+                      <Radio value="female">Nữ</Radio>
+                      <Radio value="other">Khác</Radio>
                     </Radio.Group>
                   </Form.Item>
-                  <Form.Item label="Date of birth">
+                  <Form.Item label="Ngày sinh">
                     {opendate === false ? (
                       <>
                         <Text>{datetime}</Text>
@@ -156,11 +156,11 @@ function MyProfile() {
                     )}
                   </Form.Item>
                   <Button
-                    style={{ float: "right", border: "0px" }}
+                    style={{ float: "left", marginLeft: 300, border: "0px" }}
                     type="primary"
                     htmlType="submit"
                   >
-                    Update Profile
+                    Cập nhật thông tin
                   </Button>
                 </Form>
               </Col>

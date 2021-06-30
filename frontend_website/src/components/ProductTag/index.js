@@ -71,7 +71,7 @@ function ProductTag(props) {
         <div className="menu-image">
           <img
             alt="picture"
-            src={`https://backendcfs.herokuapp.com/${props.img}`}
+            src={`https://betcsvn.herokuapp.com/${props.img}`}
           />
         </div>
         <div className="menu-detail">

@@ -28,11 +28,12 @@ import {
   LogoutOutlined,
   UserOutlined,
   SolutionOutlined,
+  LockOutlined,
 } from "@ant-design/icons";
 import userApi from "../../../api/userApi";
 import axios from "axios";
 import GoogleLogin from "react-google-login";
-
+import { keyp } from "../../../config/keyp";
 import Cookies from "js-cookie";
 const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
@@ -118,11 +119,12 @@ const RightMenu = (props) => {
     console.log(">> này nè", response);
     axios({
       method: "POST",
-      url: "https://backendcfs.herokuapp.com/api/users/googlelogin",
+      url: "https://betcsvn.herokuapp.com/api/users/googlelogin",
       data: { tokenId: response.tokenId },
     }).then((response) => {
       console.log("Google Login Success", response);
       Cookies.set("CustomerEmail", response.data.email);
+      Cookies.set("gglg", true);
       Cookies.set("tokenCustomer", response.data.token);
       setIsLoading(false);
       setIsModalVisible(false);
@@ -144,6 +146,9 @@ const RightMenu = (props) => {
         const token = response.token;
         Cookies.set("tokenCustomer", token);
         Cookies.set("CustomerEmail", datalogin.email);
+        Cookies.set("gglg", false);
+        let pwcg = `${keyp}${values.password}`;
+        Cookies.set("yassuozed", pwcg);
         setIsModalVisible(false);
         // console.log(">>>token", token);
       } catch (error) {
@@ -172,6 +177,11 @@ const RightMenu = (props) => {
       <Menu.Item>
         <Link to="/myprofile">
           <SolutionOutlined /> Cá nhân
+        </Link>
+      </Menu.Item>
+      <Menu.Item>
+        <Link to="/changepass">
+          <LockOutlined /> Đổi mật khẩu
         </Link>
       </Menu.Item>
       <Menu.Item danger>

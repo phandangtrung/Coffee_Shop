@@ -8,7 +8,7 @@ import queryString from "query-string";
 
 const axiosClient = axios.create({
   // baseURL: process.env.REACT_APP_API_URL,
-  baseURL: "https://backendcfs.herokuapp.com",
+  baseURL: "https://betcsvn.herokuapp.com",
   headers: {
     "content-type": "application/json",
   },

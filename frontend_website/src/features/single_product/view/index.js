@@ -147,7 +147,7 @@ function SingleProduct({ props }) {
           <Col style={{ textAlign: "start" }} span={12}>
             <img
               alt="single-product"
-              src={`https://backendcfs.herokuapp.com/${location.state.img}`}
+              src={`https://betcsvn.herokuapp.com/${location.state.img}`}
             />
           </Col>
           <Col span={12}>
