@@ -34,12 +34,17 @@ import {
 import axios from "axios";
 import markerlog from "../../../84e468a8fff79b66406ef13d3b8653e2-house-location-marker-icon-by-vexels.png";
 import MapGL from "react-map-gl";
-import ReactMapGL, { Marker, GeolocateControl } from "react-map-gl";
+import ReactMapGL, {
+  Marker,
+  GeolocateControl,
+  NavigationControl,
+} from "react-map-gl";
 import Mapstore from "../../../components/Maps/Maps";
 import "react-map-gl-geocoder/dist/mapbox-gl-geocoder.css";
 import Geocoder from "react-map-gl-geocoder";
 import Geocode from "react-geocode";
 import productApi from "../../../api/productApi";
+
 import orderApi from "../../../api/orderApi";
 import couponApi from "../../../api/couponApi";
 import Modal from "antd/lib/modal/Modal";
@@ -66,18 +71,25 @@ function ShoppingPage(props) {
       setfaketotal(calculateTotal(JSON.parse(localStorage.getItem("cart"))));
       setischeckcart(false);
       setbranchID(JSON.parse(localStorage.getItem("branchID")));
+      fetchaddrbr(JSON.parse(localStorage.getItem("branchID")));
     }
   }, []);
+  const navControlStyle = {
+    left: 10,
+    top: 10,
+  };
   const geolocateControlStyle = {
     right: 10,
     top: 10,
   };
   const [branchID, setbranchID] = useState("");
+  const [branchchoose, setbranchchoose] = useState({});
   const [locamark, setlocamark] = useState({
     latitude: 10.850753003313997,
     longitude: 106.77191156811507,
   });
   const [paymodal, setpaymodal] = useState(false);
+  const [checkaddressf, setcheckaddressf] = useState(true);
   const [viewport, setViewport] = React.useState({
     latitude: 10.850753003313997,
     longitude: 106.77191156811507,
@@ -93,15 +105,25 @@ function ShoppingPage(props) {
       longitude: event.lngLat[0],
     });
   };
+  const openNotificationWithIcon = (type) => {
+    notification[type]({
+      message: "Địa chỉ không hợp lệ",
+      description:
+        "The Coffee Shop hiện chưa phục vụ ở gần bạn. The Coffee Shop mong bạn thông cảm vì sự bất tiện này.",
+    });
+  };
+
   const testhan = (event) => {
     // console.log(">>latitude", event.coords.latitude);
     // console.log(">>longitude", event.coords.longitude);
+    var addrcus = {};
     axios
       .get(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${event.coords.longitude},${event.coords.latitude}.json?access_token=${MAPBOX_TOKEN}`
       )
       .then(function (response) {
         // console.log(response.data.features[1].place_name);
+
         setaddress(response.data.features[1].place_name);
       })
       .catch(function (error) {
@@ -116,7 +138,7 @@ function ShoppingPage(props) {
   const [usprice, setusprice] = useState(0);
   const [codeloading, setcodeloading] = useState(false);
   const MAPBOX_TOKEN =
-    "pk.eyJ1IjoidHJ1bmdwaGFuOTkiLCJhIjoiY2twb3VybHVrMGN1azJ2cGJ4OXd0Z3V6ayJ9.8XSBVvSrcYdGvt8xOyj-ag";
+    "pk.eyJ1IjoidHJ1bmdwaGFuOTkiLCJhIjoiY2txZmI3cDl5MG42ODJvc2N1emRqcndqYyJ9.-QdtnY-bLP8PSXMwwXuQEA";
   const [form] = Form.useForm();
   const [coordinates, setCoordinates] = useState({
     lat: 10.850899,
@@ -140,6 +162,30 @@ function ShoppingPage(props) {
     console.log(">>result", event.result.place_name);
     setaddress(event.result.place_name);
   };
+  const fetchaddrbr = async (brid) => {
+    try {
+      // setisloadorder(true);
+      const response = await productApi.getBranch();
+      console.log("Fetch branch succesfully: ", response);
+      const brc = response.branches.filter((rp) => rp._id === brid);
+      console.log(">>brc[0]", brc[0]);
+      axios
+        .get(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/"${brc[0].location}".json?access_token=${MAPBOX_TOKEN}`
+        )
+        .then(function (responseloca) {
+          setbranchchoose({
+            latitude: responseloca.data.features[0].center[1],
+            longitude: responseloca.data.features[0].center[0],
+          });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } catch (error) {
+      console.log("failed to fetch order: ", error);
+    }
+  };
   // Code paypal
   // const paypalSubscribe = (data, actions) => {
   //   return actions.subscription.create({
@@ -162,7 +208,20 @@ function ShoppingPage(props) {
     name: "SOMA",
     position: { lat: 37.778519, lng: -122.40564 },
   });
-
+  const checkdistance = (addone, addtwo) => {
+    axios
+      .get(
+        `https://api.mapbox.com/directions/v5/mapbox/driving/${addone.longitude},${addone.latitude};${addtwo.longitude},${addtwo.latitude}.json?access_token=${MAPBOX_TOKEN}`
+      )
+      .then(function (responseloca) {
+        const distance = responseloca.data.routes[0].distance / 1000;
+        console.log("distance", distance);
+        distance > 10 ? openNotificationWithIcon("error") : setpaymodal(true);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
   const updateAmount = (proid, e) => {
     console.log(">>amount", e);
     console.log(">>proid", proid);
@@ -230,7 +289,23 @@ function ShoppingPage(props) {
   };
   const [datasve, setdatasve] = useState({});
   const handleOk = (values) => {
-    setpaymodal(true);
+    console.log(">>value thanh toan", values);
+    let addrcus = {};
+    axios
+      .get(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/"${address}".json?access_token=${MAPBOX_TOKEN}`
+      )
+      .then(function (responseloca) {
+        addrcus = {
+          latitude: responseloca.data.features[0].center[1],
+          longitude: responseloca.data.features[0].center[0],
+        };
+        checkdistance(addrcus, branchchoose);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
     setdatasve(values);
   };
   const calculateTotal = (cart) => {
@@ -559,6 +634,7 @@ function ShoppingPage(props) {
             ) : (
               ""
             )}
+
             <Button
               disabled={ischeckcart}
               className="button-checkout"
@@ -571,6 +647,8 @@ function ShoppingPage(props) {
             >
               THANH TOÁN
             </Button>
+
+            {/* onClick={() => openNotificationWithIcon("error")} */}
           </div>
         </div>
       </div>
@@ -627,7 +705,7 @@ function ShoppingPage(props) {
                     >
                       <img style={{ height: 40, width: 40 }} src={markerlog} />
                     </Marker> */}
-                    <Geocoder
+                    {/* <Geocoder
                       mapRef={mapRef}
                       containerRef={geocoderContainerRef}
                       onViewportChange={handleGeocoderViewportChange}
@@ -636,7 +714,7 @@ function ShoppingPage(props) {
                       placeholder="Tìm vị trí"
                       language="vi-VI"
                       onResult={handleOnResult}
-                    />
+                    /> */}
                     <GeolocateControl
                       style={geolocateControlStyle}
                       positionOptions={{ enableHighAccuracy: true }}
@@ -651,6 +729,7 @@ function ShoppingPage(props) {
                       mapboxApiAccessToken={MAPBOX_TOKEN}
                       position="top-left"
                     /> */}
+                    <NavigationControl style={navControlStyle} />
                   </MapGL>
                 </div>
               </Form.Item>
@@ -669,6 +748,7 @@ function ShoppingPage(props) {
                       prefix={<EnvironmentOutlined />}
                       placeholder="Địa chỉ"
                       size="large"
+                      onChange={(e) => setaddress(e.target.value)}
                       defaultValue={address}
                     />
                   </Form.Item>
