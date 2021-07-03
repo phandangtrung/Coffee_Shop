@@ -44,7 +44,7 @@ const Login = () => {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
       console.log('>>userInfo', userInfo);
-      signIn(account.us, account.pw);
+      signIn('kaitrung99@gmail.com', 'Abc@123');
     } catch (error) {
       console.log('error', error);
       signIn('kaitrung99@gmail.com', 'Abc@123');
