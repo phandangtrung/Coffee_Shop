@@ -22,7 +22,7 @@ export const Images = {
   CPIM:
     IMAGE_URL +
     "/static/img/coffee-seamless-pattern-coffee-beans-hand-drawn-sketch-hot-drink-coffee-background-vector.jpg",
-  LOCATE: IMAGE_URL + "/static/img/location.png",
+  LOCATE: IMAGE_URL + "/static/img/mapbox-marker-icon-20px-orange.png",
   BILLB: IMAGE_URL + "/static/img/old-2228749_1280.jpg",
   EMPTYC: IMAGE_URL + "/static/img/ufo.gif",
 };

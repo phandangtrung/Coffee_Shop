@@ -1,6 +1,7 @@
 .store__info-form {
   width: 100%;
   height: auto;
+  margin-bottom: 20px;
 }
 .store__info-form .info_form {
   margin-top: 30px;
@@ -9,7 +10,7 @@
   height: 400px;
 }
 .info_form .info_content {
-  width: 50%;
+  width: 30%;
   height: 100%;
   background-color: #ea8025;
   display: flex;
@@ -18,7 +19,7 @@
 }
 .info_content .content_text {
   width: 90%;
-  height: 50%;
+  height: 90%;
   text-align: start;
 }
 .content_text .title {
@@ -35,8 +36,9 @@
   font-family: "Lato", sans-serif;
   color: white;
 }
+
 .info_form .info_img {
-  width: 50%;
+  width: 90%;
   height: auto;
 }
 .store__info-form .map-form {

@@ -109,7 +109,7 @@ function ShoppingPage(props) {
     notification[type]({
       message: "Địa chỉ không hợp lệ",
       description:
-        "The Coffee Shop hiện chưa phục vụ ở gần bạn. The Coffee Shop mong bạn thông cảm vì sự bất tiện này.",
+        "The Coffee Shop hiện chỉ giao hàng trong phạm vi 10km. The Coffee Shop mong bạn thông cảm vì sự bất tiện này.",
     });
   };
 
