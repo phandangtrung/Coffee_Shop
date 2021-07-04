@@ -50,7 +50,8 @@ function ProductTag(props) {
         }
       }
       localStorage.setItem("cart", JSON.stringify(cart));
-      console.log("Cart>>", localStorage.cart);
+      window.dispatchEvent(new Event("storage"));
+      // console.log("Cart>>", localStorage.cart);
       notification.open({
         message: `${props.name}`,
         description: `${props.name} đã được thêm vào giỏ hàng`,

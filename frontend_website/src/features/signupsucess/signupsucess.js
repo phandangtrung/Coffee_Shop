@@ -8,11 +8,11 @@ function signupsucess() {
     <div>
       <Result
         icon={<CheckCircleOutlined />}
-        title="Great, your account have been created!"
+        title="Tuyệt vời, tài khoản của bạn đã được tạo thành công!"
         extra={
           <Link to="/">
             <Button style={{ border: "0px" }} type="primary">
-              Back to Homepage
+              Quay lại trang chủ
             </Button>
           </Link>
         }

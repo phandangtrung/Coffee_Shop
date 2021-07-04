@@ -44,7 +44,23 @@ const RightMenu = (props) => {
   const location = useLocation();
   const { md } = useBreakpoint();
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [cartcount, setcartcount] = useState(0);
+  const [currentStorage, SyncWithLocalStorage] = useState(localStorage || {});
+  const eventListenerFun = (e) => {
+    console.log("localStorage", JSON.parse(localStorage.cart));
+    let sumquanti = 0;
+    const lccart = JSON.parse(localStorage.cart);
+    lccart.map((lc) => {
+      sumquanti += lc.quantity;
+    });
+    setcartcount(sumquanti);
+    SyncWithLocalStorage({ ...localStorage.cart }); //<----spread it which will cause refrence to change
+  };
+  useEffect(() => {
+    window.addEventListener("storage", eventListenerFun);
 
+    return () => window.removeEventListener("storage", eventListenerFun);
+  }, [currentStorage]);
   const showModal = () => {
     setIsModalVisible(true);
   };
@@ -154,8 +170,8 @@ const RightMenu = (props) => {
       } catch (error) {
         console.log("failed to fetch login: ", error);
         notification.open({
-          message: "Fail Login",
-          description: "Your email or password is wrong",
+          message: "Đăng nhập không thành công",
+          description: "Email hoặc mật khẩu không đúng",
           icon: <ExclamationCircleFilled style={{ color: "red" }} />,
         });
       }
@@ -203,7 +219,7 @@ const RightMenu = (props) => {
         <Menu.Item className="button-signup" key="mail">
           {islogin === undefined ? (
             <Button onClick={showModal} className="button-signup">
-              Đăng nhập
+              <UserOutlined style={{ fontSize: "25px" }} />
             </Button>
           ) : (
             <Dropdown overlay={menu}>
@@ -221,7 +237,7 @@ const RightMenu = (props) => {
           Signup
         </Button> */}
           <Link to="/shoppingpage">
-            <Badge count={0}>
+            <Badge count={cartcount}>
               <ShoppingCartOutlined style={{ fontSize: "25px" }} />
             </Badge>
           </Link>
@@ -261,7 +277,7 @@ const RightMenu = (props) => {
                         rules={[
                           {
                             required: true,
-                            message: "Please input your email!",
+                            message: "Nhập địa chỉ email!",
                           },
                         ]}
                       >
@@ -290,13 +306,13 @@ const RightMenu = (props) => {
                         rules={[
                           {
                             required: true,
-                            message: "Please input your password!",
+                            message: "Nhập mật khẩu!",
                           },
                         ]}
                       >
                         <Input.Password
                           style={{ width: "100%" }}
-                          placeholder="Password"
+                          placeholder="Mật khẩu"
                         />
                       </Form.Item>
                     </Col>
@@ -361,13 +377,13 @@ const RightMenu = (props) => {
                         rules={[
                           {
                             required: true,
-                            message: "Please input your Fullname!",
+                            message: "Nhập họ và tên",
                           },
                         ]}
                       >
                         <Input
                           style={{ width: "100%" }}
-                          placeholder="Full name"
+                          placeholder="Họ và tên"
                         />
                       </Form.Item>
                     </Col>
@@ -379,7 +395,7 @@ const RightMenu = (props) => {
                         rules={[
                           {
                             required: true,
-                            message: "Please input your email!",
+                            message: "Nhập địa chỉ email!",
                           },
                         ]}
                       >
@@ -420,7 +436,7 @@ const RightMenu = (props) => {
                         rules={[
                           {
                             required: true,
-                            message: "Please input your password!",
+                            message: "Nhập mật khẩu!",
                           },
                         ]}
                       >
@@ -428,7 +444,7 @@ const RightMenu = (props) => {
                           style={{
                             width: "100%",
                           }}
-                          placeholder="input password"
+                          placeholder="Nhập mật khẩu"
                         />
                       </Form.Item>
                     </Col>
@@ -451,7 +467,7 @@ const RightMenu = (props) => {
                         type="primary"
                         htmlType="submit"
                       >
-                        Sign up
+                        Đăng ký
                       </Button>
                     </Col>
                   </Row>

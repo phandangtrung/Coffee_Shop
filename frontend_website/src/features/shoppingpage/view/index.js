@@ -234,6 +234,7 @@ function ShoppingPage(props) {
     }
     setcart(newcart);
     localStorage.setItem("cart", JSON.stringify(newcart));
+    window.dispatchEvent(new Event("storage"));
     settotalPrice(calculateTotal(newcart));
     form.setFieldsValue({
       couponCode: "",
@@ -255,6 +256,7 @@ function ShoppingPage(props) {
     setfaketotal(calculateTotal(newCart));
     settotalPrice(calculateTotal(newCart));
     localStorage.setItem("cart", JSON.stringify(newCart));
+    window.dispatchEvent(new Event("storage"));
   };
   const saveorder = () => {
     console.log("form value", datasve);
@@ -275,6 +277,7 @@ function ShoppingPage(props) {
         console.log("Fetch order succesfully: ", response);
         // setisloadorder(false);
         localStorage.removeItem("cart");
+        window.dispatchEvent(new Event("storage"));
         setcart([]);
         notification.open({
           message: "Đặt hàng thành công",
@@ -340,6 +343,7 @@ function ShoppingPage(props) {
     });
     setcart(newcart);
     localStorage.setItem("cart", JSON.stringify(newcart));
+    window.dispatchEvent(new Event("storage"));
     setalteraplly(null);
     setcodeprice(0);
     setfaketotal(calculateTotal(newcart));

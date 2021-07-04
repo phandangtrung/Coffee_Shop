@@ -55,7 +55,7 @@ const LeftMenu = (props) => {
           <Link to="/coupon">Mã giảm giá</Link>
         </Menu.Item>
         <Menu.Item key="menu">
-          <Link to="/intro">Menu</Link>
+          <Link to="/intro">Giới thiệu</Link>
         </Menu.Item>
         {/* <Menu.Item key="alipay">
           <a onClick={showModal}>Contact Us</a>

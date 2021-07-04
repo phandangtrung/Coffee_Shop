@@ -163,6 +163,7 @@ function Product() {
     setfakeProductList(found.listProduct);
     localStorage.setItem("branchID", JSON.stringify(found._id));
     localStorage.removeItem("cart");
+    window.dispatchEvent(new Event("storage"));
     // localStorage.removeItem("branchId");
     warning();
   };
