@@ -1,11 +1,22 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {SafeAreaView, View, Text, Image} from 'react-native';
-import {GiftedChat} from 'react-native-gifted-chat';
+import Voice from '@react-native-community/voice';
+import {
+  SafeAreaView,
+  View,
+  Text,
+  Image,
+  Button,
+  TouchableOpacity,
+} from 'react-native';
+
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {GiftedChat, Composer} from 'react-native-gifted-chat';
 import {Dialogflow_V2} from 'react-native-dialogflow';
 import {Bubble} from 'react-native-gifted-chat';
 import uuid from 'react-native-uuid';
 import {dialogflowConfig} from '../../config/env';
 function ChatBot() {
+  const [speech, setSpeech] = useState('');
   const [messages, setMessages] = useState([]);
   const BOT_USER = {
     _id: 2,
@@ -31,6 +42,62 @@ function ChatBot() {
           },
         }}
       />
+    );
+  };
+  useEffect(() => {
+    Voice.onSpeechStart = onSpeechStart;
+    Voice.onSpeechEnd = onSpeechEnd;
+    Voice.onSpeechError = onSpeechError;
+    Voice.onSpeechResults = onSpeechResults;
+    Voice.onSpeechPartialResults = onSpeechPartialResults;
+
+    return () => Voice.destroy().then(Voice.removeAllListeners);
+  }, []);
+  const onSpeechStart = () => {};
+
+  const onSpeechEnd = () => {};
+
+  const onSpeechError = () => {};
+
+  const onSpeechResults = (e) => {
+    setSpeech(e.value[0]);
+  };
+
+  const onSpeechPartialResults = (e) => {
+    setSpeech(e.value[0]);
+  };
+
+  const startListening = () => {
+    // You can set the locale to any language you want it to recognize, I am using Nigerian English.
+    Voice.start('en-NG');
+  };
+  const renderComposer = (props) => {
+    // Adds a Mic Button in the text box, you can style it as you want
+    return (
+      <View style={{flexDirection: 'row'}}>
+        <Composer {...props} />
+        {/* <Button title="voice" onPress={startListening} /> */}
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            height: '100%',
+          }}>
+          <TouchableOpacity onPress={startListening}>
+            <FontAwesome5
+              style={{
+                color: 'white',
+                fontSize: 20,
+                color: 'grey',
+                marginRight: 20,
+                marginTop: 10,
+              }}
+              name={'microphone'}
+              solid
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
     );
   };
   useEffect(() => {
@@ -84,6 +151,8 @@ function ChatBot() {
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <GiftedChat
+        renderComposer={renderComposer}
+        text={speech}
         messages={messages}
         onSend={(messages) => onSend(messages)}
         renderBubble={renderBubble}

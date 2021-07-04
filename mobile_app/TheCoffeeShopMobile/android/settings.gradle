@@ -1,4 +1,6 @@
 rootProject.name = 'TheCoffeeShopMobile'
+include ':@react-native-community_voice'
+project(':@react-native-community_voice').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/voice/android')
 include ':react-native-voice'
 project(':react-native-voice').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-voice/android')
 include ':react-native-dialogflow'
@@ -8,3 +10,6 @@ include ':app'
 include ':react-native-vector-icons'
 include ':react-native-google-signin',':app'
 project(':react-native-vector-icons').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-vector-icons/android')
+include ':@react-native-community_voice', ':app'
+project(':@react-native-community_voice').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/voice/android')
+
