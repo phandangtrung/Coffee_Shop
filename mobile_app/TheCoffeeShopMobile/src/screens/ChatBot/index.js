@@ -151,8 +151,8 @@ function ChatBot() {
   return (
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       <GiftedChat
-        renderComposer={renderComposer}
-        text={speech}
+        // renderComposer={renderComposer}
+        // text={speech}
         messages={messages}
         onSend={(messages) => onSend(messages)}
         renderBubble={renderBubble}
