@@ -38,7 +38,7 @@ const Home = (props) => {
   const [categories, setCategories] = useState([]);
   const [probyCate, setProByCate] = useState({});
   const [isloading, setIsloading] = useState(false);
-
+  const [brachpick, setbrachpick] = useState();
   useEffect(() => {
     fetchBranchList();
   }, []);
@@ -373,7 +373,7 @@ const Home = (props) => {
                     {'Chi Nhánh'}
                   </Text>
                   <Picker
-                    // selectedValue={selectedValue}
+                    selectedValue={brachpick}
                     style={{height: 50, width: 270, color: 'white'}}
                     onValueChange={(itemValue, itemIndex) => {
                       const brfilt = BraProList.filter(
@@ -384,6 +384,7 @@ const Home = (props) => {
                       console.log('>>brfilt', brfilt[0].listProduct);
                       getListCategory(brfilt[0].listProduct);
                       props.delallProduct();
+                      setbrachpick(itemValue);
                     }}>
                     {BraProList.map((bl) => (
                       <Picker.Item

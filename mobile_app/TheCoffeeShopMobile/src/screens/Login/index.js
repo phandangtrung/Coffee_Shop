@@ -20,19 +20,63 @@ import {AuthContext} from '../../config/context';
 import {GoogleSignin, GoogleSigninButton} from 'react-native-google-signin';
 import CommentTag from '../../components/commentTag/index';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {Avatar, Card, Input} from 'react-native-elements';
-
-const Login = () => {
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {Avatar, Card, Input, Overlay} from 'react-native-elements';
+import {Backport} from '../../config/port';
+const Login = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [isoverlay, setisoverlay] = useState(false);
   const [account, setAccount] = useState({us: '', pw: ''});
+  const [signupacc, setsignupacc] = useState({
+    email: '',
+    fName: '',
+    password: '',
+  });
+  const [isoverlaysucc, setisoverlaysucc] = useState(false);
   const [isloading, setIsloading] = useState(false);
-
+  const [isloadingsu, setIsloadingsu] = useState(false);
   const {signIn} = React.useContext(AuthContext);
 
   const onchangKey = (usname, password) => {
     if (password === ' ') {
       setAccount({...account, us: usname});
     } else setAccount({...account, pw: password});
+  };
+  const onchangKeySignup = (usname, fullname, password) => {
+    console.log(`usn ${usname} fullname ${fullname} pass ${password}`);
+    if (usname !== ' ') {
+      setsignupacc({...signupacc, email: usname});
+    }
+    if (fullname !== ' ') {
+      setsignupacc({...signupacc, fName: fullname});
+    }
+    if (password !== ' ') {
+      setsignupacc({...signupacc, password: password});
+    }
+  };
+  const onSignup = () => {
+    if (
+      signupacc.email === ' ' ||
+      signupacc.fName === ' ' ||
+      signupacc.password === ' '
+    )
+      console.log('>>>chua dien day du');
+    else {
+      setIsloadingsu(true);
+      const requestOptions = {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(signupacc),
+      };
+      fetch(`${Backport}/users/signup`, requestOptions)
+        .then((response) => response.json())
+        .then((datare) => {
+          console.log('>>data', datare);
+          setIsloadingsu(false);
+          toggleOverlay();
+          toggleOverlaysucc();
+        });
+    }
   };
   GoogleSignin.configure({
     webClientId:
@@ -53,7 +97,15 @@ const Login = () => {
   const loginHandle = () => {
     // setIsloading(true);
     console.log('>>ac', account);
+    setIsloading(true);
     signIn(account.us, account.pw);
+    setIsloading(false);
+  };
+  const toggleOverlay = () => {
+    setisoverlay(!isoverlay);
+  };
+  const toggleOverlaysucc = () => {
+    setisoverlaysucc(!isoverlaysucc);
   };
   return (
     <ImageBackground
@@ -120,7 +172,7 @@ const Login = () => {
             />
           </View>
 
-          {true ? (
+          {!isloading ? (
             <TouchableOpacity
               style={{
                 width: '100%',
@@ -216,16 +268,144 @@ const Login = () => {
         <Text style={{fontSize: 15, color: 'white'}}>
           {'Bạn không có tài khoản?'}
         </Text>
-        <Text
-          style={{
-            fontSize: 15,
-            color: '#e07c58',
-            textDecorationLine: 'underline',
-            fontStyle: 'italic',
-          }}>
-          {'Đăng ký ngay'}
-        </Text>
+        <TouchableOpacity onPress={toggleOverlay}>
+          <Text
+            style={{
+              fontSize: 15,
+              color: '#e07c58',
+              textDecorationLine: 'underline',
+              fontStyle: 'italic',
+            }}>
+            {'Đăng ký ngay'}
+          </Text>
+        </TouchableOpacity>
       </View>
+      <Overlay isVisible={isoverlay} onBackdropPress={toggleOverlay}>
+        <View
+          style={{
+            width: 300,
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              textAlign: 'center',
+              fontSize: 20,
+              fontWeight: 'bold',
+              color: '#4a507a',
+            }}>
+            {'Đăng ký'}
+          </Text>
+          <Input
+            placeholder="Email"
+            leftIcon={
+              <FontAwesome5
+                style={{color: 'white', fontSize: 20, color: 'grey'}}
+                name={'envelope'}
+                solid
+              />
+            }
+            onChangeText={(values) => onchangKeySignup(values, ' ', ' ')}
+          />
+          <Input
+            placeholder="Họ và tên"
+            leftIcon={
+              <FontAwesome5
+                style={{color: 'white', fontSize: 20, color: 'grey'}}
+                name={'address-card'}
+                solid
+              />
+            }
+            onChangeText={(values) => onchangKeySignup(' ', values, ' ')}
+          />
+          <Input
+            placeholder="Mật khẩu"
+            leftIcon={
+              <FontAwesome5
+                style={{color: 'white', fontSize: 20, color: 'grey'}}
+                name={'lock'}
+                solid
+              />
+            }
+            onChangeText={(values) => onchangKeySignup(' ', ' ', values)}
+            secureTextEntry={true}
+          />
+          {isloadingsu ? (
+            <View
+              style={{
+                width: '100%',
+                height: 45,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <View
+                style={{
+                  width: '75%',
+                  height: 45,
+                  backgroundColor: '#4a507a',
+                  borderRadius: 20,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={require('../../img/post-loader.gif')}
+                  style={{width: 130, height: 130}}
+                />
+                {/* <ActivityIndicator size="large" color="#ffff" /> */}
+              </View>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={{
+                width: '100%',
+                height: 45,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}
+              onPress={onSignup}>
+              <View
+                style={{
+                  width: '75%',
+                  height: 45,
+                  backgroundColor: '#4a507a',
+                  borderRadius: 20,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    textAlign: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}>
+                  {'Đăng ký'}
+                </Text>
+                {/* <ActivityIndicator size="large" color="#ffff" /> */}
+              </View>
+            </TouchableOpacity>
+          )}
+        </View>
+      </Overlay>
+      <Overlay isVisible={isoverlaysucc} onBackdropPress={toggleOverlaysucc}>
+        <View
+          style={{
+            width: 250,
+            height: 100,
+            justifyContent: 'center',
+          }}>
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 15,
+              textAlign: 'center',
+              color: 'grey',
+            }}>
+            {'Đăng ký thành công, xác nhận email để hoàn tất'}
+          </Text>
+        </View>
+      </Overlay>
     </ImageBackground>
   );
 };

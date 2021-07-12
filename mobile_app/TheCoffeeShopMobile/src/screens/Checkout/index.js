@@ -37,19 +37,76 @@ const Checkout = (props) => {
   const [fakeprice, setfakeprice] = useState(0);
   const [price, setprice] = useState(0);
   const [couponList, setCouponList] = useState([]);
-  const [addRess, setaddRess] = useState('Nhập địa chỉ giao hàng');
+  const [addRess, setaddRess] = useState('Nhập địa chỉ nhận hàng');
   const [inputadd, setinputadd] = useState('');
   const [visible, setVisible] = useState(false);
   const [plphone, setplphone] = useState(false);
   const [pladdr, setpladdr] = useState(false);
+  const [ischeckadd, setischeckadd] = useState({
+    loading: false,
+    availabledi: true,
+  });
+  const MAPBOX_TOKEN =
+    'pk.eyJ1IjoidHJ1bmdwaGFuOTkiLCJhIjoiY2txZmI3cDl5MG42ODJvc2N1emRqcndqYyJ9.-QdtnY-bLP8PSXMwwXuQEA';
   const toggleOverlay = () => {
     setVisible(!visible);
+    setischeckadd({...ischeckadd, availabledi: true});
   };
   const toggleplOverlay = () => {
     setplphone(!visible);
   };
   const togglepladdrOverlay = () => {
     setpladdr(!visible);
+  };
+
+  const getlocatefa = (addressi) => {
+    setischeckadd({...ischeckadd, loading: true});
+    fetch(
+      `https://api.mapbox.com/geocoding/v5/mapbox.places/"${addressi}".json?access_token=${MAPBOX_TOKEN}`,
+    )
+      .then((response) => response.json())
+      .then(function (responseJson) {
+        setinputadd(addRess);
+
+        console.log('>>responseloca', responseJson.features[0].center);
+        let addrcus = {
+          latitude: responseJson.features[0].center[1],
+          longitude: responseJson.features[0].center[0],
+        };
+        checkdistance(addrcus, branchLocate);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const checkdistance = (addone, addtwo) => {
+    fetch(
+      `https://api.mapbox.com/directions/v5/mapbox/driving/${addone.longitude},${addone.latitude};${addtwo.longitude},${addtwo.latitude}.json?access_token=${MAPBOX_TOKEN}`,
+      {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+      },
+    )
+      .then((response) => response.json())
+      .then((responseloca) => {
+        const distance = responseloca.routes[0].distance / 1000;
+        console.log('distance', distance);
+        setischeckadd({...ischeckadd, loading: false});
+        if (distance <= 10) {
+          setischeckadd({...ischeckadd, availabledi: true});
+          setVisible(false);
+        } else {
+          setischeckadd({...ischeckadd, availabledi: false});
+          setinputadd('');
+          setaddRess('Nhập địa chỉ nhận hàng');
+        }
+        // setVisible(false);
+        // distance > 10 ? openNotificationWithIcon("error") : setpaymodal(true);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
   const getuserinfo = async () => {
     if (inputadd === '') {
@@ -123,6 +180,10 @@ const Checkout = (props) => {
       });
   };
   const [couponcodeID, setcouponcodeID] = useState('');
+  const [branchLocate, setbranchLocate] = useState({
+    latitude: 0,
+    longitude: 0,
+  });
   const addCode = (code) => {
     const percentage = code.percentage;
     setcouponcodeID(code._id);
@@ -133,6 +194,32 @@ const Checkout = (props) => {
     getListCode();
     setfakeprice(props.totalprice);
     setprice(props.totalprice);
+    const apiURL = `${Backport}/branches`;
+    fetch(apiURL)
+      .then((res) => res.json())
+      .then((resJson) => {
+        const brachcurren = resJson.branches.filter(
+          (bc) => bc._id === props.branchID,
+        );
+        console.log('>>brachcurren[0].location', brachcurren[0].location);
+        fetch(
+          `https://api.mapbox.com/geocoding/v5/mapbox.places/"${brachcurren[0].location}".json?access_token=${MAPBOX_TOKEN}`,
+        )
+          .then((response) => response.json())
+          .then(function (responseJson) {
+            console.log('>>brach locate', responseJson.features[0].center);
+            setbranchLocate({
+              latitude: responseJson.features[0].center[1],
+              longitude: responseJson.features[0].center[0],
+            });
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log('Error: ', error);
+      });
   }, []);
   return (
     <SafeAreaView
@@ -414,19 +501,85 @@ const Checkout = (props) => {
         <Text style={{fontSize: 17, color: 'grey', fontStyle: 'italic'}}>
           {'Thay đổi địa chỉ'}
         </Text>
-        <View style={{paddingTop: 10, width: 300, height: 130}}>
+        <View style={{paddingTop: 10, width: 300, height: 160}}>
           <Input
             onChangeText={(value) => setaddRess(value)}
             placeholder="Nhập địa chỉ"
           />
-          <Button
-            onPress={() => {
-              setinputadd(addRess);
-              setVisible(false);
-            }}
+          {!ischeckadd.availabledi && (
+            <Text
+              style={{
+                textAlign: 'center',
+                marginBottom: 10,
+                fontStyle: 'italic',
+                opacity: 0.5,
+              }}>
+              {'Địa chỉ quá xa chi nhánh đã chọn'}
+            </Text>
+          )}
+
+          {/* <Button
+            onPress={() => getlocatefa(addRess)}
             color="#ffb460"
             title="OK"
-          />
+          /> */}
+          {ischeckadd.loading ? (
+            <View
+              style={{
+                width: '100%',
+                height: 20,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <View
+                style={{
+                  width: '75%',
+                  height: 45,
+                  backgroundColor: '#ffb460',
+                  borderRadius: 20,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={require('../../img/post-loader.gif')}
+                  style={{width: 130, height: 130}}
+                />
+                {/* <ActivityIndicator size="large" color="#ffff" /> */}
+              </View>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={{
+                width: '100%',
+                height: 20,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}
+              onPress={() => getlocatefa(addRess)}>
+              <View
+                style={{
+                  width: '75%',
+                  height: 45,
+                  backgroundColor: '#ffb460',
+                  borderRadius: 20,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    textAlign: 'center',
+                    color: 'white',
+                    fontWeight: 'bold',
+                  }}>
+                  {'OK'}
+                </Text>
+                {/* <ActivityIndicator size="large" color="#ffff" /> */}
+              </View>
+            </TouchableOpacity>
+          )}
         </View>
       </Overlay>
       <Overlay isVisible={plphone} onBackdropPress={toggleplOverlay}>

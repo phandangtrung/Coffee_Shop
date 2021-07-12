@@ -188,6 +188,7 @@ const App = () => {
           headerShown: false,
         }}
       />
+
       <Stack.Screen
         name="Product"
         component={Product}
